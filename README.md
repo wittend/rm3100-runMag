@@ -24,7 +24,7 @@ dave@odroid:~/projects/SWx-C/i2c-c$ ./simplei2c -h
 
 Parameters:
 
-    -b <I2C bus number>    :  I2C bus number as integer.
+    -b <number as integer> :  I2C bus number as integer.
     -c <count>             :  Cycle count as integer (default 200).
     -j                     :  Format output as JSON.
     -l                     :  Read local temperature only.
