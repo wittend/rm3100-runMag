@@ -1,7 +1,8 @@
 # rm3100-simple-i2c
 
 For now just clone this project into your home directory on the Raspberry Pi using:
-git clone https://github.com/wittend/rm3100-simple-i2c".  
+
+git clone https://github.com/wittend/rm3100-simple-i2c.  
 
 Then do:
 
