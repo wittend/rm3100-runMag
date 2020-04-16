@@ -65,6 +65,7 @@ typedef enum
 //------------------------------------------
 typedef struct tag_pList
 {
+    int showParameters;
     int verboseFlag;
     int quietFlag;
     int jsonFlag;

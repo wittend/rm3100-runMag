@@ -373,6 +373,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Local temperature address:                  %2X\n", p->localTempAddr);
     fprintf(stdout, "   Read magnetometer only:                     %s\n", p->magnetometerOnly ?  "TRUE" : "FALSE");
     fprintf(stdout, "   Magnetometer address:                       %2X\n", p->magnetometerAddr);
+    fprintf(stdout, "   Show Parameters:                            %s\n", p->showParameters ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Quiet mode:                                 %s\n", p->quietFlag ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Read remote temperature only:               %s\n", p->remoteTempOnly ? "TRUE" : "FALSE");
     fprintf(stdout, "   Remote temperature address:                 %2X\n", p->remoteTempAddr);
@@ -395,6 +396,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     {
         memset(p, 0, sizeof(pList));
     }
+    p->showParameters   = FALSE;
     p->verboseFlag      = FALSE;
     p->quietFlag        = FALSE;
     p->jsonFlag         = FALSE;
@@ -421,41 +423,45 @@ int getCommandLine(int argc, char** argv, pList *p)
     
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?b:c:hjlL:mM:o:qsSrR:vXhqV")) != -1)
+    while((c = getopt(argc, argv, "?b:c:hjlL:mM:o:PqsSrR:vXhqV")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
         {
             case 'b':
-                fprintf(stdout, "Bus Id: '%s'\n", optarg);
+                // fprintf(stdout, "Bus Id: '%s'\n", optarg);
                 p->i2c_bus_number = atoi(optarg);
                 break;
             case 'c':
-                fprintf(stdout, "CycleCount: '%s'\n", optarg);
+                // fprintf(stdout, "CycleCount: '%s'\n", optarg);
                 p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
                 break;
             case 'j':
-                fprintf(stdout, "Output JSON formatted data.\n");
+                // fprintf(stdout, "Output JSON formatted data.\n");
                 p->jsonFlag = TRUE;
                 break;
             case 'l':
-                fprintf(stdout, "Read local temperature only.\n");
+                // fprintf(stdout, "Read local temperature only.\n");
                 p->localTempOnly = TRUE;
                 break;
             case 'L':
-                fprintf(stdout, "Local temp address [default 19 hex]: %s hex\n", optarg);
+                // fprintf(stdout, "Local temp address [default 19 hex]: %s hex\n", optarg);
                 p->localTempAddr = atoi(optarg);
                 break;
             case 'm':
-                fprintf(stdout, "Read magnetometer only.\n");
+                // fprintf(stdout, "Read magnetometer only.\n");
                 p->magnetometerOnly = TRUE;
                 break;
             case 'M':
-                fprintf(stdout, "Magnetometer address [default 20 hex]: %s hex\n", optarg);
+                // fprintf(stdout, "Magnetometer address [default 20 hex]: %s hex\n", optarg);
                 p->magnetometerAddr = atoi(optarg);
                 break;
+            case 'P':
+                // fprintf(stdout, "Magnetometer address [default 20 hex]: %s hex\n", optarg);
+                p->showParameters = TRUE;
+                break;
             case 'o':
-                fprintf(stdout, "Outout delay rate [default 1000 ms]: %s ms\n", optarg);
+                // fprintf(stdout, "Outout delay rate [default 1000 ms]: %s ms\n", optarg);
                 p->outDelay = atoi(optarg) * 1000;
                 break;
             case 'q':
@@ -463,23 +469,23 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->verboseFlag = FALSE;
                 break;
             case 's':
-                fprintf(stdout, "Return single magnetometer reading.\n");
+                // fprintf(stdout, "Return single magnetometer reading.\n");
                 p->singleRead = TRUE;
                 break;
             case 'S':
-                fprintf(stdout, "Read Simple Magnetometer Support Board.\n");
+                // fprintf(stdout, "Read Simple Magnetometer Support Board.\n");
                 p->boardType = 1;
                 break;
             case 'r':
-                fprintf(stdout, "Read remote temp only.'\n");
+                // fprintf(stdout, "Read remote temp only.'\n");
                 p->remoteTempOnly = TRUE;
                 break;
             case 'R':
-                fprintf(stdout, "Remote temp address [default 18 hex]: %s hex\n", optarg);
+                // fprintf(stdout, "Remote temp address [default 18 hex]: %s hex\n", optarg);
                 p->remoteTempAddr = atoi(optarg);
                 break;
             case 'V':
-                fprintf(stdout, "Version = %s\n", version);
+                // fprintf(stdout, "Version = %s\n", version);
                 return 1;
                 break;
             case 'v':
@@ -500,7 +506,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address [default 19 hex].\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
                 fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address [default 20 hex].\n");
-                fprintf(stdout, "   -q                     :  Quiet mode.");
+                fprintf(stdout, "   -P                     :  Show Parameters.\n");
+                fprintf(stdout, "   -q                     :  Quiet mode.\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
                 fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address [default 18 hex].\n");
                 fprintf(stdout, "   -s                     :  Return single magnetometer reading.\n");
@@ -546,12 +553,11 @@ int main(int argc, char** argv)
     {
         return rv;
     }
-    showSettings(&p);
-    //fprintf(stdout, "p.verboseFlag:    %i\n", p.verboseFlag);
-    //fprintf(stdout, "p.jsonFlag:       %i\n", p.jsonFlag);
-    //fprintf(stdout, "p.Version:        %s\n", p.Version);
-    //fprintf(stdout, "p.i2c_bus_number: %i\n", p.i2c_bus_number);
-//exit(0);    
+    if(p.showParameters)
+    {
+        showSettings(&p);
+    }
+
     // Initialize the I2C bus
     fd = i2c_init(i2cFname);
     if(fd >= 0)
