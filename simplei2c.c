@@ -362,24 +362,25 @@ long currentTimeMillis()
 //------------------------------------------
 // showSettings()
 //------------------------------------------
-int showSettings(pList *p)
+void showSettings(pList *p)
 {
     fprintf(stdout, "\nVersion = %s\n", version);
     fprintf(stdout, "\nCurrent Parameters:\n\n");
-    fprintf(stdout, "   -b <I2C bus number>    :  I2C bus number as integer: %i\n", p->i2c_bus_number);
-    fprintf(stdout, "   -c <count>             :  Cycle count as integer: %i\n", p->cc_x);
-    fprintf(stdout, "   -j                     :  Format output as JSON: %s\n", p->jsonFlag ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   -l                     :  Read local temperature only: %s\n", p->localTempOnly ? "TRUE" : "FALSE");
-    fprintf(stdout, "   -L [addr as integer]   :  Local temperature address: %i\n", p->localTempAddr);
-    fprintf(stdout, "   -m                     :  Read magnetometer only: %s\n", p->magnetometerOnly ?  "TRUE" : "FALSE");
-    fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address: %i\n", p->magnetometerAddr);
-    fprintf(stdout, "   -q                     :  Quiet mode: %s\n", p->quietFlag ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   -r                     :  Read remote temperature only: %s\n", p->remoteTempOnly ? "TRUE" : "FALSE");
-    fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address: %i\n", p->remoteTempAddr);
-    fprintf(stdout, "   -s                     :  Return single magnetometer reading: %s\n", p->singleRead ? "TRUE" : "FALSE");
-    fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board: %i\n", p->boardType);
-    fprintf(stdout, "   -v                     :  Verbose output: %s\n", p->verboseFlag ? "TRUE" : "FALSE");
-    fprintf(stdout, "   -X                     :  Read Board with Extender: %i\n", p->boardType);
+    fprintf(stdout, "   I2C bus number as integer:                  %i\n", p->i2c_bus_number);
+    fprintf(stdout, "   Cycle count as integer:                     %i\n", p->cc_x);
+    fprintf(stdout, "   Format output as JSON:                      %s\n", p->jsonFlag ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Read local temperature only:                %s\n", p->localTempOnly ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Local temperature address:                  %2X\n", p->localTempAddr);
+    fprintf(stdout, "   Read magnetometer only:                     %s\n", p->magnetometerOnly ?  "TRUE" : "FALSE");
+    fprintf(stdout, "   Magnetometer address:                       %2X\n", p->magnetometerAddr);
+    fprintf(stdout, "   Quiet mode:                                 %s\n", p->quietFlag ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Read remote temperature only:               %s\n", p->remoteTempOnly ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Remote temperature address:                 %2X\n", p->remoteTempAddr);
+    fprintf(stdout, "   Return single magnetometer reading:         %s\n", p->singleRead ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Simple Magnetometer Support Board:     %i\n", p->boardType);
+    fprintf(stdout, "   Verbose output:                             %s\n", p->verboseFlag ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Board with Extender:                   %i\n", p->boardType);
+    fprintf(stdout, "\n\n");
 }
 
 //------------------------------------------
@@ -405,6 +406,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->remoteTempOnly   = FALSE;
     p->remoteTempAddr   = 0x18;  
     p->magnetometerOnly = FALSE;
+    p->magnetometerAddr = 0x20;
     p->singleRead       = FALSE;
     p->boardType        = 0;
     p->outDelay         = 1000000;
@@ -470,7 +472,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'r':
                 fprintf(stdout, "Read remote temp only.'\n");
-                p->remoteTempOnly = atoi(optarg);
+                p->remoteTempOnly = TRUE;
                 break;
             case 'R':
                 fprintf(stdout, "Remote temp address [default 18 hex]: %s hex\n", optarg);
@@ -523,7 +525,6 @@ int getCommandLine(int argc, char** argv, pList *p)
         }
         printf ("\n");
     }
-    //exit (0);
     return 0;
 }
 
