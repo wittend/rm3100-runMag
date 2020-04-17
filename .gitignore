@@ -1,3 +1,6 @@
+# Komodo Projectfiles
+*.komodoproject
+
 # Prerequisites
 *.d
 
