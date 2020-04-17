@@ -1,5 +1,5 @@
 #-----------------------------------
-# Simple Makefile for rm3100i2c
+# Simple Makefile for rm3100i2c.
 #-----------------------------------
 CC=gcc
 CXX=g++
