@@ -69,7 +69,7 @@ typedef struct tag_pList
     int verboseFlag;
     int quietFlag;
     int jsonFlag;
-    int i2c_bus_number;
+    int i2cBusNumber;
     int i2c_fd;
 
     int localTempOnly;
@@ -100,7 +100,6 @@ typedef struct tag_pList
 #define ODROIDN2_I2C_BUS    "/dev/i2c-2"
 #define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
 #define NV_NANO_I2C_BUS     "/dev/i2c-1"
-
 
 typedef enum
 {
