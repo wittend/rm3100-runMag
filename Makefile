@@ -12,6 +12,9 @@ OBJS=$(subst .c,.o,$(SRCS))
 
 all: $(TARGET)
 
+debug: $(TARGET).c device_defs.h
+	$(CC) $(CFLAGS) -g3 $(TARGET).c -o $(TARGET) 
+
 $(TARGET): $(TARGET).c device_defs.h
 	$(CC) $(CFLAGS) $(TARGET).c -o $(TARGET) 
 
@@ -21,4 +24,4 @@ clean:
 distclean: clean
 	$(RM) $(TARGET)
 	
-.PHONY: clean distclean all
+.PHONY: clean distclean all debug
