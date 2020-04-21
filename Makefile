@@ -13,7 +13,7 @@ OBJS=$(subst .c,.o,$(SRCS))
 all: $(TARGET)
 
 debug: $(TARGET).c device_defs.h
-	$(CC) $(CFLAGS) -g3 $(TARGET).c -o $(TARGET) 
+	$(CC) $(CFLAGS) -g $(TARGET).c -o $(TARGET) 
 
 $(TARGET): $(TARGET).c device_defs.h
 	$(CC) $(CFLAGS) $(TARGET).c -o $(TARGET) 

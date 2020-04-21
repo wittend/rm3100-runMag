@@ -434,6 +434,7 @@ void showSettings(pList *p)
     fprintf(stdout, "\nCurrent Parameters:\n\n");
     fprintf(stdout, "   I2C bus number as integer:                  %i\n", p->i2cBusNumber);
     fprintf(stdout, "   Cycle count as integer:                     %i\n", p->cc_x);
+    fprintf(stdout, "   Hide raw measurements:                      %s\n", p->hideRaw ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Format output as JSON:                      %s\n", p->jsonFlag ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Read local temperature only:                %s\n", p->localTempOnly ? "TRUE" : "FALSE");
     fprintf(stdout, "   Local temperature address:                  %2X\n", p->localTempAddr);
@@ -462,12 +463,16 @@ int getCommandLine(int argc, char** argv, pList *p)
     {
         memset(p, 0, sizeof(pList));
     }
-    p->showParameters   = FALSE;
-    p->verboseFlag      = FALSE;
-    p->quietFlag        = TRUE;
-    p->jsonFlag         = FALSE;
+    
+    p->boardType        = 0;
+    p->cc_x             = CC_200;
+    p->cc_y             = CC_200;
+    p->cc_z             = CC_200;
+
+    p->hideRaw          = FALSE;
     p->i2cBusNumber     = 1;
     p->i2c_fd           = 0;
+    p->jsonFlag         = FALSE;
 
     p->localTempOnly    = FALSE;
     p->localTempAddr    = 0x19;
@@ -475,18 +480,16 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->remoteTempAddr   = 0x18;  
     p->magnetometerOnly = FALSE;
     p->magnetometerAddr = 0x20;
-    p->singleRead       = FALSE;
-    p->boardType        = 0;
     p->outDelay         = 1000000;
-    
-    p->cc_x             = CC_200;
-    p->cc_y             = CC_200;
-    p->cc_z             = CC_200;
+    p->quietFlag        = TRUE;
+    p->showParameters   = FALSE;
+    p->singleRead       = FALSE;
 
     p->x_gain           = GAIN_75;
     p->y_gain           = GAIN_75;
     p->z_gain           = GAIN_75;
     
+    p->verboseFlag      = FALSE;
     p->Version          = version;
    
     while((c = getopt(argc, argv, "?b:c:hjlL:mM:o:PqsSrR:vXhqV")) != -1)
@@ -501,6 +504,10 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 'c':
                 // fprintf(stdout, "CycleCount: '%s'\n", optarg);
                 p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
+                break;
+            case 'H':
+                // fprintf(stdout, "Output JSON formatted data.\n");
+                p->hideRaw = TRUE;
                 break;
             case 'j':
                 // fprintf(stdout, "Output JSON formatted data.\n");
@@ -567,6 +574,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -c <count>             :  Cycle count as integer (default 200).\n");
+                fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
                 fprintf(stdout, "   -l                     :  Read local temperature only.\n");
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address [default 19 hex].\n");
@@ -608,6 +616,7 @@ int main(int argc, char** argv)
 {
     pList p;
 
+    int32_t rXYZ[3];
     int32_t xyz[3];
     //int fd = -1;
     int temp = 0;
@@ -630,15 +639,7 @@ int main(int argc, char** argv)
     setup_mag(p.verboseFlag, p.i2c_fd, RM3100_I2C_ADDRESS);
     fprintf(stdout, "After setup_mag()\n");
     fflush(stdout);
-    if((p.verboseFlag))
-    {
-        fprintf(stdout, "Selected Settings:\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "Selected Settings:\n");
-        //fprintf(stdout, "  Time,      Temp C,   Raw X,    Raw Y,    Raw Z\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
-        fprintf(stdout, "---------------------------------------------------:\n");
-    }
-    // loop forever.
+    // loop
     while(1)
     {
         fprintf(stdout, "Before readTemp()\n");
@@ -649,19 +650,37 @@ int main(int argc, char** argv)
         //fTemp = cTemp * 1.8 + 32;
 
         // Read Magnetometer.
-        readMag(p.i2c_fd, RM3100_I2C_ADDRESS, xyz);
-
-        // Output the results.
-        if(!(p.jsonFlag))
+        readMag(p.i2c_fd, RM3100_I2C_ADDRESS, rXYZ);
+        if(!p.hideRaw)
         {
-            fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %8i,  Y: %8i,  Z: %8i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+            // Output the results.
+            if(!(p.jsonFlag))
+            {
+                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %8i,  Y: %8i,  Z: %8i, rX: %8i,  rY: %8i,  rZ: %8i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
+            }
+            else
+            {
+                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%8i\",  \"%8i\",  \"%8i\", \"%8i\",  \"%8i\",  \"%8i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
+            }
         }
         else
         {
-            fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%8i\",  \"%8i\",  \"%8i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+            // Output the results.
+            if(!(p.jsonFlag))
+            {
+                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %8i,  Y: %8i,  Z: %8i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+            }
+            else
+            {
+                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%8i\",  \"%8i\",  \"%8i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+            }
         }
-        fflush(stdout);
 
+        fflush(stdout);
+        if(p.singleRead)
+        {
+            break;
+        }
         // wait 1000 ms for next animation step.
         usleep(p.outDelay);
     }

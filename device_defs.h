@@ -65,27 +65,29 @@ typedef enum
 //------------------------------------------
 typedef struct tag_pList
 {
-    int showParameters;
-    int verboseFlag;
-    int quietFlag;
-    int jsonFlag;
-    int i2cBusNumber;
-    int i2c_fd;
-
-    int localTempOnly;
-    int localTempAddr;
-    int remoteTempOnly;
-    int remoteTempAddr;
-    int magnetometerOnly;
-    int magnetometerAddr;
-    int singleRead;
     int boardType;
-    int outDelay;
-    
+
     int cc_x;
     int cc_y;
     int cc_z;
 
+    int hideRaw;
+    int i2cBusNumber;
+    int i2c_fd;
+    int jsonFlag;
+
+    int localTempOnly;
+    int localTempAddr;
+    int magnetometerOnly;
+    int magnetometerAddr;
+    int outDelay;
+    int quietFlag;
+    int remoteTempOnly;
+    int remoteTempAddr;
+    int showParameters;
+    int singleRead;
+    int verboseFlag;
+    
     int x_gain;
     int y_gain;
     int z_gain;
