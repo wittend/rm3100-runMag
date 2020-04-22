@@ -8,7 +8,7 @@ Then do:
 
 $ cd rm3100-simple-i2c
 
-$ gcc simplei2c.c -o simplei2c
+$ make
 
 and if all goes well type:
 
