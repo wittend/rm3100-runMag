@@ -1,6 +1,17 @@
 //=========================================================================
 // simplei2c.c
-// /home/dave/Projects/SWx/SWx-C/i2c-c/i2c-rm3100.c
+// 
+// An interface for the RM3100 3-axis magnetometer from PNI Sensor Corp.
+// Derived in part from several sources:
+//      https://github.com/miguelrasteiro/RM3100.X
+//      Jeremiah Mattison / Rm3100: https://os.mbed.com/users/fwrawx/code/Rm3100/
+//      https://github.com/shannon-jia/rm3100
+//      Song Qiang <songqiang1304521@gmail.com (Linux driver):
+//          Linux kernel driver: https://github.com/torvalds/linux/tree/v5.3/drivers/iio/magnetometer
+// 
+// Author:      David Witten, KD0EAG
+// Date:        April 21, 2020
+// License:     GPL 3.0
 //=========================================================================
 #include <stdint.h>
 #include <stdlib.h>
@@ -17,113 +28,99 @@
 #include <memory.h>
 #include <linux/i2c-dev.h>
 #include "device_defs.h"
-//#include "i2c_local.h"
+#include "i2c.h"
 
 char version[] = SIMPLEI2C_VERSION;
     
-int getCommandLine(int argc, char** argv, pList *p);
-
 int i2cInit(pList *p);
-void i2c_close(int fd);
-void i2c_SetAddress(int fd, int devAddr);
-void i2c_write(int fd, uint8_t reg, uint16_t value);
-uint8_t i2c_read(int fd, uint8_t reg);
-int i2c_writebuf(int fd, uint8_t reg, char* buffer, short int length);
-int i2c_readbuf(int fd, uint8_t reg,  char* buffer, short int length);
-//int i2c_readbuf(int fd, char reg,  char* buf, short int length);
-
-SensorStatus mag_enable_interrupts();
-SensorStatus mag_disable_interrupts();
-SensorPowerMode mag_set_power_mode(SensorPowerMode mode);
-SensorStatus mag_initialize_sensor();
-SensorPowerMode mag_get_power_mode();
-unsigned short mag_set_sample_rate(unsigned short sample_rate);
-unsigned short mag_get_sample_rate();
+int setup_mag(pList *p);
+int getCommandLine(int argc, char** argv, pList *p);
 void mag_get_sample_data(int * XYZ);
 
-//------------------------------------------
-// write an 8 bit value to a register reg.
-//------------------------------------------
-void writeRegister(int fd, uint8_t reg, uint16_t value)
-{
-    uint8_t data[2];
-    data[0] = reg;
-    data[1] = value & 0xff;
-    if(write(fd, data, 2) != 2)
-    {
-        perror("writeRegister");
-    }
-}
-
-//------------------------------------------
-// read an 8 bit value from a register.
-//------------------------------------------
-uint16_t readRegister(int fd, uint8_t reg)
-{
-    uint8_t data[2];
-    data[0] = reg;
-    if(write(fd, data, 1) != 1)
-    {
-        perror("readRegister set register");
-    }
-    if(read(fd, data + 1, 1) != 1)
-    {
-        perror("readRegister read value");
-    }
-    return data[1];
-}
-
-//------------------------------------------
-//  rm3100_i2c_write()
-//------------------------------------------
-unsigned int rm3100_i2c_write(int fd, uint8_t reg, char *buffer, short int length)
-{
-    char writeBuffer[MAX_I2C_WRITE + 1];
-    writeBuffer[0] = reg;
-    memcpy(&writeBuffer[1], buffer, length);
-    int status = i2c_writebuf(fd, RM3100_I2C_ADDRESS, (char *)writeBuffer, length + 1);
-    return !status;         // return True if successfull. mbed:0=Success
-}
-
-//------------------------------------------
-// rm3100_i2c_read()
-//------------------------------------------
-unsigned int rm3100_i2c_read(int fd, uint8_t reg, char *buffer, short int length)
-{
-    char readBuffer[1] = {reg};
-    i2c_SetAddress(fd, RM3100_I2C_ADDRESS);
-    int status = i2c_readbuf(fd, RM3100_I2C_ADDRESS, buffer, length);
-    if(!status)
-    {
-        return length;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-//------------------------------------------
-// i2c_SetAddress()
+////------------------------------------------
+//// write an 8 bit value to a register reg.
+////------------------------------------------
+//void writeRegister(int fd, uint8_t reg, uint16_t value)
+//{
+//    uint8_t data[2];
+//    data[0] = reg;
+//    data[1] = value & 0xff;
+//    if(write(fd, data, 2) != 2)
+//    {
+//        perror("writeRegister");
+//    }
+//}
 //
-// set the I2C slave address for all
-// subsequent I2C device transfers.
-//------------------------------------------
-void i2c_SetAddress(int fd, int devAddr)
-{
-    if (ioctl(fd, I2C_SLAVE, devAddr) < 0)
-    {
-        perror("i2cSetAddress");
-        exit(1);
-    }
-}
-
-#define RASPI_I2C_BUS       "/dev/i2c-1"
-#define ODROIDC1_I2C_BUS    "/dev/i2c-1"
-#define ODROIDC2_I2C_BUS    "/dev/i2c-1"
-#define ODROIDN2_I2C_BUS    "/dev/i2c-2"
-#define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
-#define NV_NANO_I2C_BUS     "/dev/i2c-1"
+////------------------------------------------
+//// read an 8 bit value from a register.
+////------------------------------------------
+//uint16_t readRegister(int fd, uint8_t reg)
+//{
+//    uint8_t data[2];
+//    data[0] = reg;
+//    if(write(fd, data, 1) != 1)
+//    {
+//        perror("readRegister set register");
+//    }
+//    if(read(fd, data + 1, 1) != 1)
+//    {
+//        perror("readRegister read value");
+//    }
+//    return data[1];
+//}
+//
+////------------------------------------------
+////  rm3100_i2c_write()
+////------------------------------------------
+//unsigned int rm3100_i2c_write(int fd, uint8_t reg, char *buffer, short int length)
+//{
+//    char writeBuffer[MAX_I2C_WRITE + 1];
+//    writeBuffer[0] = reg;
+//    memcpy(&writeBuffer[1], buffer, length);
+//    int status = i2c_writebuf(fd, RM3100_I2C_ADDRESS, (char *)writeBuffer, length + 1);
+//    return !status;         // return True if successfull. mbed:0=Success
+//}
+//
+////------------------------------------------
+//// rm3100_i2c_read()
+////------------------------------------------
+//unsigned int rm3100_i2c_read(int fd, uint8_t reg, char *buffer, short int length)
+//{
+//    char readBuffer[1] = {reg};
+//    i2c_SetAddress(fd, RM3100_I2C_ADDRESS);
+//    int status = i2c_readbuf(fd, RM3100_I2C_ADDRESS, buffer, length);
+//    if(!status)
+//    {
+//        return length;
+//    }
+//    else
+//    {
+//        return 0;
+//    }
+//}
+//
+////------------------------------------------
+//// i2c_SetAddress()
+////
+//// set the I2C slave address for all
+//// subsequent I2C device transfers.
+////------------------------------------------
+//void i2c_SetAddress(int fd, int devAddr)
+//{
+//    if (ioctl(fd, I2C_SLAVE, devAddr) < 0)
+//    {
+//        perror("i2cSetAddress");
+//        exit(1);
+//    }
+//}
+//
+//
+//#define RASPI_I2C_BUS       "/dev/i2c-1"
+//#define ODROIDC1_I2C_BUS    "/dev/i2c-1"
+//#define ODROIDC2_I2C_BUS    "/dev/i2c-1"
+//#define ODROIDN2_I2C_BUS    "/dev/i2c-2"
+//#define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
+//#define NV_NANO_I2C_BUS     "/dev/i2c-1"
 
 struct busDev
 {
@@ -143,6 +140,7 @@ static struct busDev busDevs[] =
     {NULL,              -1}
 };
 
+
 //--------------------------------------------------------------------
 // i2c_init()
 //
@@ -153,13 +151,14 @@ int i2c_init2(char *i2c_fname)
     int i2c_fd = -1;
     if((i2c_fd = open(i2c_fname, O_RDWR)) < 0)
     {
-        char err[200];
+        //char err[200];
         fprintf(stderr, "open('%s') in i2c_init", i2c_fname);
         //perror(err);
         return -1;
     }
     return i2c_fd;
 }
+
 
 //------------------------------------------
 // i2cInit()
@@ -191,89 +190,89 @@ int i2cInit(pList *p)
     return fd;
 }
 
-
-//--------------------------------------------------------------------
-// i2c_close()
 //
-// Close I2C bus
-//--------------------------------------------------------------------
-void i2c_close(int i2c_fd)
-{
-    close(i2c_fd);
-}
-
-//------------------------------------------
-// write an 8 bit value to a register reg.
-//------------------------------------------
-void i2c_write(int fd, uint8_t reg, uint16_t value)
-{
-    uint8_t data[2];
-    data[0] = reg;
-    data[1] = value & 0xff;
-
-    if(write(fd, data, 2) != 2)
-    {
-        perror("writeRegister");
-    }
-}
-
-//------------------------------------------
-// i2c_writebuf()
-// write a buffer to the device
-//------------------------------------------
-int i2c_writebuf(int fd, uint8_t reg, char *buffer, short int length)
-{
-    int status = 0;
-    uint8_t data[2];
-
-    i2c_write(fd, reg, 1);
-    if(status = write(fd, buffer, length) != length)
-    {
-        perror("i2c_writebuf");
-        exit(1);
-    }
-    return status;
-}
-
-//------------------------------------------
-// read an 8 bit value from a register.
-//------------------------------------------
-uint8_t i2c_read(int fd, uint8_t reg)
-{
-    uint8_t data[2];
-    data[0] = reg;
-
-    if(write(fd, data, 1) != 1)
-    {
-        perror("i2c_read set register");
-    }
-    if(read(fd, data + 1, 1) != 1)
-    {
-        perror("i2c_read read value");
-    }
-    return data[1];
-}
-
-//------------------------------------------
-// i2c_readbuf()
-// write a buffer to the device
-//------------------------------------------
-int i2c_readbuf(int fd, uint8_t devAddr,  char* buf, short int length)
-{
-    int bytes_read;
-
-    i2c_SetAddress(fd, devAddr);
-    if((bytes_read = read(fd, buf, length)) != length)
-    {
-        perror("i2c transaction i2c_readbuf() failed.\n");
-    }
-    else
-    {
-        /* buf[0] contains the read byte */
-        printf("i2c transaction i2c_readbuf() OK. bytes_read: %i\n", bytes_read);
-    }
-    return bytes_read;
-}
+////--------------------------------------------------------------------
+//// i2c_close()
+////
+//// Close I2C bus
+////--------------------------------------------------------------------
+//void i2c_close(int i2c_fd)
+//{
+//    close(i2c_fd);
+//}
+//
+////------------------------------------------
+//// write an 8 bit value to a register reg.
+////------------------------------------------
+//void i2c_write(int fd, uint8_t reg, uint16_t value)
+//{
+//    uint8_t data[2];
+//    data[0] = reg;
+//    data[1] = value & 0xff;
+//
+//    if(write(fd, data, 2) != 2)
+//    {
+//        perror("writeRegister");
+//    }
+//}
+//
+////------------------------------------------
+//// i2c_writebuf()
+//// write a buffer to the device
+////------------------------------------------
+//int i2c_writebuf(int fd, uint8_t reg, char *buffer, short int length)
+//{
+//    int status = 0;
+//    uint8_t data[2];
+//
+//    i2c_write(fd, reg, 1);
+//    if(status = write(fd, buffer, length) != length)
+//    {
+//        perror("i2c_writebuf");
+//        exit(1);
+//    }
+//    return status;
+//}
+//
+////------------------------------------------
+//// read an 8 bit value from a register.
+////------------------------------------------
+//uint8_t i2c_read(int fd, uint8_t reg)
+//{
+//    uint8_t data[2];
+//    data[0] = reg;
+//
+//    if(write(fd, data, 1) != 1)
+//    {
+//        perror("i2c_read set register");
+//    }
+//    if(read(fd, data + 1, 1) != 1)
+//    {
+//        perror("i2c_read read value");
+//    }
+//    return data[1];
+//}
+//
+////------------------------------------------
+//// i2c_readbuf()
+//// write a buffer to the device
+////------------------------------------------
+//int i2c_readbuf(int fd, uint8_t devAddr,  char* buf, short int length)
+//{
+//    int bytes_read;
+//
+//    i2c_SetAddress(fd, devAddr);
+//    if((bytes_read = read(fd, buf, length)) != length)
+//    {
+//        perror("i2c transaction i2c_readbuf() failed.\n");
+//    }
+//    else
+//    {
+//        /* buf[0] contains the read byte */
+//        printf("i2c transaction i2c_readbuf() OK. bytes_read: %i\n", bytes_read);
+//    }
+//    return bytes_read;
+//}
 
 //------------------------------------------
 // readTemp()
@@ -305,20 +304,23 @@ int readTemp(int fd, int devAddr)
 //------------------------------------------
 // setup_mag()
 //------------------------------------------
-int setup_mag(int verboseFlag, int fd, int device)
+//int setup_mag(int verboseFlag, int fd, int device)
+int setup_mag(pList *p)
 {
     uint8_t ver = 0;
     int rv = SensorOK;
 
-    fprintf(stdout, "Before ioctl()\n");
+    fprintf(stdout, "Before ioctl(): %d, %d, %d, %x\n", p->verboseFlag, p->i2c_fd, I2C_SLAVE, p->i2cBusNumber);
     fflush(stdout);
+    
     // Set address of the RM3100
-    ioctl(fd, I2C_SLAVE, device);
-    fprintf(stdout, "Before Check Version\n");
+    ioctl(p->i2c_fd, I2C_SLAVE, p->i2cBusNumber);
+    
+    fprintf(stdout, "Before Check Version: %d\n", p->i2c_fd);
     fflush(stdout);
 
     // Check Version
-    if((ver = i2c_read(fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
+    if((ver = i2c_read(p->i2c_fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
     {
         // Fail, exit...
         fprintf(stderr, "RM3100 REVID NOT CORRECT: ");
@@ -332,7 +334,7 @@ int setup_mag(int verboseFlag, int fd, int device)
         // Zero buffer content
         i2cbuffer[0] = 0;
         i2cbuffer[1] = 0;
-        if(verboseFlag)
+        if(p->verboseFlag)
         {
              printf("RM3100 Detected Properly: ");
              printf("REVID: %x.\n", ver);
@@ -340,7 +342,7 @@ int setup_mag(int verboseFlag, int fd, int device)
     fprintf(stdout, "After Check Version\n");
     fflush(stdout);
         // Clears RM3100I2C_POLL and RM3100I2C_CMM register and any pending measurement
-        i2c_writebuf(fd, RM3100I2C_POLL, i2cbuffer, 2);
+        i2c_writebuf(p->i2c_fd, RM3100I2C_POLL, i2cbuffer, 2);
     fprintf(stdout, "After writebuf() #1\n");
     fflush(stdout);
         // Initialize settings
@@ -355,10 +357,10 @@ int setup_mag(int verboseFlag, int fd, int device)
         //  Write register settings
     fprintf(stdout, "After writebuf() #2\n");
     fflush(stdout);
-        i2c_writebuf(fd, RM3100I2C_CCX_1, settings, 7);
+        i2c_writebuf(p->i2c_fd, RM3100I2C_CCX_1, settings, 7);
         //mag_set_power_mode(SensorPowerModePowerDown);
     }
-    if(verboseFlag)
+    if(p->verboseFlag)
     {
         // poll the RM3100 for a three axis measurement
         printf("Polling I2C device: %x.\n\n", RM3100_I2C_ADDRESS);
@@ -636,7 +638,8 @@ int main(int argc, char** argv)
     fprintf(stdout, "Before setup_mag()\n");
     fflush(stdout);
     // Setup the magnetometer.
-    setup_mag(p.verboseFlag, p.i2c_fd, RM3100_I2C_ADDRESS);
+    // setup_mag(p.verboseFlag, p.i2c_fd, RM3100_I2C_ADDRESS);
+    setup_mag(&p);
     fprintf(stdout, "After setup_mag()\n");
     fflush(stdout);
     // loop

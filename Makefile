@@ -1,27 +1,38 @@
 #-----------------------------------
 # Simple Makefile for rm3100i2c.
 #-----------------------------------
-CC=gcc
-LD=gcc
-CXX=g++
-RM=rm -f
-TARGET=simplei2c
+CC = gcc
+LD = gcc
+CXX = g++
+DEPS = device_defs.h i2c.h
+SRCS = simplei2c.c i2c.c
+OBJS = $(subst .c,.o,$(SRCS))
+DOBJS = simplei2c.o i2c.o
+LIBS = -lm
+DEBUG = -g 
+CFLAGS = -I.
+LDFLAGS =
+TARGET_ARCH =
+LOADLIBES =
+LDLIBS = 
 
-SRCS=simplei2c.c
-OBJS=$(subst .c,.o,$(SRCS))
+TARGET = simplei2c
 
-all: $(TARGET)
+RM = rm -f
 
-debug: $(TARGET).c device_defs.h
-	$(CC) $(CFLAGS) -g $(TARGET).c -o $(TARGET) 
+all: release
 
-$(TARGET): $(TARGET).c device_defs.h
-	$(CC) $(CFLAGS) $(TARGET).c -o $(TARGET) 
+debug: simplei2c.c $(DEPS) 
+	$(CC) -c $(DEBUG) i2c.c  
+	$(CC) -o $(TARGET) $(DEBUG) simplei2c.c i2c.o $(LIBS)
+
+release: simplei2c.c $(DEPS)
+	$(CC) -c $(CFLAGS) i2c.c  
+	$(CC) -o $(TARGET) $(CFLAGS) simplei2c.c i2c.o $(LIBS)
 
 clean:
 	$(RM) $(OBJS) $(TARGET)
 
 distclean: clean
-	$(RM) $(TARGET)
 	
-.PHONY: clean distclean all debug
+.PHONY: clean distclean all debug release

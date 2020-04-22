@@ -8,7 +8,10 @@
 //      https://github.com/shannon-jia/rm3100
 //      Song Qiang <songqiang1304521@gmail.com (Linux driver):
 //          Linux kernel driver: https://github.com/torvalds/linux/tree/v5.3/drivers/iio/magnetometer
-// Dave Witten 2019-08-10
+// 
+// Author:      David Witten, KD0EAG
+// Date:        April 21, 2020
+// License:     GPL 3.0
 //=========================================================================
 #ifndef SWX3100DEFS_h
 #define SWX3100DEFS_h
