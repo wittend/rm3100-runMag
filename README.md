@@ -14,7 +14,7 @@ and if all goes well type:
 
 $ ./simplei2c
 
-and you should see the results!
+and now you should see the results!
 
 Example:
 
