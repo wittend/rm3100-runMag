@@ -8,13 +8,13 @@ Then do:
 
 $ cd rm3100-simple-i2c
 
-$ gcc simplei2c.c -o simplei2c
+$ make
 
 and if all goes well type:
 
 $ ./simplei2c
 
-and you should see the results!
+and now you should see the results!
 
 Example:
 
