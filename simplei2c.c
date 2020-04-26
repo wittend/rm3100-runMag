@@ -32,13 +32,11 @@
 
 char version[] = SIMPLEI2C_VERSION;
     
-int i2cInit(pList *p);
-int i2c_init2(char *i2c_fname);
 int setup_mag(pList *p);
 long currentTimeMillis();
 void mag_get_sample_data(int * XYZ);
-int readTemp(int fd, int devAddr);
-int readMag(int fd, int devAddr, int32_t *XYZ);
+int readTemp(pList *p, int devAddr);
+int readMag(pList *p, int devAddr, int32_t *XYZ);
 void showSettings(pList *p);
 int getCommandLine(int argc, char** argv, pList *p);
 int main(int argc, char** argv);
@@ -61,66 +59,18 @@ static struct busDev busDevs[] =
     {NULL,              -1}
 };
 
-//--------------------------------------------------------------------
-// i2c_init()
-//
-// Returns a new file descriptor for communicating with the I2C bus:
-//--------------------------------------------------------------------
-int i2c_init2(char *i2c_fname)
-{
-    int i2c_fd = -1;
-    if((i2c_fd = open(i2c_fname, O_RDWR)) < 0)
-    {
-        //char err[200];
-        fprintf(stderr, "open('%s') in i2c_init", i2c_fname);
-        //perror(err);
-        return -1;
-    }
-    return i2c_fd;
-}
-
-//------------------------------------------
-// i2cInit()
-//------------------------------------------
-int i2cInit(pList *p)
-{
-    char i2cFname[] = ODROIDN2_I2C_BUS;
-    //char i2cFname[] = busDevs[p->i2cBusNumber].devPath;
-    fprintf(stdout, "BusPath:  %s\n", busDevs[p->i2cBusNumber].devPath);
-    // Initialize the I2C bus
-    int fd = i2c_init2(i2cFname);
-    if(fd >= 0)
-    {
-        //if((i2c_fd = open(i2c_fname, O_RDWR)) < 0)
-        //{
-        //    char err[200];
-        //    sprintf(err, "open('%s') in i2c_init", i2c_fname);
-        //    perror(err);
-        //    return -1;
-        //}
-        p->i2c_fd = fd;
-        fprintf(stdout, "i2c_init OK!\n");
-    }
-    else
-    {
-        perror("i2c_init failed!\n");
-        exit(1);
-    }
-    return fd;
-}
-
 //------------------------------------------
 // readTemp()
 //------------------------------------------
-int readTemp(int fd, int devAddr)
+int readTemp(pList *p, int devAddr)
 {
     int temp = -99;
     char data[2] = {0};
     char reg[1] = {MCP9808_REG_AMBIENT_TEMP};
 
-    i2c_SetAddress(fd, devAddr);
-    write(fd, reg, 1);
-    if(read(fd, data, 2) != 2)
+    i2c_SetAddress(p->i2c_fd, devAddr);
+    write(p->i2c_fd, reg, 1);
+    if(read(p->i2c_fd, data, 2) != 2)
     {
         printf("Error : Input/Output error \n");
     }
@@ -139,27 +89,27 @@ int readTemp(int fd, int devAddr)
 //------------------------------------------
 // setup_mag()
 //------------------------------------------
-//int setup_mag(int verboseFlag, int fd, int device)
+//int setup_mag(int verboseFlag, int pList *p, int device)
 int setup_mag(pList *p)
 {
     uint8_t ver = 0;
     int rv = SensorOK;
 
-    fprintf(stdout, "Before ioctl(): %d, %d, %d, %x\n", p->verboseFlag, p->i2c_fd, I2C_SLAVE, p->i2cBusNumber);
-    fflush(stdout);
+    //fprintf(stdout, "Before ioctl():: verboseFlag: %s, i2c_fd: %d,  i2cBusNumber: %d\n", p->verboseFlag ? "TRUE" : "FALSE", p->i2c_fd, p->i2cBusNumber);
+    //fflush(stdout);
     
     // Set address of the RM3100
-    ioctl(p->i2c_fd, I2C_SLAVE, p->i2cBusNumber);
+    i2c_SetAddress(p->i2c_fd,  p->magnetometerAddr);
     
-    fprintf(stdout, "Before Check Version: %d\n", p->i2c_fd);
-    fflush(stdout);
+    //fprintf(stdout, "Before Check Version: %d\n", p->i2c_fd);
+    //fflush(stdout);
 
     // Check Version
     if((ver = i2c_read(p->i2c_fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
     {
         // Fail, exit...
         fprintf(stderr, "RM3100 REVID NOT CORRECT: ");
-        fprintf(stderr, "RM3100 REVID: 0x%x <> EXPECTED: 0x%x.\n\n", ver, RM3100_VER_EXPECTED);
+        fprintf(stderr, "RM3100 REVID: 0x%X <> EXPECTED: 0x%X.\n\n", ver, RM3100_VER_EXPECTED);
         fflush(stdout);
         exit(1);
     }
@@ -174,12 +124,12 @@ int setup_mag(pList *p)
              printf("RM3100 Detected Properly: ");
              printf("REVID: %x.\n", ver);
         }
-    fprintf(stdout, "After Check Version\n");
-    fflush(stdout);
+    //fprintf(stdout, "After Check Version\n");
+    //fflush(stdout);
         // Clears RM3100I2C_POLL and RM3100I2C_CMM register and any pending measurement
         i2c_writebuf(p->i2c_fd, RM3100I2C_POLL, i2cbuffer, 2);
-    fprintf(stdout, "After writebuf() #1\n");
-    fflush(stdout);
+    //fprintf(stdout, "After writebuf() #1\n");
+    //fflush(stdout);
         // Initialize settings
         uint8_t settings[7];
         settings[0] = CCP1;       // CCPX1 200 Cycle Count
@@ -190,8 +140,8 @@ int setup_mag(pList *p)
         settings[5] = CCP0;       // CCPZ0
         settings[6] = NOS;
         //  Write register settings
-    fprintf(stdout, "After writebuf() #2\n");
-    fflush(stdout);
+    //fprintf(stdout, "After writebuf() #2\n");
+    //fflush(stdout);
         i2c_writebuf(p->i2c_fd, RM3100I2C_CCX_1, settings, 7);
         //mag_set_power_mode(SensorPowerModePowerDown);
     }
@@ -209,7 +159,7 @@ int setup_mag(pList *p)
 //------------------------------------------
 // readMag()
 //------------------------------------------
-int readMag(int fd, int devAddr, int32_t *XYZ)
+int readMag(pList *p, int devAddr, int32_t *XYZ)
 {
     uint8_t mSamples[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     char data[2] = {0};
@@ -217,25 +167,19 @@ int readMag(int fd, int devAddr, int32_t *XYZ)
     char reg[1] = { RM3100I2C_XYZ };
 
     // set address of the RM3100.
-    i2c_SetAddress(fd, devAddr);
+    i2c_SetAddress(p->i2c_fd, devAddr);
     // Write command to  use polling.
-    writeRegister(fd, RM3100I2C_POLL, RM3100I2C_POLLXYZ);
+    writeRegister(p->i2c_fd, RM3100I2C_POLL, RM3100I2C_POLLXYZ);
 
     // Check if DRDY went high and wait unit high before reading results
-    while((fd, readRegister(fd, RM3100I2C_STATUS) & RM3100I2C_READMASK) != RM3100I2C_READMASK) {}
+    while((p->i2c_fd, readRegister(p->i2c_fd, RM3100I2C_STATUS) & RM3100I2C_READMASK) != RM3100I2C_READMASK) {}
 
     // Read the XYZ registers
-    write(fd, reg, 1);
-    if((bytes_read = read(fd, mSamples, sizeof(mSamples))) != sizeof(mSamples))
+    write(p->i2c_fd, reg, 1);
+    if((bytes_read = read(p->i2c_fd, mSamples, sizeof(mSamples))) != sizeof(mSamples))
     {
         perror("i2c transaction i2c_readbuf() failed.\n");
     }
-
-    // hh:  For integer types, causes printf to expect an int-sized integer argument which was promoted from a char
-    //printf("mSamples[0]: %hhi, mSamples[1]: %hhi, mSamples[2]: %hhi\n", mSamples[0], mSamples[1], mSamples[2]);
-    //printf("mSamples[3]: %hhi, mSamples[4]: %hhi, mSamples[5]: %hhi\n", mSamples[3], mSamples[4], mSamples[5]);
-    //printf("mSamples[6]: %hhi, mSamples[7]: %hhi, mSamples[8]: %hhi\n", mSamples[6], mSamples[7], mSamples[8]);
-    //fflush(stdout);
 
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
@@ -327,7 +271,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->verboseFlag      = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?b:c:hjlL:mM:o:PqsSrR:vXhqV")) != -1)
+    while((c = getopt(argc, argv, "?b:c:HjlL:mM:o:PqsSrR:vXhqV")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -453,10 +397,9 @@ int main(int argc, char** argv)
 
     int32_t rXYZ[3];
     int32_t xyz[3];
-    //int fd = -1;
     int temp = 0;
     float cTemp = 0.0;
-    char i2cFname[] = ODROIDN2_I2C_BUS;
+    //char i2cFname[] = ODROIDN2_I2C_BUS;
     int rv = 0;
        
     if((rv = getCommandLine(argc, argv, &p)) != 0)
@@ -467,14 +410,20 @@ int main(int argc, char** argv)
     {
         showSettings(&p);
     }
+    
+    //fprintf(stdout, "\n\nBefore i2cInit().\n");
+    //fflush(stdout);
 
-    fprintf(stdout, "Before setup_mag()\n");
-    fflush(stdout);
+    i2cOpen(&p);
+
+    //fprintf(stdout, "Before setup_mag().\n");
+    //fflush(stdout);
     // Setup the magnetometer.
     // setup_mag(p.verboseFlag, p.i2c_fd, RM3100_I2C_ADDRESS);
     setup_mag(&p);
-    fprintf(stdout, "After setup_mag()\n");
-    fflush(stdout);
+    
+    //fprintf(stdout, "After setup_mag().\n");
+    //fflush(stdout);
     
     xyz[0] = (rXYZ[0] / p.x_gain);
     xyz[1] = (rXYZ[1] / p.y_gain);
@@ -482,25 +431,26 @@ int main(int argc, char** argv)
     // loop
     while(1)
     {
-        fprintf(stdout, "Before readTemp()\n");
-        fflush(stdout);
+        //fprintf(stdout, "Before readTemp()\n");
+        //fflush(stdout);
+        //
 
         //  Read temp sensor.
-        temp = readTemp(p.i2c_fd, MCP9808_I2CADDR_DEFAULT);
+        temp = readTemp(&p, MCP9808_I2CADDR_DEFAULT);
         cTemp = temp * 0.0625;
 
         // Read Magnetometer.
-        readMag(p.i2c_fd, RM3100_I2C_ADDRESS, rXYZ);
+        readMag(&p, RM3100_I2C_ADDRESS, rXYZ);
         if(!p.hideRaw)
         {
             // Output the results.
             if(!(p.jsonFlag))
             {
-                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %8i,  Y: %8i,  Z: %8i, rX: %8i,  rY: %8i,  rZ: %8i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
+                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %i,  Y: %i,  Z: %i, rX: %i,  rY: %i,  rZ: %i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
             }
             else
             {
-                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%8i\",  \"%8i\",  \"%8i\", \"%8i\",  \"%8i\",  \"%8i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
+                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%i\",  \"%i\",  \"%i\", \"%i\",  \"%i\",  \"%i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
             }
         }
         else
@@ -508,11 +458,11 @@ int main(int argc, char** argv)
             // Output the results.
             if(!(p.jsonFlag))
             {
-                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %8i,  Y: %8i,  Z: %8i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %i,  Y: %i,  Z: %i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
             }
             else
             {
-                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%8i\",  \"%8i\",  \"%8i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%i\",  \"%i\",  \"%i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
             }
         }
 

@@ -7,6 +7,8 @@
 // Date:        April 21, 2020
 // License:     GPL 3.0
 //=========================================================================
+int i2cOpen(pList *p);
+int i2c_init2(char *i2c_fname);      // eliminate me
 void i2c_close(int fd);
 void i2c_SetAddress(int fd, int devAddr);
 void i2c_write(int fd, uint8_t reg, uint16_t value);

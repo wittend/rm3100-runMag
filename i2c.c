@@ -55,6 +55,39 @@ static struct busDev busDevs[] =
     {NULL,              -1}
 };
 
+
+//------------------------------------------
+// i2cInit()
+//------------------------------------------
+int i2cOpen(pList *p)
+{
+    char i2cFname[] = ODROIDN2_I2C_BUS;
+    //char i2cFname[] = busDevs[p->i2cBusNumber].devPath;
+    //fprintf(stdout, "BusPath:  %s\n", busDevs[p->i2cBusNumber].devPath);
+    //fflush(stdout);
+    // Initialize the I2C bus
+    //p->i2c_fd = i2c_init2(i2cFname);
+    p->i2c_fd = -1;
+    //fprintf(stdout, "open('%s') in i2c_init", i2cFname);
+    //fflush(stdout);
+    if((p->i2c_fd = open(i2cFname, O_RDWR)) < 0)
+    {
+        //char err[200];
+        perror("Bus open failed\n");
+        return -1;
+    }
+    else
+    {
+        if(p->verboseFlag)
+        {
+            fprintf(stdout, "Device handle p->i2c_fd:  %d\n", p->i2c_fd);
+            fprintf(stdout, "i2c_init OK!\n");
+            fflush(stdout);
+        }
+    }
+    return p->i2c_fd;
+}
+
 //------------------------------------------
 // write an 8 bit value to a register reg.
 //------------------------------------------
@@ -121,9 +154,12 @@ void i2c_write(int fd, uint8_t reg, uint16_t value)
     data[0] = reg;
     data[1] = value & 0xff;
 
+    //fprintf(stdout, "i2c_write() :: File Number: %d, reg: %x.\n", fd, reg);
+    //fflush(stdout);
+    
     if(write(fd, data, 2) != 2)
     {
-        perror("writeRegister");
+        perror("i2c_write()");
     }
 }
 
@@ -152,14 +188,25 @@ uint8_t i2c_read(int fd, uint8_t reg)
 {
     uint8_t data[2];
     data[0] = reg;
+    int rv = 0;
 
-    if(write(fd, data, 1) != 1)
+    //fprintf(stdout, "File descriptor: %d, reg: %x.\n", fd, reg);
+    //fflush(stdout);
+    //
+    rv = write(fd, data, 1);
+    if(rv != 1)
     {
         perror("i2c_read set register");
+        //fprintf(stdout, "i2c_read() :: (write(%d, %x, 1) != 1) (== %d).\n", fd, data[0], rv);
+        //fflush(stdout);
     }
+    
+    //fprintf(stdout, "Register: 0x%x.\n", reg);
+    //fflush(stdout);
+    
     if(read(fd, data + 1, 1) != 1)
     {
-        perror("i2c_read read value");
+        perror("i2c_read read value.");
     }
     return data[1];
 }
@@ -177,10 +224,10 @@ int i2c_readbuf(int fd, uint8_t devAddr,  char* buf, short int length)
     {
         perror("i2c transaction i2c_readbuf() failed.\n");
     }
-    else
-    {
-        /* buf[0] contains the read byte */
-        printf("i2c transaction i2c_readbuf() OK. bytes_read: %i\n", bytes_read);
-    }
+    //else
+    //{
+    //    /* buf[0] contains the read byte */
+    //    printf("i2c transaction i2c_readbuf() OK. bytes_read: %i\n", bytes_read);
+    //}
     return bytes_read;
 }
