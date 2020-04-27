@@ -1,5 +1,5 @@
 //=========================================================================
-// simplei2c.c
+// runMag.c
 // 
 // An interface for the RM3100 3-axis magnetometer from PNI Sensor Corp.
 // Derived in part from several sources:
@@ -20,6 +20,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
+#include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,20 +90,13 @@ int readTemp(pList *p, int devAddr)
 //------------------------------------------
 // setup_mag()
 //------------------------------------------
-//int setup_mag(int verboseFlag, int pList *p, int device)
 int setup_mag(pList *p)
 {
     uint8_t ver = 0;
     int rv = SensorOK;
 
-    //fprintf(stdout, "Before ioctl():: verboseFlag: %s, i2c_fd: %d,  i2cBusNumber: %d\n", p->verboseFlag ? "TRUE" : "FALSE", p->i2c_fd, p->i2cBusNumber);
-    //fflush(stdout);
-    
     // Set address of the RM3100
     i2c_SetAddress(p->i2c_fd,  p->magnetometerAddr);
-    
-    //fprintf(stdout, "Before Check Version: %d\n", p->i2c_fd);
-    //fflush(stdout);
 
     // Check Version
     if((ver = i2c_read(p->i2c_fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
@@ -124,12 +118,10 @@ int setup_mag(pList *p)
              printf("RM3100 Detected Properly: ");
              printf("REVID: %x.\n", ver);
         }
-    //fprintf(stdout, "After Check Version\n");
-    //fflush(stdout);
+
         // Clears RM3100I2C_POLL and RM3100I2C_CMM register and any pending measurement
         i2c_writebuf(p->i2c_fd, RM3100I2C_POLL, i2cbuffer, 2);
-    //fprintf(stdout, "After writebuf() #1\n");
-    //fflush(stdout);
+
         // Initialize settings
         uint8_t settings[7];
         settings[0] = CCP1;       // CCPX1 200 Cycle Count
@@ -140,8 +132,7 @@ int setup_mag(pList *p)
         settings[5] = CCP0;       // CCPZ0
         settings[6] = NOS;
         //  Write register settings
-    //fprintf(stdout, "After writebuf() #2\n");
-    //fflush(stdout);
+
         i2c_writebuf(p->i2c_fd, RM3100I2C_CCX_1, settings, 7);
         //mag_set_power_mode(SensorPowerModePowerDown);
     }
@@ -204,6 +195,28 @@ long currentTimeMillis()
     return time.tv_sec * 1000 + time.tv_usec / 1000;
 }
 
+#define UTC (0) 
+
+//------------------------------------------
+// getUTC()
+//------------------------------------------
+struct tm *getUTC()
+{
+    time_t now = time(&now);
+    if (now == -1)
+    {
+        puts("The time() function failed");
+    }
+    struct tm *ptm = gmtime(&now);
+    if (ptm == NULL)
+    {
+        puts("The gmtime() function failed");
+    }    
+    //printf("UTC time: %s", asctime(ptm));
+    //return 0;
+    return ptm;
+}
+
 //------------------------------------------
 // showSettings()
 //------------------------------------------
@@ -212,7 +225,10 @@ void showSettings(pList *p)
     fprintf(stdout, "\nVersion = %s\n", version);
     fprintf(stdout, "\nCurrent Parameters:\n\n");
     fprintf(stdout, "   I2C bus number as integer:                  %i\n", p->i2cBusNumber);
-    fprintf(stdout, "   Cycle count as integer:                     %i\n", p->cc_x);
+    fprintf(stdout, "   Built in self test (BIST) value:            0x%X\n", p->doBist);
+    fprintf(stdout, "   Cycle count X as integer:                   %i\n", p->cc_x);
+    fprintf(stdout, "   Cycle count Y as integer:                   %i\n", p->cc_y);
+    fprintf(stdout, "   Cycle count Z as integer:                   %i\n", p->cc_z);
     fprintf(stdout, "   Hide raw measurements:                      %s\n", p->hideRaw ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Format output as JSON:                      %s\n", p->jsonFlag ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Read local temperature only:                %s\n", p->localTempOnly ? "TRUE" : "FALSE");
@@ -225,6 +241,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Remote temperature address:                 %2X\n", p->remoteTempAddr);
     fprintf(stdout, "   Return single magnetometer reading:         %s\n", p->singleRead ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Simple Magnetometer Support Board:     %i\n", p->boardType);
+    fprintf(stdout, "   Timestamp format:                           %s\n", p->tsMilliseconds ? "RAW" : "UTCSTRING");
     fprintf(stdout, "   Verbose output:                             %s\n", p->verboseFlag ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Board with Extender:                   %i\n", p->boardType);
     fprintf(stdout, "\n\n");
@@ -244,6 +261,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     }
     
     p->boardType        = 0;
+    p->doBist           = FALSE;
     p->cc_x             = CC_200;
     p->cc_y             = CC_200;
     p->cc_z             = CC_200;
@@ -259,10 +277,11 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->remoteTempAddr   = 0x18;  
     p->magnetometerOnly = FALSE;
     p->magnetometerAddr = 0x20;
-    p->outDelay         = 1000000;
+    p->outDelay         = 100000;
     p->quietFlag        = TRUE;
     p->showParameters   = FALSE;
     p->singleRead       = FALSE;
+    p->tsMilliseconds   = FALSE;
 
     p->x_gain           = GAIN_75;
     p->y_gain           = GAIN_75;
@@ -271,7 +290,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->verboseFlag      = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?b:c:HjlL:mM:o:PqsSrR:vXhqV")) != -1)
+    while((c = getopt(argc, argv, "?b:B:c:HhjlL:mM:o:PqrR:sSTvXhqV")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -279,6 +298,10 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 'b':
                 // fprintf(stdout, "Bus Id: '%s'\n", optarg);
                 p->i2cBusNumber = atoi(optarg);
+                break;
+            case 'B':
+                // fprintf(stdout, "Bus Id: '%s'\n", optarg);
+                p->doBist = atoi(optarg);
                 break;
             case 'c':
                 // fprintf(stdout, "CycleCount: '%s'\n", optarg);
@@ -320,6 +343,14 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->quietFlag = TRUE;
                 p->verboseFlag = FALSE;
                 break;
+            case 'r':
+                // fprintf(stdout, "Read remote temp only.'\n");
+                p->remoteTempOnly = TRUE;
+                break;
+            case 'R':
+                // fprintf(stdout, "Remote temp address [default 18 hex]: %s hex\n", optarg);
+                p->remoteTempAddr = atoi(optarg);
+                break;
             case 's':
                 // fprintf(stdout, "Return single magnetometer reading.\n");
                 p->singleRead = TRUE;
@@ -328,13 +359,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 // fprintf(stdout, "Read Simple Magnetometer Support Board.\n");
                 p->boardType = 1;
                 break;
-            case 'r':
-                // fprintf(stdout, "Read remote temp only.'\n");
-                p->remoteTempOnly = TRUE;
-                break;
-            case 'R':
-                // fprintf(stdout, "Remote temp address [default 18 hex]: %s hex\n", optarg);
-                p->remoteTempAddr = atoi(optarg);
+            case 'T':
+                p->tsMilliseconds = TRUE;
                 break;
             case 'V':
                 // fprintf(stdout, "Version = %s\n", version);
@@ -352,6 +378,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
+                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not yet  implemented].\n");
                 fprintf(stdout, "   -c <count>             :  Cycle count as integer (default 200).\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
@@ -365,6 +392,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address [default 18 hex].\n");
                 fprintf(stdout, "   -s                     :  Return single magnetometer reading.\n");
                 fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
+                fprintf(stdout, "   -T                     :  Raw Timestamp in Milliseconds (default: UTC string).\n");
                 fprintf(stdout, "   -v                     :  Verbose output.\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -X                     :  Read Board with Extender (default).\n");
@@ -388,20 +416,23 @@ int getCommandLine(int argc, char** argv, pList *p)
     return 0;
 }
 
+#define OUTBUFLEN 60
+
 //------------------------------------------
 //  main()
 //------------------------------------------
 int main(int argc, char** argv)
 {
     pList p;
-
+    char outStr[OUTBUFLEN] = "";
     int32_t rXYZ[3];
     int32_t xyz[3];
     int temp = 0;
     float cTemp = 0.0;
-    //char i2cFname[] = ODROIDN2_I2C_BUS;
     int rv = 0;
-       
+    struct tm *utcTime = getUTC();
+    printf("\nUTC time: %s", asctime(utcTime));
+
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
         return rv;
@@ -410,61 +441,92 @@ int main(int argc, char** argv)
     {
         showSettings(&p);
     }
-    
-    //fprintf(stdout, "\n\nBefore i2cInit().\n");
-    //fflush(stdout);
 
+    // Open I2C bus (only one at a time for now)    
     i2cOpen(&p);
 
-    //fprintf(stdout, "Before setup_mag().\n");
-    //fflush(stdout);
     // Setup the magnetometer.
-    // setup_mag(p.verboseFlag, p.i2c_fd, RM3100_I2C_ADDRESS);
     setup_mag(&p);
     
-    //fprintf(stdout, "After setup_mag().\n");
-    //fflush(stdout);
-    
-    xyz[0] = (rXYZ[0] / p.x_gain);
-    xyz[1] = (rXYZ[1] / p.y_gain);
-    xyz[2] = (rXYZ[2] / p.z_gain);
     // loop
     while(1)
     {
-        //fprintf(stdout, "Before readTemp()\n");
-        //fflush(stdout);
-        //
-
         //  Read temp sensor.
-        temp = readTemp(&p, MCP9808_I2CADDR_DEFAULT);
+        if(!p.magnetometerOnly)
+        {
+            temp = readTemp(&p, MCP9808_I2CADDR_DEFAULT);
+        }
         cTemp = temp * 0.0625;
 
         // Read Magnetometer.
-        readMag(&p, RM3100_I2C_ADDRESS, rXYZ);
-        if(!p.hideRaw)
+        if(!p.localTempOnly)
         {
-            // Output the results.
-            if(!(p.jsonFlag))
+            readMag(&p, RM3100_I2C_ADDRESS, rXYZ);
+            xyz[0] = (rXYZ[0] / p.x_gain);
+            xyz[1] = (rXYZ[1] / p.y_gain);
+            xyz[2] = (rXYZ[2] / p.z_gain);
+        }
+    
+        // Output the results.
+        if(!(p.jsonFlag))
+        {
+            if(p.tsMilliseconds)
             {
-                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %i,  Y: %i,  Z: %i, rX: %i,  rY: %i,  rZ: %i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
+                fprintf(stdout, "Time Stamp: %ld, ", currentTimeMillis());
             }
             else
             {
-                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%i\",  \"%i\",  \"%i\", \"%i\",  \"%i\",  \"%i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2], rXYZ[0], rXYZ[1], rXYZ[2]);
+                strftime(outStr, OUTBUFLEN, "%d %b %Y %T %z", utcTime);                
+                fprintf(stdout, "Time Stamp: %s", outStr);
             }
+            fprintf(stdout, ", Temp: %.2f C",    cTemp);
+            fprintf(stdout, ", X: %i",           xyz[0]);
+            fprintf(stdout, ", Y: %i",           xyz[1]);
+            fprintf(stdout, ", Z: %i",           xyz[2]);
+            if(!p.hideRaw)
+            {
+                fprintf(stdout, ", rX: %i",           rXYZ[0]);
+                fprintf(stdout, ", rY: %i",           rXYZ[1]);
+                fprintf(stdout, ", rZ: %i",           rXYZ[2]);
+            }
+            fprintf(stdout, "\n");
         }
         else
         {
-            // Output the results.
-            if(!(p.jsonFlag))
+            fprintf(stdout, "{ ");
+            if(p.tsMilliseconds)
             {
-                fprintf(stdout, "Time: %ld, Temp: %.2f C   X: %i,  Y: %i,  Z: %i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+                fprintf(stdout, "\"%ld\", ",  currentTimeMillis());
             }
             else
             {
-                fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%i\",  \"%i\",  \"%i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+                strftime(outStr, OUTBUFLEN, "%d %b %Y %T %z", utcTime);                
+                fprintf(stdout, "\"%s\", ", outStr);
+             }
+            fprintf(stdout, " \"%.2f\", ",  cTemp);
+            fprintf(stdout, " \"%i\", ",    xyz[0]);
+            fprintf(stdout, " \"%i\", ",    xyz[1]);
+            fprintf(stdout, " \"%i\",",     xyz[2]);
+            if(!p.hideRaw)
+            {
+                fprintf(stdout, " \"%i\",",    rXYZ[0]);
+                fprintf(stdout, " \"%i\",",    rXYZ[1]);
+                fprintf(stdout, " \"%i\"",     rXYZ[2]);
             }
+            fprintf(stdout, " }\n");
         }
+        //else
+        //{
+        //    // Output the results.
+        //    if(!(p.jsonFlag))
+        //    {
+        //        fprintf(stdout, "Time Stamp: %ld, Temp: %.2f C   X: %i,  Y: %i,  Z: %i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+        //    }
+        //    else
+        //    {
+        //        fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%i\",  \"%i\",  \"%i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
+        //    }
+        //}
 
         fflush(stdout);
         if(p.singleRead)

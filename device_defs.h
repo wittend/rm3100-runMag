@@ -69,7 +69,7 @@ typedef enum
 typedef struct tag_pList
 {
     int boardType;
-
+    int doBist; 
     int cc_x;
     int cc_y;
     int cc_z;
@@ -89,6 +89,7 @@ typedef struct tag_pList
     int remoteTempAddr;
     int showParameters;
     int singleRead;
+    int tsMilliseconds;
     int verboseFlag;
     
     int x_gain;
@@ -100,18 +101,26 @@ typedef struct tag_pList
 
 // Alternative
 #define RASPI_I2C_BUS       "/dev/i2c-1"
+#define ODROIDC0_I2C_BUS    "/dev/i2c-1"
 #define ODROIDC1_I2C_BUS    "/dev/i2c-1"
 #define ODROIDC2_I2C_BUS    "/dev/i2c-1"
+#define ODROIDC4_I2C_BUS    "/dev/i2c-2"
+#define ODROIDC4_I2C_BUS3   "/dev/i2c-3"
 #define ODROIDN2_I2C_BUS    "/dev/i2c-2"
+#define ODROIDN2_I2C_BUS3   "/dev/i2c-3"
 #define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
 #define NV_NANO_I2C_BUS     "/dev/i2c-1"
 
 typedef enum
 {
     eRASPI_I2C_BUS = 0,
+    eODROIDC0_I2C_BUS,
     eODROIDC1_I2C_BUS,
     eODROIDC2_I2C_BUS,
+    eODROIDC4_I2C_BUS,
+    eODROIDC4_I2C_BUS3,
     eODROIDN2_I2C_BUS,
+    eODROIDN2_I2C_BUS3,
     eNV_XAVIER_I2C_BUS,
     eNV_NANO_I2C_BUS,
 } i2cBusEnum;
