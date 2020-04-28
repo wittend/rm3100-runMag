@@ -290,53 +290,46 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->verboseFlag      = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?b:B:c:HhjlL:mM:o:PqrR:sSTvXhqV")) != -1)
+    while((c = getopt(argc, argv, "?b:B:c:CHhjlL:mM:o:PqrR:sSTvXhqV")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
         {
             case 'b':
-                // fprintf(stdout, "Bus Id: '%s'\n", optarg);
                 p->i2cBusNumber = atoi(optarg);
                 break;
             case 'B':
-                // fprintf(stdout, "Bus Id: '%s'\n", optarg);
                 p->doBist = atoi(optarg);
                 break;
             case 'c':
-                // fprintf(stdout, "CycleCount: '%s'\n", optarg);
                 p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
                 break;
+            case 'C':
+                // fprintf(stdout, "CycleCount: '%s'\n", optarg);
+                //p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
+                break;
             case 'H':
-                // fprintf(stdout, "Output JSON formatted data.\n");
                 p->hideRaw = TRUE;
                 break;
             case 'j':
-                // fprintf(stdout, "Output JSON formatted data.\n");
                 p->jsonFlag = TRUE;
                 break;
             case 'l':
-                // fprintf(stdout, "Read local temperature only.\n");
                 p->localTempOnly = TRUE;
                 break;
             case 'L':
-                // fprintf(stdout, "Local temp address [default 19 hex]: %s hex\n", optarg);
                 p->localTempAddr = atoi(optarg);
                 break;
             case 'm':
-                // fprintf(stdout, "Read magnetometer only.\n");
                 p->magnetometerOnly = TRUE;
                 break;
             case 'M':
-                // fprintf(stdout, "Magnetometer address [default 20 hex]: %s hex\n", optarg);
                 p->magnetometerAddr = atoi(optarg);
                 break;
             case 'P':
-                // fprintf(stdout, "Magnetometer address [default 20 hex]: %s hex\n", optarg);
                 p->showParameters = TRUE;
                 break;
             case 'o':
-                // fprintf(stdout, "Outout delay rate [default 1000 ms]: %s ms\n", optarg);
                 p->outDelay = atoi(optarg) * 1000;
                 break;
             case 'q':
@@ -344,26 +337,21 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->verboseFlag = FALSE;
                 break;
             case 'r':
-                // fprintf(stdout, "Read remote temp only.'\n");
                 p->remoteTempOnly = TRUE;
                 break;
             case 'R':
-                // fprintf(stdout, "Remote temp address [default 18 hex]: %s hex\n", optarg);
                 p->remoteTempAddr = atoi(optarg);
                 break;
             case 's':
-                // fprintf(stdout, "Return single magnetometer reading.\n");
                 p->singleRead = TRUE;
                 break;
             case 'S':
-                // fprintf(stdout, "Read Simple Magnetometer Support Board.\n");
                 p->boardType = 1;
                 break;
             case 'T':
                 p->tsMilliseconds = TRUE;
                 break;
             case 'V':
-                // fprintf(stdout, "Version = %s\n", version);
                 return 1;
                 break;
             case 'v':
@@ -378,24 +366,25 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
-                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not yet  implemented].\n");
-                fprintf(stdout, "   -c <count>             :  Cycle count as integer (default 200).\n");
+                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].\n");
+                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer (default 200).\n");
+                fprintf(stdout, "   -C                     :  Read cycle count registers.   [Not really implemented].\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
-                fprintf(stdout, "   -l                     :  Read local temperature only.\n");
-                fprintf(stdout, "   -L [addr as integer]   :  Local temperature address [default 19 hex].\n");
+                fprintf(stdout, "   -l                     :  Read local temperature only.  [Not really implemented].\n");
+                fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
-                fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address [default 20 hex].\n");
+                fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
-                fprintf(stdout, "   -q                     :  Quiet mode.\n");
+                fprintf(stdout, "   -q                     :  Quiet mode.                   [Not really implemented].\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
-                fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address [default 18 hex].\n");
-                fprintf(stdout, "   -s                     :  Return single magnetometer reading.\n");
+                fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex).\n");
+                fprintf(stdout, "   -s                     :  Return single reading.\n");
                 fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
-                fprintf(stdout, "   -T                     :  Raw Timestamp in Milliseconds (default: UTC string).\n");
-                fprintf(stdout, "   -v                     :  Verbose output.\n");
+                fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
+                fprintf(stdout, "   -v                     :  Verbose output.               [Not really implemented].\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
-                fprintf(stdout, "   -X                     :  Read Board with Extender (default).\n");
+                fprintf(stdout, "   -X                     :  Read board with extender (default).\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
                 return 1;
                 break;
@@ -431,8 +420,11 @@ int main(int argc, char** argv)
     float cTemp = 0.0;
     int rv = 0;
     struct tm *utcTime = getUTC();
-    printf("\nUTC time: %s", asctime(utcTime));
-
+    
+    if(p.verboseFlag)
+    {
+        printf("\nUTC time: %s", asctime(utcTime));
+    }
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
         return rv;
@@ -455,9 +447,9 @@ int main(int argc, char** argv)
         if(!p.magnetometerOnly)
         {
             temp = readTemp(&p, MCP9808_I2CADDR_DEFAULT);
+            cTemp = temp * 0.0625;
         }
-        cTemp = temp * 0.0625;
-
+ 
         // Read Magnetometer.
         if(!p.localTempOnly)
         {
@@ -500,7 +492,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                strftime(outStr, OUTBUFLEN, "%d %b %Y %T %z", utcTime);                
+                strftime(outStr, OUTBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
                 fprintf(stdout, "\"%s\", ", outStr);
              }
             fprintf(stdout, " \"%.2f\", ",  cTemp);
@@ -515,25 +507,12 @@ int main(int argc, char** argv)
             }
             fprintf(stdout, " }\n");
         }
-        //else
-        //{
-        //    // Output the results.
-        //    if(!(p.jsonFlag))
-        //    {
-        //        fprintf(stdout, "Time Stamp: %ld, Temp: %.2f C   X: %i,  Y: %i,  Z: %i\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
-        //    }
-        //    else
-        //    {
-        //        fprintf(stdout, "{ \"%ld\", \"%.2f\", \"%i\",  \"%i\",  \"%i\"}\n", currentTimeMillis(), cTemp, xyz[0], xyz[1], xyz[2]);
-        //    }
-        //}
-
         fflush(stdout);
         if(p.singleRead)
         {
             break;
         }
-        // wait 1000 ms for next animation step.
+        // wait p.outDelay (1000 ms default) for next poll.
         usleep(p.outDelay);
     }
     i2c_close(p.i2c_fd);
