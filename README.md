@@ -12,17 +12,18 @@ $ make
 
 and if all goes well type:
 
-$ ./runMag
+$ sudo ./runMag
+(most flavors of Linux will require sudo)
 
-and now you should see the results!
+and now you should see some results!
 
 Example:
 
-dave@odroid:~/$ ./runMag -h
+dave@odroid:~/$ sudo ./runMag -h
 
-./runMag Version = 0.0.2
+    ./runMag Version = 0.0.2
 
-Parameters:
+    Parameters:
 
     -b <bus as integer>    :  I2C bus number as integer.
     -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].
