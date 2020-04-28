@@ -2,7 +2,7 @@
 
 For now just clone this project into your home directory on the Raspberry Pi or similar bus using:
 
-git clone https://github.com/wittend/rm3100-runMag.
+    git clone https://github.com/wittend/rm3100-runMag.
 
 Then do:
 
@@ -17,14 +17,14 @@ $ make
 
 and if all goes well type:
 
-$ sudo ./runMag
-(most flavors of Linux will require sudo)
+    $ sudo ./runMag
+    (most flavors of Linux will require sudo)
 
 and now you should see some results!
 
 ## Example:
 
-dave@odroid:~/$ sudo ./runMag -h
+    dave@odroid:~/$ sudo ./runMag -h
 
     ./runMag Version = 0.0.2
 
