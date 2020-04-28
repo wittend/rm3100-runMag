@@ -16,7 +16,6 @@ $ ./runMag
 
 and now you should see the results!
 
-
 Example:
 
 dave@odroid:~/$ ./runMag -h
@@ -28,7 +27,7 @@ Parameters:
    -b <bus as integer>    :  I2C bus number as integer.
    -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].
    -c <count>             :  Set cycle counts as integer (default 200).
-   -C                     :  Read cycle count registers.   [Not really implemented].
+   -C                     :  Read cycle count registers.   [Not really implemented].   
    -H                     :  Hide raw measurments.
    -j                     :  Format output as JSON.
    -l                     :  Read local temperature only.  [Not really implemented].
@@ -46,3 +45,6 @@ Parameters:
    -V                     :  Display software version and exit.
    -X                     :  Read board with extender (default).
    -h or -?               :  Display this help.
+   
+   
+   
