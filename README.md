@@ -1,4 +1,4 @@
-#rm3100-runMag
+# rm3100-runMag
 
 For now just clone this project into your home directory on the Raspberry Pi or similar bus using:
 
@@ -9,7 +9,7 @@ Then do:
 $ cd rm3100-runMag
 
     Kluge Alert:
-    check line 64 in I2C to be sure that the constant for your single board computer is used.
+    check line 64 in I2C to be sure that the constant (from device_defs.h) for your single board computer is used.
     e.g.:     char i2cFname[] = ODROIDN2_I2C_BUS;
     This will be fixed!
 
@@ -22,7 +22,7 @@ $ sudo ./runMag
 
 and now you should see some results!
 
-Example:
+## Example:
 
 dave@odroid:~/$ sudo ./runMag -h
 

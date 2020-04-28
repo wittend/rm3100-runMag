@@ -99,7 +99,7 @@ typedef struct tag_pList
     char *Version;
 } pList;
 
-// Alternative
+// Device paths for different platforms
 #define RASPI_I2C_BUS       "/dev/i2c-1"
 #define ODROIDC0_I2C_BUS    "/dev/i2c-1"
 #define ODROIDC1_I2C_BUS    "/dev/i2c-1"
