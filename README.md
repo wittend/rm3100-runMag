@@ -2,7 +2,7 @@
 
 For now just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
-    git clone https://github.com/wittend/rm3100-runMag.
+    git clone https://github.com/wittend/rm3100-runMag.git
 
 Then do:
 
