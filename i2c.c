@@ -59,7 +59,7 @@ static struct busDev busDevs[] =
 //------------------------------------------
 // i2cInit()
 //------------------------------------------
-int i2cOpen(pList *p)
+int i2c_open(pList *p)
 {
     char i2cFname[] = ODROIDN2_I2C_BUS;
     //char i2cFname[] = busDevs[p->i2cBusNumber].devPath;
@@ -91,21 +91,21 @@ int i2cOpen(pList *p)
 //------------------------------------------
 // write an 8 bit value to a register reg.
 //------------------------------------------
-void writeRegister(int fd, uint8_t reg, uint16_t value)
+void i2c_regWrite(int fd, uint8_t reg, uint16_t value)
 {
     uint8_t data[2];
     data[0] = reg;
     data[1] = value & 0xff;
     if(write(fd, data, 2) != 2)
     {
-        perror("writeRegister");
+        perror("i2c_regWrite(");
     }
 }
 
 //------------------------------------------
 // read an 8 bit value from a register.
 //------------------------------------------
-uint16_t readRegister(int fd, uint8_t reg)
+uint16_t i2c_regRead(int fd, uint8_t reg)
 {
     uint8_t data[2];
     data[0] = reg;
@@ -215,7 +215,7 @@ uint8_t i2c_read(int fd, uint8_t reg)
 // i2c_readbuf()
 // write a buffer to the device
 //------------------------------------------
-int i2c_readbuf(int fd, uint8_t devAddr,  char* buf, short int length)
+int i2c_readbuf(int fd, uint8_t devAddr, uint8_t reg, char* buf, short int length)
 {
     int bytes_read;
 
@@ -224,10 +224,98 @@ int i2c_readbuf(int fd, uint8_t devAddr,  char* buf, short int length)
     {
         perror("i2c transaction i2c_readbuf() failed.\n");
     }
-    //else
-    //{
-    //    /* buf[0] contains the read byte */
-    //    printf("i2c transaction i2c_readbuf() OK. bytes_read: %i\n", bytes_read);
-    //}
     return bytes_read;
 }
+
+///**
+// * @fn SensorStatus mag_enable_interrupts();
+// *
+// * @brief Enables the interrupt request from the sensor.
+// *
+// * @returns Status of the sensor. Not supported in AKM8975
+// */
+//SensorStatus mag_enable_interrupts()
+//{
+//    static char data[] = { RM3100_ENABLED };
+//
+//    if (mSensorMode == SensorPowerModeActive) 
+//    {
+//        rm3100_i2c_write(RM3100_BEACON_REG, data, sizeof(data)/sizeof(char));
+//    }
+//    return SensorOK;
+//}
+//
+///**
+// * @fn SensorStatus mag_disable_interrupts();
+// *
+// * @brief Disables the interrupt request from the sensor.
+// *
+// * @returns Status of the sensor.
+// */
+//SensorStatus mag_disable_interrupts()
+//{
+//    static char data[] = { RM3100_DISABLED };
+//    rm3100_i2c_write(RM3100_BEACON_REG, data, sizeof(data)/sizeof(char));
+//    return SensorOK;
+//}
+//
+
+///**
+// * @fn unsigned short int mag_set_sample_rate(unsigned short int sample_rate);
+// *
+// * @brief Requests the hardware to perform sample conversions at the specified rate.
+// *
+// * @param sample_rate The requested sample rate of the sensor in Hz.
+// *
+// * @returns The actual sample rate of the sensor.
+// */
+//unsigned short mag_set_sample_rate(unsigned short sample_rate)
+//{
+//    int i;
+//    static char i2cbuffer[1];
+//    const unsigned short int supported_rates[][2] = \
+//    {
+//        /* [Hz], register value */
+//        {   2, 0x0A},   // up to 2Hz
+//        {   4, 0x09},   // up to 4Hz
+//        {   8, 0x08},   // up to 8Hz
+//        {  16, 0x07},   // up to 16Hz
+//        {  31, 0x06},   // up to 31Hz
+//        {  62, 0x05},   // up to 62Hz
+//        {  125, 0x04},  // up to 125Hz
+//        {  220, 0x03}   // up to 250Hz
+//    };
+//    for(i = 0; i < sizeof(supported_rates)/(sizeof(unsigned short int)*2) - 1; i++)
+//    {
+//        if(sample_rate <= supported_rates[i][0])
+//        {
+//            break;
+//        }
+//    }
+//    if (mSensorMode == SensorPowerModeActive) 
+//    {
+//        mag_disable_interrupts();
+//    }
+//    mSampleRate = supported_rates[i][0];
+//    i2cbuffer[0]= (char)supported_rates[i][1];
+//    rm3100_i2c_write(RM3100_TMRC_REG, i2cbuffer, 1);
+//    if (mSensorMode == SensorPowerModeActive) 
+//    {
+//        mag_enable_interrupts();
+//    }
+//    return mSampleRate;
+//
+//}
+//
+///**
+// * @fn unsigned short int mag_get_sample_rate();
+// *
+// * @brief Retrieves the mset sample rate of the sensor.
+// *
+// * @returns The actual sample rate of the sensor.
+// */
+//unsigned short mag_get_sample_rate()
+//{
+//    return mSampleRate;
+//}
+//
