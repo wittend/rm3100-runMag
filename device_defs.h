@@ -70,9 +70,14 @@ typedef struct tag_pList
 {
     int boardType;
     int doBist; 
+
     int cc_x;
     int cc_y;
     int cc_z;
+ 
+    int x_gain;
+    int y_gain;
+    int z_gain;
 
     int hideRaw;
     int i2cBusNumber;
@@ -92,9 +97,6 @@ typedef struct tag_pList
     int tsMilliseconds;
     int verboseFlag;
     
-    int x_gain;
-    int y_gain;
-    int z_gain;
 
     char *Version;
 } pList;
@@ -178,31 +180,27 @@ typedef enum
 //  Name  |  Register #(Hex) | R/W      | Default (Hex) | Payload Format | Description
 //-------------------------------------------------------------------------------
 // POLL   |         00       |  RW      | 00            |     [7:0]      | Polls for a Single Measurement (aka MAG)
-#define RM3100I2C_POLL      0x00
+#define RM3100_MAG_SINGLE   0x00
 
 // CMM    |         01       |  RW      | 00            |     [7:0]      | Initiates Continuous Measurement Mode (aka 'Beacon')
 #define RM3100I2C_CMM       0x01
 
 // CCX    |      04 – 05     |  RW      | 00C8          |    UInt16      | Cycle Count Register – X Axis
-//#define RM3100I2C_CCX_MSB   0x04
-//#define RM3100I2C_CCX_LSB   0x05
+// Set values with  i2cset:  "sudo i2cset -y 1 0x20 0x04 0x01 0x90 0x01 0x90 0x01 0x90 0x0A i"
+// Read values with i2cdump: "sudo i2cdump -r 0x04-0x0a 2 0x20"
 #define RM3100I2C_CCX_1     0x04
 #define RM3100I2C_CCX_0     0x05
 
 // CCY    |      06 – 07     |  RW      | 00C8          |    UInt16      | Cycle Count Register – Y Axis
-//#define RM3100I2C_CCY_MSB   0x06
-//#define RM3100I2C_CCY_LSB   0x07
 #define RM3100I2C_CCY_1     0x06
 #define RM3100I2C_CCY_0     0x07
 
 // CCZ    |      08 – 09     |  RW      | 00C8          |    Uint16      | Cycle Count Register – Z Axis
-//#define RM3100I2C_CCZ_MSB   0x08
-//#define RM3100I2C_CCZ_LSB   0x09
 #define RM3100I2C_CCZ_1     0x08
 #define RM3100I2C_CCZ_0     0x09
 
 // NOS ?
-#define RM3100_NOS_REG      0x0A
+#define RM3100I2C_NOS       0x0A
 
 // TMRC   |      0B          |  RW      | 96            |     [7:0]      | Sets Continuous Measurement Mode Data Rate
 #define RM3100I2C_TMRC      0x0B

@@ -38,6 +38,8 @@ long currentTimeMillis();
 void mag_get_sample_data(int * XYZ);
 int readTemp(pList *p, int devAddr);
 int readMag(pList *p, int devAddr, int32_t *XYZ);
+void readCycleCountRegs(pList *p);
+void setCycleCountRegs(pList *p);
 void showSettings(pList *p);
 int getCommandLine(int argc, char** argv, pList *p);
 int main(int argc, char** argv);
@@ -76,7 +78,7 @@ int readTemp(pList *p, int devAddr)
     char data[2] = {0};
     char reg[1] = {MCP9808_REG_AMBIENT_TEMP};
 
-    i2c_SetAddress(p->i2c_fd, devAddr);
+    i2c_setAddress(p->i2c_fd, devAddr);
     write(p->i2c_fd, reg, 1);
     if(read(p->i2c_fd, data, 2) != 2)
     {
@@ -245,44 +247,17 @@ int readTemp(pList *p, int devAddr)
 //    return mSampleRate;
 //}
 
-///**
-// * @fn SensorStatus mag_get_sample_data(signed int *x, signed int *y, signed int *z);
-// *
-// * @brief Initiates an i2c read of the RM3100's sensor result registers.
-// * @Each sensor reading consists of 3 bytes of data which are stored in 2’s
-// * @complement format (range: -8388608 to 8388607) in the Results Registers
-// *
-// * @output: 3-axis Sensor data in Count 
-// * 
-// */
-//void mag_get_sample_data(int * XYZ)
-//{
-//    // read out sensor data
-//    rm3100_i2c_read(RM3100_QX2_REG, (char*)&mSamples, sizeof(mSamples)/sizeof(char));
-//    
-//    XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
-//    XYZ[0] |= mSamples[1] * 256;
-//    XYZ[0] |= mSamples[2];
-//
-//    XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
-//    XYZ[1] |= mSamples[4] * 256;
-//    XYZ[1] |= mSamples[5];
-//
-//    XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
-//    XYZ[2] |= mSamples[7] * 256;
-//    XYZ[2] |= mSamples[8];
-//}
-
 //------------------------------------------
 // setup_mag()
 //------------------------------------------
 int setup_mag(pList *p)
 {
     uint8_t ver = 0;
+    uint8_t i2cbuffer[2];
     int rv = SensorOK;
 
     // Set address of the RM3100
-    i2c_SetAddress(p->i2c_fd,  p->magnetometerAddr);
+    i2c_setAddress(p->i2c_fd,  p->magnetometerAddr);
 
     // Check Version
     if((ver = i2c_read(p->i2c_fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
@@ -295,36 +270,42 @@ int setup_mag(pList *p)
     }
     else
     {
-        uint8_t i2cbuffer[2];
         // Zero buffer content
-        i2cbuffer[0] = 0;
-        i2cbuffer[1] = 0;
         if(p->verboseFlag)
         {
              printf("RM3100 Detected Properly: ");
              printf("REVID: %x.\n", ver);
         }
 
-        // Clears RM3100I2C_POLL and RM3100I2C_CMM register and any pending measurement
-        i2c_writebuf(p->i2c_fd, RM3100I2C_POLL, i2cbuffer, 2);
-
-        // Initialize settings
-        uint8_t settings[7];
-        settings[0] = CCP1;       // CCPX1 200 Cycle Count
-        settings[1] = CCP0;       // CCPX0
-        settings[2] = CCP1;       // CCPY1 200 Cycle Count
-        settings[3] = CCP0;       // CCPY0
-        settings[4] = CCP1;       // CCPZ1 200 Cycle Count
-        settings[5] = CCP0;       // CCPZ0
-        settings[6] = NOS;
-
-        // // Linear equation: gain (LSB/uT) = (0.3671 * CycleCount + 1.5)
-        // int CycleCount = CCP0 | (CCP1 << 8);
-        // float gain = 0.3671 * CycleCount + 1.5;
+        /* Zero buffer content */
+        i2cbuffer[0]=0; 
+        i2cbuffer[1]=0;
         
-        //  Write register settings
-        i2c_writebuf(p->i2c_fd, RM3100I2C_CCX_1, settings, 7);
-        //mag_set_power_mode(SensorPowerModePowerDown);
+        /* Clears MAG and BEACON register and any pending measurement */
+        i2c_writebuf(p->i2c_fd, RM3100_MAG_SINGLE, i2cbuffer, 2);
+
+        if(p->verboseFlag)
+        {
+            printf("Refore Cycle Count Register SET:\n");
+            printf("p->cc_x: 0x%x, 0x%x  \n",  (p->cc_x & 0xff), (p->cc_x >> 8));
+            printf("p->cc_y: 0x%x, 0x%x  \n",  (p->cc_y & 0xff), (p->cc_y >> 8));
+            printf("p->cc_z: 0x%x, 0x%x  \n",  (p->cc_z & 0xff), (p->cc_z >> 8));
+            
+            printf("regCC[%i]: 0x%X\n",   0, (p->cc_x >> 8));
+            printf("regCC[%i]: 0x%X\n",   1, (p->cc_x & 0xff));
+            printf("regCC[%i]: 0x%X\n",   2, (p->cc_y >> 8));
+            printf("regCC[%i]: 0x%X\n",   3, (p->cc_y & 0xff));
+            printf("regCC[%i]: 0x%X\n",   4, (p->cc_z >> 8));
+            printf("regCC[%i]: 0x%Xd\n",   5, (p->cc_z & 0xff));
+            printf("regCC[%i]: 0x%Xd\n\n", 6, NOS);
+        }
+        // Initialize CC settings
+        setCycleCountRegs(p);
+        usleep(1000000);                           // delay to help monitor DRDY pin on eval board
+        
+        printf("Readback:\n");
+        readCycleCountRegs(p);
+
     }
     if(p->verboseFlag)
     {
@@ -333,8 +314,49 @@ int setup_mag(pList *p)
         fflush(stdout);
     }
     // Sleep for 1 second
-    usleep(100000);                           // delay to help monitor DRDY pin on eval board
+    //usleep(100000);                           // delay to help monitor DRDY pin on eval board
     return rv;
+}
+
+//------------------------------------------
+// setCycleCountRegs()
+//------------------------------------------
+void setCycleCountRegs(pList *p)
+{
+    int i = 0;
+    uint8_t regCC[7]= { 0, 0, 0, 0, 0, 0, 0 };
+
+    i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
+    regCC[0] = (uint8_t) (p->cc_x >> 8);        // CCPX1 200 Cycle Count
+    regCC[1] = (uint8_t) (p->cc_x & 0xff);      // CCPX0
+    regCC[2] = (uint8_t) (p->cc_y >> 8);        // CCPY1 200 Cycle Count
+    regCC[3] = (uint8_t) (p->cc_y & 0xff);      // CCPY0
+    regCC[4] = (uint8_t) (p->cc_z >> 8);        // CCPZ1 200 Cycle Count
+    regCC[5] = (uint8_t) (p->cc_z & 0xff);      // CCPZ0
+    regCC[6] = (uint8_t) NOS;
+
+    //  Write register settings
+    i2c_writebuf(p->i2c_fd, RM3100I2C_CCX_1, regCC, sizeof(regCC));
+}
+
+//------------------------------------------
+// readCycleCountRegs()
+//------------------------------------------
+void readCycleCountRegs(pList *p)
+{
+    int i = 0;
+    uint8_t regCC[7]= { 0, 0, 0, 0, 0, 0, 0 };
+
+    i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
+    //  Read register settings
+    i2c_readbuf(p->i2c_fd, RM3100I2C_CCX_1, regCC, 7);
+    printf("regCC[%i]: 0x%X\n",    0, (uint8_t)regCC[0]);
+    printf("regCC[%i]: 0x%X\n",    1, (uint8_t)regCC[1]);
+    printf("regCC[%i]: 0x%X\n",    2, (uint8_t)regCC[2]);
+    printf("regCC[%i]: 0x%X\n",    3, (uint8_t)regCC[3]);
+    printf("regCC[%i]: 0x%X\n",    4, (uint8_t)regCC[4]);
+    printf("regCC[%i]: 0x%X\n",    5, (uint8_t)regCC[5]);
+    printf("regCC[%i]: 0x%X\n\n",  6, (uint8_t)regCC[6]);
 }
 
 ////------------------------------------------
@@ -388,20 +410,14 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
     char reg[1] = { RM3100I2C_XYZ };
 
     // set address of the RM3100.
-    i2c_SetAddress(p->i2c_fd, devAddr);
+    //c_setAddress(p->i2c_fd, devAddr);
+    i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
     // Write command to  use polling.
-    i2c_regWrite(p->i2c_fd, RM3100I2C_POLL, RM3100I2C_POLLXYZ);
-
-    // printf("Check if DRDY went high\n");
-
+    i2c_write(p->i2c_fd, RM3100_MAG_SINGLE, RM3100I2C_POLLXYZ);
     // Check if DRDY went high and wait unit high before reading results
-    while((p->i2c_fd, i2c_regRead(p->i2c_fd, RM3100I2C_STATUS) & RM3100I2C_READMASK) != RM3100I2C_READMASK) {}
-
-    // printf("write(p->i2c_fd, reg, 1)h\n");
+    while((p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS) & RM3100I2C_READMASK) != RM3100I2C_READMASK) {}
     // Read the XYZ registers
-    write(p->i2c_fd, reg, 1);
-    if((bytes_read = i2c_readbuf(p->i2c_fd, devAddr, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))
-    //if((bytes_read = read(p->i2c_fd, mSamples, sizeof(mSamples))) != sizeof(mSamples))
+    if((bytes_read = i2c_readbuf(p->i2c_fd, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))
     {
         perror("i2c transaction i2c_readbuf() failed.\n");
     }
@@ -419,16 +435,6 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
     // printf("exiting readMag()\n");
     return bytes_read;
 }
-
-    //// read out sensor data
-    //rm3100_i2c_read(RM3100_QX2_REG, (char*)&mSamples, sizeof(mSamples)/sizeof(char));
-    //
-    //XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
-    //XYZ[0] |= mSamples[1] * 256;
-    //XYZ[0] |= mSamples[2];
-    //
-    // etc...
-
 
 //------------------------------------------
 // currentTimeMillis()
@@ -469,26 +475,27 @@ void showSettings(pList *p)
 {
     fprintf(stdout, "\nVersion = %s\n", version);
     fprintf(stdout, "\nCurrent Parameters:\n\n");
-    fprintf(stdout, "   I2C bus number as integer:                  %i\n", p->i2cBusNumber);
-    fprintf(stdout, "   Built in self test (BIST) value:            0x%X\n", p->doBist);
-    fprintf(stdout, "   Cycle count X as integer:                   %i\n", p->cc_x);
-    fprintf(stdout, "   Cycle count Y as integer:                   %i\n", p->cc_y);
-    fprintf(stdout, "   Cycle count Z as integer:                   %i\n", p->cc_z);
-    fprintf(stdout, "   Hide raw measurements:                      %s\n", p->hideRaw ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Format output as JSON:                      %s\n", p->jsonFlag ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Read local temperature only:                %s\n", p->localTempOnly ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Local temperature address:                  %2X\n", p->localTempAddr);
-    fprintf(stdout, "   Read magnetometer only:                     %s\n", p->magnetometerOnly ?  "TRUE" : "FALSE");
-    fprintf(stdout, "   Magnetometer address:                       %2X\n", p->magnetometerAddr);
-    fprintf(stdout, "   Show Parameters:                            %s\n", p->showParameters ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Quiet mode:                                 %s\n", p->quietFlag ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Read remote temperature only:               %s\n", p->remoteTempOnly ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Remote temperature address:                 %2X\n", p->remoteTempAddr);
-    fprintf(stdout, "   Return single magnetometer reading:         %s\n", p->singleRead ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Simple Magnetometer Support Board:     %i\n", p->boardType);
-    fprintf(stdout, "   Timestamp format:                           %s\n", p->tsMilliseconds ? "RAW" : "UTCSTRING");
-    fprintf(stdout, "   Verbose output:                             %s\n", p->verboseFlag ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Board with Extender:                   %i\n", p->boardType);
+    fprintf(stdout, "   I2C bus number as integer:                  %i\n",      p->i2cBusNumber);
+    fprintf(stdout, "   Built in self test (BIST) value:            0x%X\n",    p->doBist);
+    fprintf(stdout, "   Cycle count X as integer:                   %i\n",      p->cc_x);
+    fprintf(stdout, "   Cycle count Y as integer:                   %i\n",      p->cc_y);
+    fprintf(stdout, "   Cycle count Z as integer:                   %i\n",      p->cc_z);
+    fprintf(stdout, "   Loop Delay:                                 %i\n",      p->outDelay);
+    fprintf(stdout, "   Hide raw measurements:                      %s\n",      p->hideRaw ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Format output as JSON:                      %s\n",      p->jsonFlag ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Read local temperature only:                %s\n",      p->localTempOnly ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Local temperature address:                  %2X\n",     p->localTempAddr);
+    fprintf(stdout, "   Read magnetometer only:                     %s\n",      p->magnetometerOnly ?  "TRUE" : "FALSE");
+    fprintf(stdout, "   Magnetometer address:                       %2X\n",     p->magnetometerAddr);
+    fprintf(stdout, "   Show Parameters:                            %s\n",      p->showParameters ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Quiet mode:                                 %s\n",      p->quietFlag ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Read remote temperature only:               %s\n",      p->remoteTempOnly ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Remote temperature address:                 %2X\n",     p->remoteTempAddr);
+    fprintf(stdout, "   Return single magnetometer reading:         %s\n",      p->singleRead ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Simple Magnetometer Support Board:     %i\n",      p->boardType);
+    fprintf(stdout, "   Timestamp format:                           %s\n",      p->tsMilliseconds ? "RAW" : "UTCSTRING");
+    fprintf(stdout, "   Verbose output:                             %s\n",      p->verboseFlag ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Board with Extender:                   %i\n",      p->boardType);
     fprintf(stdout, "\n\n");
 }
 
@@ -507,10 +514,15 @@ int getCommandLine(int argc, char** argv, pList *p)
     
     p->boardType        = 0;
     p->doBist           = FALSE;
+
     p->cc_x             = CC_200;
     p->cc_y             = CC_200;
     p->cc_z             = CC_200;
-
+    
+    p->x_gain           = GAIN_75;
+    p->y_gain           = GAIN_75;
+    p->z_gain           = GAIN_75;
+    
     p->hideRaw          = FALSE;
     p->i2cBusNumber     = 1;
     p->i2c_fd           = 0;
@@ -522,16 +534,12 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->remoteTempAddr   = 0x18;  
     p->magnetometerOnly = FALSE;
     p->magnetometerAddr = 0x20;
-    p->outDelay         = 100000;
+    p->outDelay         = 10000;
     p->quietFlag        = TRUE;
     p->showParameters   = FALSE;
     p->singleRead       = FALSE;
     p->tsMilliseconds   = FALSE;
 
-    p->x_gain           = GAIN_75;
-    p->y_gain           = GAIN_75;
-    p->z_gain           = GAIN_75;
-    
     p->verboseFlag      = FALSE;
     p->Version          = version;
    
@@ -552,6 +560,9 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 'C':
                 // fprintf(stdout, "CycleCount: '%s'\n", optarg);
                 //p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
+                break;
+            case 'd':
+                p->outDelay = atoi(optarg);
                 break;
             case 'H':
                 p->hideRaw = TRUE;
@@ -614,6 +625,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].\n");
                 fprintf(stdout, "   -c <count>             :  Set cycle counts as integer (default 200).\n");
                 fprintf(stdout, "   -C                     :  Read cycle count registers.   [Not really implemented].\n");
+                fprintf(stdout, "   -d <count>             :  Set polling delay (default 10000).\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
                 fprintf(stdout, "   -l                     :  Read local temperature only.  [Not really implemented].\n");
@@ -685,6 +697,12 @@ int main(int argc, char** argv)
     // Setup the magnetometer.
     setup_mag(&p);
     
+    //system("i2cset -y 2 0x20 0x04 0x00 0xc8 0x01 0xc8 0x01 0xc8 0x0A i");    // CC = 200
+    //usleep(p.outDelay);
+    //system("i2cset -y 2 0x20 0x04 0x01 0x90 0x01 0x90 0x01 0x90 0x0A i");    // CC = 400
+    printf("After Cycle Count RegisTer SET\n");
+    readCycleCountRegs(&p);
+
     // loop
     while(1)
     {
@@ -713,6 +731,7 @@ int main(int argc, char** argv)
             }
             else
             {
+                utcTime = getUTC();
                 strftime(outStr, OUTBUFLEN, "%d %b %Y %T", utcTime);                
                 fprintf(stdout, "Time: %s", outStr);
             }
@@ -737,6 +756,7 @@ int main(int argc, char** argv)
             }
             else
             {
+                utcTime = getUTC();
                 strftime(outStr, OUTBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
                 fprintf(stdout, "ts:\"%s\", ", outStr);
             }
@@ -763,3 +783,4 @@ int main(int argc, char** argv)
     i2c_close(p.i2c_fd);
     return 0;
 }
+
