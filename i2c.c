@@ -103,16 +103,18 @@ void i2c_close(int i2c_fd)
 //------------------------------------------
 // write an 8 bit value to a register reg.
 //------------------------------------------
-void i2c_write(int fd, uint8_t reg, uint16_t value)
+int i2c_write(int fd, uint8_t reg, uint16_t value)
 {
     uint8_t data[2];
     data[0] = reg;
     data[1] = value & 0xff;
+    int rv = 0;
 
     if(write(fd, data, 2) != 2)
     {
         perror("i2c_write()");
     }
+    return rv;
 }
 
 //------------------------------------------
@@ -121,16 +123,21 @@ void i2c_write(int fd, uint8_t reg, uint16_t value)
 //------------------------------------------
 int i2c_writebuf(int fd, uint8_t reg, char *buffer, short int length)
 {
-    int status = 0;
     uint8_t data[2];
+    data[0] = reg;
+    //data[1] = value & 0xff;
+    int rv = 0;
 
-    i2c_write(fd, reg, 1);
-    if(status = write(fd, buffer, length) != length)
+    if(rv = write(fd, data, 1) != 1)
     {
-        perror("i2c_writebuf");
+        perror("i2c_writebuf(): write()");
+    }
+    if(rv = write(fd, buffer, length) != length)
+    {
+        perror("i2c_writebuf(): write(data)");
         exit(1);
     }
-    return status;
+    return rv;
 }
 
 //------------------------------------------
@@ -140,12 +147,12 @@ uint8_t i2c_read(int fd, uint8_t reg)
 {
     uint8_t data[2];
     data[0] = reg;
+    //data[1] = value & 0xff;
     int rv = 0;
 
-    rv = write(fd, data, 1);
-    if(rv != 1)
+    if(rv = write(fd, data, 1) != 1)
     {
-        perror("i2c_read set register");
+        perror("i2c_writebuf(): write()");
     }
     if(read(fd, data + 1, 1) != 1)
     {
@@ -161,9 +168,15 @@ uint8_t i2c_read(int fd, uint8_t reg)
 int i2c_readbuf(int fd, uint8_t reg, char* buf, short int length)
 {
     int bytes_read;
+    uint8_t data[2];
+    data[0] = reg;
+    //data[1] = value & 0xff;
+    int rv = 0;
 
-    //i2c_SetAddress(fd, devAddr);
-    i2c_write(fd, reg, 1);
+    if(rv = write(fd, data, 1) != 1)
+    {
+        perror("i2c_readbuf(): write()");
+    }
     if((bytes_read = read(fd, buf, length)) != length)
     {
         perror("i2c transaction i2c_readbuf() failed.\n");

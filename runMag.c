@@ -289,15 +289,15 @@ int setup_mag(pList *p)
             printf("Refore Cycle Count Register SET:\n");
             printf("p->cc_x: 0x%x, 0x%x  \n",  (p->cc_x & 0xff), (p->cc_x >> 8));
             printf("p->cc_y: 0x%x, 0x%x  \n",  (p->cc_y & 0xff), (p->cc_y >> 8));
-            printf("p->cc_z: 0x%x, 0x%x  \n",  (p->cc_z & 0xff), (p->cc_z >> 8));
+            printf("p->cc_z: 0x%x, 0x%x  \n\n",(p->cc_z & 0xff), (p->cc_z >> 8));
             
             printf("regCC[%i]: 0x%X\n",   0, (p->cc_x >> 8));
             printf("regCC[%i]: 0x%X\n",   1, (p->cc_x & 0xff));
             printf("regCC[%i]: 0x%X\n",   2, (p->cc_y >> 8));
             printf("regCC[%i]: 0x%X\n",   3, (p->cc_y & 0xff));
             printf("regCC[%i]: 0x%X\n",   4, (p->cc_z >> 8));
-            printf("regCC[%i]: 0x%Xd\n",   5, (p->cc_z & 0xff));
-            printf("regCC[%i]: 0x%Xd\n\n", 6, NOS);
+            printf("regCC[%i]: 0x%X\n",   5, (p->cc_z & 0xff));
+            printf("regCC[%i]: 0x%X\n\n", 6, NOS);
         }
         // Initialize CC settings
         setCycleCountRegs(p);
@@ -700,7 +700,7 @@ int main(int argc, char** argv)
     //system("i2cset -y 2 0x20 0x04 0x00 0xc8 0x01 0xc8 0x01 0xc8 0x0A i");    // CC = 200
     //usleep(p.outDelay);
     //system("i2cset -y 2 0x20 0x04 0x01 0x90 0x01 0x90 0x01 0x90 0x0A i");    // CC = 400
-    printf("After Cycle Count RegisTer SET\n");
+    printf("After Cycle Count Register SET\n");
     readCycleCountRegs(&p);
 
     // loop
