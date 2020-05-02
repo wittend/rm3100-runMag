@@ -28,15 +28,9 @@
 #define FALSE 0
 #endif
 
-/************************/
-/*     Enumerations     */
-/************************/
-/**
-* @enum SensorPowerMode
-*
-* @brief Possible sensor power modes supported.
-*
-*/
+//-------------------------------------------
+// Enumerations 
+//-------------------------------------------
 typedef enum
 {
     SensorPowerModePowerDown = 0,       
@@ -44,11 +38,9 @@ typedef enum
     SensorPowerModeActive = 255,  
 } SensorPowerMode;
  
-/**
-* @enum SensorStatus
-*
-* @brief Sensor status results.
-*/
+//-------------------------------------------
+// SensorStatus
+//-------------------------------------------
 typedef enum
 {
     /* Valid Responses */
@@ -101,7 +93,9 @@ typedef struct tag_pList
     char *Version;
 } pList;
 
+//-------------------------------------------
 // Device paths for different platforms
+//-------------------------------------------
 #define RASPI_I2C_BUS       "/dev/i2c-1"
 #define ODROIDC0_I2C_BUS    "/dev/i2c-1"
 #define ODROIDC1_I2C_BUS    "/dev/i2c-1"
@@ -113,6 +107,9 @@ typedef struct tag_pList
 #define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
 #define NV_NANO_I2C_BUS     "/dev/i2c-1"
 
+//-------------------------------------------
+// Device paths for different platforms
+//-------------------------------------------
 typedef enum
 {
     eRASPI_I2C_BUS = 0,
@@ -126,6 +123,35 @@ typedef enum
     eNV_XAVIER_I2C_BUS,
     eNV_NANO_I2C_BUS,
 } i2cBusEnum;
+
+//-------------------------------------------
+// I2C Bus Path entries
+//-------------------------------------------
+struct busDev
+{
+    const char *devPath;
+    int         enumVal;
+};
+
+//-------------------------------------------
+// 
+//-------------------------------------------
+static struct busDev busDevs[] =
+{
+    /* Darice Path,     enum Value*/
+    {RASPI_I2C_BUS,     eRASPI_I2C_BUS},
+    {ODROIDC0_I2C_BUS,  eODROIDC0_I2C_BUS},
+    {ODROIDC1_I2C_BUS,  eODROIDC1_I2C_BUS},
+    {ODROIDN2_I2C_BUS,  eODROIDC2_I2C_BUS},
+    {ODROIDC4_I2C_BUS,  eODROIDC4_I2C_BUS},
+    {ODROIDC4_I2C_BUS3, eODROIDC4_I2C_BUS3},
+    {ODROIDN2_I2C_BUS,  eODROIDN2_I2C_BUS},
+    {ODROIDN2_I2C_BUS3, eODROIDN2_I2C_BUS3},
+    {NV_XAVIER_I2C_BUS, eNV_XAVIER_I2C_BUS},
+    {NV_NANO_I2C_BUS,   eNV_NANO_I2C_BUS},
+    {NULL,              -1}
+};
+
 
 //-------------------------------------------
 // I2C bus speed options available
@@ -180,7 +206,7 @@ typedef enum
 //  Name  |  Register #(Hex) | R/W      | Default (Hex) | Payload Format | Description
 //-------------------------------------------------------------------------------
 // POLL   |         00       |  RW      | 00            |     [7:0]      | Polls for a Single Measurement (aka MAG)
-#define RM3100_MAG_SINGLE   0x00
+#define RM3100_MAG_POLL     0x00
 
 // CMM    |         01       |  RW      | 00            |     [7:0]      | Initiates Continuous Measurement Mode (aka 'Beacon')
 #define RM3100I2C_CMM       0x01
@@ -246,38 +272,6 @@ typedef enum
 
 #define CALIBRATION_TIMEOUT 5000        // timeout in milliseconds
 #define DEG_PER_RAD (180.0/3.14159265358979)
-
-// MCP9808 Bus Address.
-//-----------------------------------
-#define MCP9808_I2CADDR_DEFAULT         0x18       // alt: (selected by chip hardware 0x19 - 0x1F
-
-// MCP9808 Registers
-//-----------------------------------
-#define MCP9808_REG_CONFIG              0x01
-#define MCP9808_REG_UPPER_TEMP          0x02
-#define MCP9808_REG_LOWER_TEMP          0x03
-#define MCP9808_REG_CRIT_TEMP           0x04
-#define MCP9808_REG_AMBIENT_TEMP        0x05
-#define MCP9808_REG_MANUF_ID            0x06
-#define MCP9808_REG_DEVICE_ID           0x07
-#define MCP9808_REG_RESOLUTION          0x08
-
-// Configuration register values.
-//-----------------------------------
-#define MCP9808_REG_CONFIG_SHUTDOWN     0x0100
-#define MCP9808_REG_CONFIG_CRITLOCKED   0x0080
-#define MCP9808_REG_CONFIG_WINLOCKED    0x0040
-#define MCP9808_REG_CONFIG_INTCLR       0x0020
-#define MCP9808_REG_CONFIG_ALERTSTAT    0x0010
-#define MCP9808_REG_CONFIG_ALERTCTRL    0x0008
-#define MCP9808_REG_CONFIG_ALERTSEL     0x0004
-#define MCP9808_REG_CONFIG_ALERTPOL     0x0002
-#define MCP9808_REG_CONFIG_ALERTMODE    0x0001
-
-// Expected return values.
-//-----------------------------------
-#define MCP9808_MANID_EXPECTED          0x0054
-#define MCP9808_DEVREV_EXPECTED         0x0400
 
 
 #endif  //SWX3100DEFS_h

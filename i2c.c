@@ -30,30 +30,12 @@
 #include "device_defs.h"
 #include "i2c.h"
 
-struct busDev
-{
-    const char *devPath;
-    int         enumVal;
-};
-
-static struct busDev busDevs[] =
-{
-    /* Darice Path,     enum Value*/
-    {RASPI_I2C_BUS,     eRASPI_I2C_BUS},
-    {ODROIDC1_I2C_BUS,  eODROIDC1_I2C_BUS},
-    {ODROIDN2_I2C_BUS,  eODROIDC2_I2C_BUS},
-    {ODROIDN2_I2C_BUS,  eODROIDN2_I2C_BUS},
-    {NV_XAVIER_I2C_BUS, eNV_XAVIER_I2C_BUS},
-    {NV_NANO_I2C_BUS,   eNV_NANO_I2C_BUS},
-    {NULL,              -1}
-};
-
 //------------------------------------------
 // i2cInit()
 //------------------------------------------
 int i2c_open(pList *p)
 {
-    char i2cFname[] = ODROIDN2_I2C_BUS;
+    static char i2cFname[] = ODROIDN2_I2C_BUS;
     p->i2c_fd = -1;
     //fprintf(stdout, "open('%s') in i2c_init", i2cFname);
     //fflush(stdout);
@@ -105,7 +87,7 @@ void i2c_close(int i2c_fd)
 //------------------------------------------
 int i2c_write(int fd, uint8_t reg, uint16_t value)
 {
-    uint8_t data[2];
+    static uint8_t data[2];
     data[0] = reg;
     data[1] = value & 0xff;
     int rv = 0;
@@ -123,7 +105,7 @@ int i2c_write(int fd, uint8_t reg, uint16_t value)
 //------------------------------------------
 int i2c_writebuf(int fd, uint8_t reg, char *buffer, short int length)
 {
-    uint8_t data[2];
+    static uint8_t data[2];
     data[0] = reg;
     //data[1] = value & 0xff;
     int rv = 0;
@@ -145,7 +127,7 @@ int i2c_writebuf(int fd, uint8_t reg, char *buffer, short int length)
 //------------------------------------------
 uint8_t i2c_read(int fd, uint8_t reg)
 {
-    uint8_t data[2];
+    static uint8_t data[2];
     data[0] = reg;
     //data[1] = value & 0xff;
     int rv = 0;
@@ -168,7 +150,7 @@ uint8_t i2c_read(int fd, uint8_t reg)
 int i2c_readbuf(int fd, uint8_t reg, char* buf, short int length)
 {
     int bytes_read;
-    uint8_t data[2];
+    static uint8_t data[2];
     data[0] = reg;
     //data[1] = value & 0xff;
     int rv = 0;

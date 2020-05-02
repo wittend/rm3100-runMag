@@ -30,6 +30,7 @@
 #include <linux/i2c-dev.h>
 #include "device_defs.h"
 #include "i2c.h"
+#include "MCP9808.h"
 
 char version[] = SIMPLEI2C_VERSION;
     
@@ -47,27 +48,7 @@ int main(int argc, char** argv);
 //------------------------------------------
 // Static variables 
 //------------------------------------------
-//static unsigned short int           mSampleRate;
-//static SensorPowerMode              mSensorMode;
 static char                         mSamples[9];
-
-struct busDev
-{
-    const char *devPath;
-    int         enumVal;
-};
-
-static struct busDev busDevs[] =
-{
-    /* Darice Path,     enum Value*/
-    {RASPI_I2C_BUS,     eRASPI_I2C_BUS},
-    {ODROIDC1_I2C_BUS,  eODROIDC1_I2C_BUS},
-    {ODROIDN2_I2C_BUS,  eODROIDC2_I2C_BUS},
-    {ODROIDN2_I2C_BUS,  eODROIDN2_I2C_BUS},
-    {NV_XAVIER_I2C_BUS, eNV_XAVIER_I2C_BUS},
-    {NV_NANO_I2C_BUS,   eNV_NANO_I2C_BUS},
-    {NULL,              -1}
-};
 
 //------------------------------------------
 // readTemp()
@@ -282,7 +263,7 @@ int setup_mag(pList *p)
         i2cbuffer[1]=0;
         
         /* Clears MAG and BEACON register and any pending measurement */
-        i2c_writebuf(p->i2c_fd, RM3100_MAG_SINGLE, i2cbuffer, 2);
+        i2c_writebuf(p->i2c_fd, RM3100_MAG_POLL, i2cbuffer, 2);
 
         if(p->verboseFlag)
         {
@@ -359,61 +340,16 @@ void readCycleCountRegs(pList *p)
     printf("regCC[%i]: 0x%X\n\n",  6, (uint8_t)regCC[6]);
 }
 
-////------------------------------------------
-//// readMag() - Working Version
-////------------------------------------------
-//int readMag(pList *p, int devAddr, int32_t *XYZ)
-//{
-//    //printf("\nentering readMag()\n");
-//    uint8_t mSamples[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-//    char data[2] = {0};
-//    int bytes_read;
-//    char reg[1] = { RM3100I2C_XYZ };
-//
-//    // set address of the RM3100.
-//    i2c_SetAddress(p->i2c_fd, devAddr);
-//    // Write command to  use polling.
-//    i2c_regWrite((p->i2c_fd, RM3100I2C_POLL, RM3100I2C_POLLXYZ);
-//
-//    // Check if DRDY went high and wait unit high before reading results
-//    while((p->i2c_fd, i2c_regRead(p->i2c_fd, RM3100I2C_STATUS) & RM3100I2C_READMASK) != RM3100I2C_READMASK) {}
-//
-//    // Read the XYZ registers
-//    write(p->i2c_fd, reg, 1);
-//    if((bytes_read = read(p->i2c_fd, mSamples, sizeof(mSamples))) != sizeof(mSamples))
-//    {
-//        perror("i2c transaction i2c_readbuf() failed.\n");
-//    }
-//
-//    XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
-//    XYZ[0] |= mSamples[1] * 256;
-//    XYZ[0] |= mSamples[2];
-//    XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
-//    XYZ[1] |= mSamples[4] * 256;
-//    XYZ[1] |= mSamples[5];
-//    XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
-//    XYZ[2] |= mSamples[7] * 256;
-//    XYZ[2] |= mSamples[8];
-//
-//    //printf("exiting readMag()\n");
-//    return bytes_read;
-//}
-
 //------------------------------------------
 // readMag()
 //------------------------------------------
 int readMag(pList *p, int devAddr, int32_t *XYZ)
 {
-    // printf("\nentering readMag()\n");
     int bytes_read = 0;
-    //char data[2] = {0};
-    char reg[1] = { RM3100I2C_XYZ };
-
     // set address of the RM3100.
-    //c_setAddress(p->i2c_fd, devAddr);
     i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
     // Write command to  use polling.
-    i2c_write(p->i2c_fd, RM3100_MAG_SINGLE, RM3100I2C_POLLXYZ);
+    i2c_write(p->i2c_fd, RM3100_MAG_POLL, RM3100I2C_POLLXYZ);
     // Check if DRDY went high and wait unit high before reading results
     while((p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS) & RM3100I2C_READMASK) != RM3100I2C_READMASK) {}
     // Read the XYZ registers
@@ -432,7 +368,6 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
     XYZ[2] |= mSamples[7] * 256;
     XYZ[2] |= mSamples[8];
 
-    // printf("exiting readMag()\n");
     return bytes_read;
 }
 
