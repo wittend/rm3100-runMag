@@ -32,10 +32,12 @@
 #include "i2c.h"
 #include "MCP9808.h"
 
-char version[] = SIMPLEI2C_VERSION;
+#define DEBUG 1        
     
 int setup_mag(pList *p);
 long currentTimeMillis();
+int getTMRSReg(pList *p);
+void setTMRSRes(pList *p);
 void mag_get_sample_data(int * XYZ);
 int readTemp(pList *p, int devAddr);
 int readMag(pList *p, int devAddr, int32_t *XYZ);
@@ -45,10 +47,12 @@ void showSettings(pList *p);
 int getCommandLine(int argc, char** argv, pList *p);
 int main(int argc, char** argv);
 
+char version[] = SIMPLEI2C_VERSION;
+
 //------------------------------------------
 // Static variables 
 //------------------------------------------
-static char                         mSamples[9];
+static char  mSamples[9];
 
 //------------------------------------------
 // readTemp()
@@ -251,17 +255,14 @@ int setup_mag(pList *p)
     }
     else
     {
-        // Zero buffer content
         if(p->verboseFlag)
         {
              printf("RM3100 Detected Properly: ");
              printf("REVID: %x.\n", ver);
         }
-
         /* Zero buffer content */
         i2cbuffer[0]=0; 
-        i2cbuffer[1]=0;
-        
+        i2cbuffer[1]=0;       
         /* Clears MAG and BEACON register and any pending measurement */
         i2c_writebuf(p->i2c_fd, RM3100_MAG_POLL, i2cbuffer, 2);
 
@@ -283,10 +284,10 @@ int setup_mag(pList *p)
         // Initialize CC settings
         setCycleCountRegs(p);
         usleep(1000000);                           // delay to help monitor DRDY pin on eval board
-        
+#if (DEBUG)        
         printf("Readback:\n");
         readCycleCountRegs(p);
-
+#endif
     }
     if(p->verboseFlag)
     {
@@ -300,24 +301,49 @@ int setup_mag(pList *p)
 }
 
 //------------------------------------------
+// getTMRSReg()
+// Sets Continuous Measurement Mode Data Rate
+//------------------------------------------
+int getTMRSReg(pList *p)
+{
+    return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
+}
+
+//------------------------------------------
+// setTMRSReg()
+// Sets Continuous Measurement Mode Data Rate
+//------------------------------------------
+void setTMRSReg(pList *p)
+{
+    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRSRate);
+}
+
+//------------------------------------------
 // setCycleCountRegs()
 //------------------------------------------
 void setCycleCountRegs(pList *p)
 {
     int i = 0;
-    uint8_t regCC[7]= { 0, 0, 0, 0, 0, 0, 0 };
+    //uint8_t regCC[7]= { 0, 0, 0, 0, 0, 0, 0 };
+    //
+    //i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
+    //regCC[0] = (uint8_t) (p->cc_x >> 8);        // 200 Cycle Count
+    //regCC[1] = (uint8_t) (p->cc_x & 0xff);      // 
+    //regCC[2] = (uint8_t) (p->cc_y >> 8);        // 200 Cycle Count
+    //regCC[3] = (uint8_t) (p->cc_y & 0xff);      // 
+    //regCC[4] = (uint8_t) (p->cc_z >> 8);        // 200 Cycle Count
+    //regCC[5] = (uint8_t) (p->cc_z & 0xff);      // 
+    //regCC[6] = (uint8_t) NOS;
+    ////  Write register settings
+    //i2c_writebuf(p->i2c_fd, RM3100I2C_CCX_1, regCC, sizeof(regCC));
 
-    i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
-    regCC[0] = (uint8_t) (p->cc_x >> 8);        // CCPX1 200 Cycle Count
-    regCC[1] = (uint8_t) (p->cc_x & 0xff);      // CCPX0
-    regCC[2] = (uint8_t) (p->cc_y >> 8);        // CCPY1 200 Cycle Count
-    regCC[3] = (uint8_t) (p->cc_y & 0xff);      // CCPY0
-    regCC[4] = (uint8_t) (p->cc_z >> 8);        // CCPZ1 200 Cycle Count
-    regCC[5] = (uint8_t) (p->cc_z & 0xff);      // CCPZ0
-    regCC[6] = (uint8_t) NOS;
-
-    //  Write register settings
-    i2c_writebuf(p->i2c_fd, RM3100I2C_CCX_1, regCC, sizeof(regCC));
+    i2c_write(p->i2c_fd, RM3100I2C_CCX_1, (p->cc_x >> 8));
+    i2c_write(p->i2c_fd, RM3100I2C_CCX_0, (p->cc_x & 0xff));
+    i2c_write(p->i2c_fd, RM3100I2C_CCY_1, (p->cc_y >> 8));
+    i2c_write(p->i2c_fd, RM3100I2C_CCY_0, (p->cc_y & 0xff));
+    i2c_write(p->i2c_fd, RM3100I2C_CCZ_1, (p->cc_x >> 8));
+    i2c_write(p->i2c_fd, RM3100I2C_CCZ_0, (p->cc_y & 0xff));
+    i2c_write(p->i2c_fd, RM3100I2C_NOS,   NOS);
 }
 
 //------------------------------------------
@@ -419,9 +445,9 @@ void showSettings(pList *p)
     fprintf(stdout, "   Hide raw measurements:                      %s\n",      p->hideRaw ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Format output as JSON:                      %s\n",      p->jsonFlag ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Read local temperature only:                %s\n",      p->localTempOnly ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Local temperature address:                  %2X\n",     p->localTempAddr);
+    fprintf(stdout, "   Local temperature address:                  %2X h\n",   p->localTempAddr);
     fprintf(stdout, "   Read magnetometer only:                     %s\n",      p->magnetometerOnly ?  "TRUE" : "FALSE");
-    fprintf(stdout, "   Magnetometer address:                       %2X\n",     p->magnetometerAddr);
+    fprintf(stdout, "   Magnetometer address:                       %2X h\n",   p->magnetometerAddr);
     fprintf(stdout, "   Show Parameters:                            %s\n",      p->showParameters ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Quiet mode:                                 %s\n",      p->quietFlag ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Read remote temperature only:               %s\n",      p->remoteTempOnly ? "TRUE" : "FALSE");
@@ -429,6 +455,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Return single magnetometer reading:         %s\n",      p->singleRead ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Simple Magnetometer Support Board:     %i\n",      p->boardType);
     fprintf(stdout, "   Timestamp format:                           %s\n",      p->tsMilliseconds ? "RAW" : "UTCSTRING");
+    fprintf(stdout, "   Continuous Measurement Mode Data Rate:      %i\n",      p->TMRSRate);
     fprintf(stdout, "   Verbose output:                             %s\n",      p->verboseFlag ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Board with Extender:                   %i\n",      p->boardType);
     fprintf(stdout, "\n\n");
@@ -474,11 +501,11 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->showParameters   = FALSE;
     p->singleRead       = FALSE;
     p->tsMilliseconds   = FALSE;
-
+    p->TMRSRate         = 96;
     p->verboseFlag      = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?b:B:c:CHhjlL:mM:o:PqrR:sSTvXhqV")) != -1)
+    while((c = getopt(argc, argv, "?b:B:c:CHhjlL:mM:o:PqrR:sSTt:vXhqV")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -542,6 +569,9 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 'T':
                 p->tsMilliseconds = TRUE;
                 break;
+            case 't':
+                p->TMRSRate = atoi(optarg);
+                break;
             case 'V':
                 return 1;
                 break;
@@ -574,6 +604,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -s                     :  Return single reading.\n");
                 fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
+                fprintf(stdout, "   -t                     :  Set Continuous Measurement Mode Data Rate.\n");
                 fprintf(stdout, "   -v                     :  Verbose output.               [Not really implemented].\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -X                     :  Read board with extender (default).\n");
@@ -632,11 +663,13 @@ int main(int argc, char** argv)
     // Setup the magnetometer.
     setup_mag(&p);
     
+#ifdef DEBUG
     //system("i2cset -y 2 0x20 0x04 0x00 0xc8 0x01 0xc8 0x01 0xc8 0x0A i");    // CC = 200
     //usleep(p.outDelay);
     //system("i2cset -y 2 0x20 0x04 0x01 0x90 0x01 0x90 0x01 0x90 0x0A i");    // CC = 400
     printf("After Cycle Count Register SET\n");
     readCycleCountRegs(&p);
+#endif // DEBUG
 
     // loop
     while(1)

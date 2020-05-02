@@ -87,6 +87,7 @@ typedef struct tag_pList
     int showParameters;
     int singleRead;
     int tsMilliseconds;
+    int TMRSRate;
     int verboseFlag;
     
 

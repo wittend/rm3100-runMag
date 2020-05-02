@@ -85,7 +85,8 @@ void i2c_close(int i2c_fd)
 //------------------------------------------
 // write an 8 bit value to a register reg.
 //------------------------------------------
-int i2c_write(int fd, uint8_t reg, uint16_t value)
+//int i2c_write(int fd, uint8_t reg, uint16_t value)
+int i2c_write(int fd, uint8_t reg, uint8_t value)
 {
     static uint8_t data[2];
     data[0] = reg;
