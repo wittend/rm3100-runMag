@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <memory.h>
+#include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 #include "device_defs.h"
 #include "i2c.h"
@@ -37,8 +38,6 @@ int i2c_open(pList *p)
 {
     static char i2cFname[] = ODROIDN2_I2C_BUS;
     p->i2c_fd = -1;
-    //fprintf(stdout, "open('%s') in i2c_init", i2cFname);
-    //fflush(stdout);
     if((p->i2c_fd = open(i2cFname, O_RDWR)) < 0)
     {
         //char err[200];
@@ -83,9 +82,8 @@ void i2c_close(int i2c_fd)
 }
 
 //------------------------------------------
-// write an 8 bit value to a register reg.
+// write an 8 bit value to a device register.
 //------------------------------------------
-//int i2c_write(int fd, uint8_t reg, uint16_t value)
 int i2c_write(int fd, uint8_t reg, uint8_t value)
 {
     static uint8_t data[2];
@@ -102,16 +100,15 @@ int i2c_write(int fd, uint8_t reg, uint8_t value)
 
 //------------------------------------------
 // i2c_writebuf()
-// write a buffer to the device
+// write a buffer of values to the device
 //------------------------------------------
 int i2c_writebuf(int fd, uint8_t reg, char *buffer, short int length)
 {
     static uint8_t data[2];
     data[0] = reg;
-    //data[1] = value & 0xff;
     int rv = 0;
 
-    if(rv = write(fd, data, 1) != 1)
+    if(rv = write(fd, data, 2) != 2)
     {
         perror("i2c_writebuf(): write()");
     }
@@ -130,7 +127,6 @@ uint8_t i2c_read(int fd, uint8_t reg)
 {
     static uint8_t data[2];
     data[0] = reg;
-    //data[1] = value & 0xff;
     int rv = 0;
 
     if(rv = write(fd, data, 1) != 1)
@@ -153,7 +149,6 @@ int i2c_readbuf(int fd, uint8_t reg, char* buf, short int length)
     int bytes_read;
     static uint8_t data[2];
     data[0] = reg;
-    //data[1] = value & 0xff;
     int rv = 0;
 
     if(rv = write(fd, data, 1) != 1)

@@ -70,6 +70,7 @@ typedef struct tag_pList
     int x_gain;
     int y_gain;
     int z_gain;
+    int readBackCCRegs;
 
     int hideRaw;
     int i2cBusNumber;
@@ -89,7 +90,8 @@ typedef struct tag_pList
     int tsMilliseconds;
     int TMRSRate;
     int verboseFlag;
-    
+    int mSampleRate;
+    int showTotal;
 
     char *Version;
 } pList;
