@@ -440,18 +440,18 @@ int getCommandLine(int argc, char** argv, pList *p)
             case '?':
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
-                fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].\n");
-                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer (default 200).\n");
+                fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers.\n");
-                fprintf(stdout, "   -d <count>             :  Set polling delay (default 10000).\n");
+                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer (default 200).\n");
                 fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate.\n");
+                fprintf(stdout, "   -d <count>             :  Set polling delay (default 10000).\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
-                fprintf(stdout, "   -l                     :  Read local temperature only.  [Not really implemented].\n");
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
-                fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
+                fprintf(stdout, "   -l                     :  Read local temperature only.  [Not really implemented].\n");
                 fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
+                fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
                 fprintf(stdout, "   -q                     :  Quiet mode.                   [Not really implemented].\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
@@ -460,8 +460,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
                 fprintf(stdout, "   -t                     :  Set Continuous Measurement Mode Data Rate.\n");
-                fprintf(stdout, "   -v                     :  Verbose output.               [Not really implemented].\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
+                fprintf(stdout, "   -v                     :  Verbose output.               [Not really implemented].\n");
                 fprintf(stdout, "   -X                     :  Read board with extender (default).\n");
                 fprintf(stdout, "   -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
