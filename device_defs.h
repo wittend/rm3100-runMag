@@ -88,13 +88,21 @@ typedef struct tag_pList
     int showParameters;
     int singleRead;
     int tsMilliseconds;
-    int TMRSRate;
+    int TMRCRate;
     int verboseFlag;
     int mSampleRate;
     int showTotal;
 
     char *Version;
 } pList;
+
+#define CMMMODE_START 1
+#define CMMMODE_DRDM  4     // Dont Use
+#define CMMMODE_CMX   16
+#define CMMMODE_CMY   32
+#define CMMMODE_CMZ   64
+
+#define CMMMODE_ALL   (CMMMODE_START | CMMMODE_CMX | CMMMODE_CMY | CMMMODE_CMZ)
 
 //-------------------------------------------
 // Device paths for different platforms

@@ -37,8 +37,8 @@
     
 int setup_mag(pList *p);
 long currentTimeMillis();
-int getTMRSReg(pList *p);
-void setTMRSReg(pList *p);
+int getTMRCReg(pList *p);
+void setTMRCReg(pList *p);
 int getCMMReg(pList *p);
 void setCMMReg(pList *p);
 unsigned short mag_set_sample_rate(pList *p, unsigned short sample_rate);
@@ -137,34 +137,10 @@ int setup_mag(pList *p)
              printf("RM3100 Detected Properly: ");
              printf("REVID: %x.\n", ver);
         }
-        /* Zero buffer content */
-        //i2cbuffer[0]=0; 
-        //i2cbuffer[1]=0;       
-        // Clears MAG and BEACON register and any pending measurement
-        //i2c_writebuf(p->i2c_fd, RM3100_MAG_POLL, i2cbuffer, 2);
         i2c_write(p->i2c_fd, RM3100_MAG_POLL, 0);
         i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);
-
-#if (DEBUG)        
-            //printf("Refore Cycle Count Register SET:\n");
-            //printf("p->cc_x: 0x%x, 0x%x  \n",  (p->cc_x & 0xff), (p->cc_x >> 8));
-            //printf("p->cc_y: 0x%x, 0x%x  \n",  (p->cc_y & 0xff), (p->cc_y >> 8));
-            //printf("p->cc_z: 0x%x, 0x%x  \n\n",(p->cc_z & 0xff), (p->cc_z >> 8));
-            //
-            //printf("regCC[%i]: 0x%X\n",   0, (p->cc_x >> 8));
-            //printf("regCC[%i]: 0x%X\n",   1, (p->cc_x & 0xff));
-            //printf("regCC[%i]: 0x%X\n",   2, (p->cc_y >> 8));
-            //printf("regCC[%i]: 0x%X\n",   3, (p->cc_y & 0xff));
-            //printf("regCC[%i]: 0x%X\n",   4, (p->cc_z >> 8));
-            //printf("regCC[%i]: 0x%X\n",   5, (p->cc_z & 0xff));
-            //printf("regCC[%i]: 0x%X\n\n", 6, NOS);
-#endif
         // Initialize CC settings
         setCycleCountRegs(p);
-//#if (DEBUG)        
-//        printf("Readback:\n");
-//        readCycleCountRegs(p);
-//#endif
     }
     // Sleep for 1 second
     usleep(100000);                           // delay to help monitor DRDY pin on eval board
@@ -186,15 +162,17 @@ int getCMMReg(pList *p)
 //------------------------------------------
 void setCMMReg(pList *p)
 {
-    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRSRate);
+    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
 }
 
 //------------------------------------------
 // getTMRSReg()
 // Sets Continuous Measurement Mode Data Rate
 //------------------------------------------
-int getTMRSReg(pList *p)
+int getTMRCReg(pList *p)
 {
+    //To set the TMRC register, send the register address, 0x0B, followed by the desired
+    //TMRC register value. To read the TMRC register, send 0x8B.
     return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
 }
 
@@ -202,9 +180,11 @@ int getTMRSReg(pList *p)
 // setTMRSReg()
 // Sets Continuous Measurement Mode Data Rate
 //------------------------------------------
-void setTMRSReg(pList *p)
+void setTMRCReg(pList *p)
 {
-    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRSRate);
+    //To set the TMRC register, send the register address, 0x0B, followed by the desired
+    //TMRC register value. To read the TMRC register, send 0x8B.
+    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
 }
 
 //------------------------------------------
@@ -300,7 +280,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Return single magnetometer reading:         %s\n",      p->singleRead ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Simple Magnetometer Support Board:     %i\n",      p->boardType);
     fprintf(stdout, "   Timestamp format:                           %s\n",      p->tsMilliseconds ? "RAW" : "UTCSTRING");
-    fprintf(stdout, "   Continuous Measurement Mode Data Rate:      %i\n",      p->TMRSRate);
+    fprintf(stdout, "   Continuous Measurement Mode Data Rate:      %i\n",      p->TMRCRate);
     fprintf(stdout, "   Verbose output:                             %s\n",      p->verboseFlag ? "TRUE" : "FALSE");
     fprintf(stdout, "   Show total field:                           %s\n",      p->showTotal ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Board with Extender:                   %i\n",      p->boardType);
@@ -343,12 +323,12 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->remoteTempAddr   = 0x18;  
     p->magnetometerOnly = FALSE;
     p->magnetometerAddr = 0x20;
-    p->outDelay         = 10000;
+    p->outDelay         = 1000000;
     p->quietFlag        = TRUE;
     p->showParameters   = FALSE;
     p->singleRead       = FALSE;
     p->tsMilliseconds   = FALSE;
-    p->TMRSRate         = 96;
+    p->TMRCRate         = 96;
     p->verboseFlag      = FALSE;
     p->showTotal        = FALSE;
     p->Version          = version;
@@ -421,7 +401,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->tsMilliseconds = TRUE;
                 break;
             case 't':
-                p->TMRSRate = atoi(optarg);
+                p->TMRCRate = atoi(optarg);
                 break;
             case 'V':
                 return 1;
@@ -459,7 +439,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -s                     :  Return single reading.\n");
                 fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
-                fprintf(stdout, "   -t                     :  Set Continuous Measurement Mode Data Rate.\n");
+                fprintf(stdout, "   -t                     :  Get/Set Continuous Measurement Mode Data Rate.\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -v                     :  Verbose output.               [Not really implemented].\n");
                 fprintf(stdout, "   -X                     :  Read board with extender (default).\n");
@@ -517,24 +497,11 @@ int readTemp(pList *p,int devAddr)
 int readMag(pList *p, int32_t *XYZ)
 {
     int rv = 0;
-//#if DEBUG
-//    printf("Entering readMag\n");
-//#endif    
     int bytes_read = 0;
-    short cmmMode = (1 + 16 + 32 + 64);
-//#if DEBUG
-//    printf("i2c_setAddress(%i, 0x%x)\n", p->i2c_fd, p->magnetometerAddr);
-//#endif    
-    // set address of the RM3100.
+    short cmmMode = (CMMMODE_ALL);   // 71 d
+
     i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
-//#if DEBUG
-//    printf("Write RM3100_MAG_POLL.\n");
-//#endif    
-//    // Write command to  use polling.
-//    i2c_write(p->i2c_fd, RM3100_MAG_POLL, RM3100I2C_POLLXYZ);
-//#if DEBUG
-//    printf("Waiting for DRDY...\n");
-//#endif
+
 #if DEBUG
     printf("Write RM3100I2C_CMM.  Mode: 0x%x. (AKA Beacon)\n", cmmMode);
 #endif    
@@ -546,9 +513,6 @@ int readMag(pList *p, int32_t *XYZ)
     // Check if DRDY went high and wait unit high before reading results
     while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
-#if DEBUG
-        //printf("i2c_read(p->i2c_fd, RM3100I2C_STATUS) returns %i\n", rv);
-#endif    
     }
 #if DEBUG
     printf("Got DRDY...\n");
@@ -591,13 +555,13 @@ int main(int argc, char** argv)
     int rv = 0;
     struct tm *utcTime = getUTC();
     
-    if(p.verboseFlag)
-    {
-        printf("\nUTC time: %s", asctime(utcTime));
-    }
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
         return rv;
+    }
+    if(p.verboseFlag)
+    {
+        printf("\nUTC time: %s", asctime(utcTime));
     }
     if(p.showParameters)
     {
@@ -609,7 +573,11 @@ int main(int argc, char** argv)
 
     // Setup the magnetometer.
     setup_mag(&p);
-    mag_set_sample_rate(&p, 100);   
+    mag_set_sample_rate(&p, 100);
+    // TMRC Reg mysteriously gets bolluxed up, probably setting CMM rates.  Brute force fix for now.
+    p.TMRCRate = 0x96;
+    setTMRCReg(&p);
+    printf("TMRS reg value: %i\n", getTMRCReg(&p));
     if(p.readBackCCRegs)
     {
         readCycleCountRegs(&p);
@@ -687,7 +655,7 @@ int main(int argc, char** argv)
             }
             if(p.showTotal)
             {
-                fprintf(stdout, ", Tm: \"%.0f\"",           sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(stdout, ", Tm: \"%.0f\"",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
            fprintf(stdout, " }\n");
         }
