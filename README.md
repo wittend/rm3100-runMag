@@ -16,43 +16,58 @@ Then do:
 
 
     $ make
+    
 
 and if all goes well type:
 
     $ sudo ./runMag
     (most flavors of Linux will require sudo)
+    
 
 and now you should see some results!
 
 ## Example:
 
+    dave@odroid:~/$ sudo ./runMag -j -Z
+    
+    { ts:"03 May 2020 23:56:55",  lt:"24.62", x:"14" , y:"-11" , z:"49", rx:"1109", ry:"-844", rz:"3707", Tm: "52" }
+    { ts:"03 May 2020 23:56:59",  lt:"24.62", x:"14" , y:"-11" , z:"49", rx:"1111", ry:"-865", rz:"3712", Tm: "52" }
+    { ts:"03 May 2020 23:57:03",  lt:"24.62", x:"14" , y:"-11" , z:"49", rx:"1105", ry:"-862", rz:"3706", Tm: "52" }
+    ...
+    
+
+## Example:
+
     dave@odroid:~/$ sudo ./runMag -h
-
-    ./runMag Version = 0.0.2
-
+    
+    ./runMag Version = 0.0.3
+    
     Parameters:
-
-    -b <bus as integer>    :  I2C bus number as integer.
-    -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].
-    -c <count>             :  Set cycle counts as integer (default 200).
-    -C                     :  Read cycle count registers.   [Not really implemented].   
-    -H                     :  Hide raw measurments.
-    -j                     :  Format output as JSON.
-    -l                     :  Read local temperature only.  [Not really implemented].
-    -L [addr as integer]   :  Local temperature address (default 19 hex).
-    -m                     :  Read magnetometer only.
-    -M [addr as integer]   :  Magnetometer address (default 20 hex).
-    -P                     :  Show Parameters.
-    -q                     :  Quiet mode.                   [Not really implemented].
-    -r                     :  Read remote temperature only.
-    -R [addr as integer]   :  Remote temperature address (default 18 hex).
-    -s                     :  Return single reading.
-    -S                     :  Read Simple Magnetometer Support Board.
-    -T                     :  Raw timestamp in milliseconds (default: UTC string).
-    -v                     :  Verbose output.               [Not really implemented].
-    -V                     :  Display software version and exit.
-    -X                     :  Read board with extender (default).
-    -h or -?               :  Display this help.
-   
-   
+    
+       -b <bus as integer>    :  I2C bus number as integer.
+       -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].
+       -c <count>             :  Set cycle counts as integer (default 200).
+       -C                     :  Read back cycle count registers.
+       -d <count>             :  Set polling delay (default 10000).
+       -D <rate>              :  Set magnetometer sample rate.
+       -H                     :  Hide raw measurments.
+       -j                     :  Format output as JSON.
+       -l                     :  Read local temperature only.  [Not really implemented].
+       -L [addr as integer]   :  Local temperature address (default 19 hex).
+       -m                     :  Read magnetometer only.
+       -M [addr as integer]   :  Magnetometer address (default 20 hex).
+       -P                     :  Show Parameters.
+       -q                     :  Quiet mode.                   [Not really implemented].
+       -r                     :  Read remote temperature only.
+       -R [addr as integer]   :  Remote temperature address (default 18 hex).
+       -s                     :  Return single reading.
+       -S                     :  Read Simple Magnetometer Support Board.
+       -T                     :  Raw timestamp in milliseconds (default: UTC string).
+       -t                     :  Set Continuous Measurement Mode Data Rate.
+       -v                     :  Verbose output.               [Not entirely implemented].
+       -V                     :  Display software version and exit.
+       -X                     :  Read board with extender (default).
+       -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
+       -h or -?               :  Display this help.
+    
    
