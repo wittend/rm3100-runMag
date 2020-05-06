@@ -265,7 +265,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Cycle count Y as integer:                   %i\n",      p->cc_y);
     fprintf(stdout, "   Cycle count Z as integer:                   %i\n",      p->cc_z);
     fprintf(stdout, "   Read back CC Regs after set:                %s\n",      p->readBackCCRegs ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Loop Delay:                                 %i\n",      p->outDelay);
+    fprintf(stdout, "   Loop Delay (uSec):                          %i\n",      p->outDelay);
     fprintf(stdout, "   Magnetometer sample rate:                   %i\n",      p->mSampleRate);
     fprintf(stdout, "   Hide raw measurements:                      %s\n",      p->hideRaw ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Format output as JSON:                      %s\n",      p->jsonFlag ? "TRUE" : "FALSE" );
@@ -301,17 +301,18 @@ int getCommandLine(int argc, char** argv, pList *p)
     }
     
     p->boardType        = 0;
+    p->boardMode        = LOCAL;
     p->doBist           = FALSE;
 
     p->cc_x             = CC_200;
     p->cc_y             = CC_200;
     p->cc_z             = CC_200;
-    p->readBackCCRegs   = FALSE;
-    p->mSampleRate      = 100;
     p->x_gain           = GAIN_75;
     p->y_gain           = GAIN_75;
     p->z_gain           = GAIN_75;
     
+    p->readBackCCRegs   = FALSE;
+    p->mSampleRate      = 100;
     p->hideRaw          = FALSE;
     p->i2cBusNumber     = 1;
     p->i2c_fd           = 0;
@@ -333,7 +334,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->showTotal        = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?b:B:c:Cd:D:HhjlL:mM:o:PqrR:sSTt:vXhqVZ")) != -1)
+    while((c = getopt(argc, argv, "?b:B:c:Cd:D:HhjlL:mM:o:PqrR:sSTt:vXxYyhqVZ")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -395,7 +396,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->singleRead = TRUE;
                 break;
             case 'S':
-                p->boardType = 1;
+                //p->boardType = 1;
                 break;
             case 'T':
                 p->tsMilliseconds = TRUE;
@@ -412,6 +413,19 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'X':
                 p->boardType = 0;
+                p->boardMode = LOCAL;
+                break;
+            case 'x':
+                p->boardType = 1;
+                p->boardMode = REMOTE;
+                break;
+            case 'Y':
+                p->boardType = 2;
+                p->boardMode = LOCAL;
+                break;
+            case 'y':
+                p->boardType = 3;
+                p->boardMode = REMOTE;
                 break;
             case 'Z':
                 p->showTotal = TRUE;
@@ -422,10 +436,10 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
-                fprintf(stdout, "   -C                     :  Read back cycle count registers.\n");
+                fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
                 fprintf(stdout, "   -c <count>             :  Set cycle counts as integer (default 200).\n");
-                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate.\n");
-                fprintf(stdout, "   -d <count>             :  Set polling delay (default 10000).\n");
+                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate [TMRC].\n");
+                fprintf(stdout, "   -d <count>             :  Set polling delay (default 1000000 uSec).\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
@@ -437,12 +451,15 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
                 fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex).\n");
                 fprintf(stdout, "   -s                     :  Return single reading.\n");
-                fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
+//                fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
                 fprintf(stdout, "   -t                     :  Get/Set Continuous Measurement Mode Data Rate.\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
-                fprintf(stdout, "   -v                     :  Verbose output.               [Not really implemented].\n");
-                fprintf(stdout, "   -X                     :  Read board with extender (default).\n");
+                fprintf(stdout, "   -v                     :  Verbose output.\n");
+                fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
+                fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
+                fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone. [UNTESTED]\n");
+                fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]\n");
                 fprintf(stdout, "   -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
                 return 1;

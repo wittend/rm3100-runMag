@@ -28,6 +28,9 @@
 #define FALSE 0
 #endif
 
+#define LOCAL 0
+#define REMOTE 1
+
 //-------------------------------------------
 // Enumerations 
 //-------------------------------------------
@@ -61,6 +64,7 @@ typedef enum
 typedef struct tag_pList
 {
     int boardType;
+    int boardMode;
     int doBist; 
 
     int cc_x;

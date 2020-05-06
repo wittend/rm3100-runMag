@@ -44,30 +44,32 @@ and now you should see some results!
     
     Parameters:
     
-       -b <bus as integer>    :  I2C bus number as integer.
        -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].
+       -b <bus as integer>    :  I2C bus number as integer.
+       -C                     :  Read back cycle count registers before sampling.
        -c <count>             :  Set cycle counts as integer (default 200).
-       -C                     :  Read back cycle count registers.
-       -d <count>             :  Set polling delay (default 10000).
-       -D <rate>              :  Set magnetometer sample rate.
+       -D <rate>              :  Set magnetometer sample rate [TMRC].
+       -d <count>             :  Set polling delay (default 1000000 uSec).
        -H                     :  Hide raw measurments.
        -j                     :  Format output as JSON.
-       -l                     :  Read local temperature only.  [Not really implemented].
        -L [addr as integer]   :  Local temperature address (default 19 hex).
-       -m                     :  Read magnetometer only.
+       -l                     :  Read local temperature only.  [Not really implemented].
        -M [addr as integer]   :  Magnetometer address (default 20 hex).
+       -m                     :  Read magnetometer only.
        -P                     :  Show Parameters.
        -q                     :  Quiet mode.                   [Not really implemented].
        -r                     :  Read remote temperature only.
        -R [addr as integer]   :  Remote temperature address (default 18 hex).
        -s                     :  Return single reading.
-       -S                     :  Read Simple Magnetometer Support Board.
        -T                     :  Raw timestamp in milliseconds (default: UTC string).
-       -t                     :  Set Continuous Measurement Mode Data Rate.
-       -v                     :  Verbose output.               [Not entirely implemented].
+       -t                     :  Get/Set Continuous Measurement Mode Data Rate.
        -V                     :  Display software version and exit.
-       -X                     :  Read board with extender (default).
+       -v                     :  Verbose output.
+       -X                     :  Read Simple Magnetometer Board (SMSB).
+       -x                     :  Read board with extender (MSBx).
+       -Y                     :  Read Scotty's RPi Mag HAT standalone. [UNTESTED]
+       -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]
        -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
        -h or -?               :  Display this help.
-    
-   
+
+
