@@ -36,11 +36,13 @@
 //------------------------------------------
 int i2c_open(pList *p)
 {
-    static char i2cFname[] = ODROIDN2_I2C_BUS;
     p->i2c_fd = -1;
-    if((p->i2c_fd = open(i2cFname, O_RDWR)) < 0)
+    
+    char pathStr[64] = "";
+    snprintf(pathStr, sizeof(pathStr), "/dev/i2c-%i", p->i2cBusNumber);
+    
+    if((p->i2c_fd = open(pathStr, O_RDWR)) < 0)
     {
-        //char err[200];
         perror("Bus open failed\n");
         return -1;
     }

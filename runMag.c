@@ -252,18 +252,46 @@ struct tm *getUTC()
     return ptm;
 }
 
+
+//------------------------------------------
+// listSBCs()
+//------------------------------------------
+void listSBCs()
+{
+    int i = 0;
+    fprintf(stdout, "\nList of internally known single board computer types\n  (others may be used by setting -b to specify the bus number required\n\n");
+    fprintf(stdout, " Index        SBC Name                     Path     Bus Number \n");
+    while(busDevs[i].devPath != NULL)
+    {
+        fprintf(stdout, "   %i      %s             %s        %i\n", busDevs[i].enumVal, busDevs[i].SBCString, busDevs[i].devPath, busDevs[i].busNumber);
+        i++;
+    }
+    fprintf(stdout, "\n");
+}
+
 //------------------------------------------
 // showSettings()
 //------------------------------------------
 void showSettings(pList *p)
 {
+    char pathStr[64] = "";
+    snprintf(pathStr, sizeof(pathStr), "/dev/i2c-%i", p->i2cBusNumber);
+    
     fprintf(stdout, "\nVersion = %s\n", version);
     fprintf(stdout, "\nCurrent Parameters:\n\n");
+    //fprintf(stdout, "   Single Board Computer type:                 %i\n",      p->SBCType);
+    //fprintf(stdout, "   Single Board Computer type as string:       %s\n",      p->SBCType == -1 ? "UNKNOWN - using default." : busDevs[p->SBCType].SBCString);
+    //fprintf(stdout, "   I2C bus number as integer:                  %i\n",      p->SBCType == -1 ? 0 : busDevs[p->SBCType].busNumber);
+    //fprintf(stdout, "   I2C bus path as string:                     %s\n",      p->SBCType == -1 ? "/dev/i2c-0" : busDevs[p->SBCType].devPath);
     fprintf(stdout, "   I2C bus number as integer:                  %i\n",      p->i2cBusNumber);
+    fprintf(stdout, "   I2C bus path as string:                     %s\n",      pathStr);
     fprintf(stdout, "   Built in self test (BIST) value:            0x%X\n",    p->doBist);
     fprintf(stdout, "   Cycle count X as integer:                   %i\n",      p->cc_x);
     fprintf(stdout, "   Cycle count Y as integer:                   %i\n",      p->cc_y);
     fprintf(stdout, "   Cycle count Z as integer:                   %i\n",      p->cc_z);
+    fprintf(stdout, "   X gain (depends on X CC):                   %i\n",      p->x_gain);
+    fprintf(stdout, "   Y gain (depends on Y CC):                   %i\n",      p->y_gain);
+    fprintf(stdout, "   Z gain (depends on Z CC):                   %i\n",      p->z_gain);
     fprintf(stdout, "   Read back CC Regs after set:                %s\n",      p->readBackCCRegs ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Loop Delay (uSec):                          %i\n",      p->outDelay);
     fprintf(stdout, "   Magnetometer sample rate:                   %i\n",      p->mSampleRate);
@@ -300,6 +328,7 @@ int getCommandLine(int argc, char** argv, pList *p)
         memset(p, 0, sizeof(pList));
     }
     
+    p->SBCType          = eRASPI_I2C_BUS;
     p->boardType        = 0;
     p->boardMode        = LOCAL;
     p->doBist           = FALSE;
@@ -314,7 +343,8 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->readBackCCRegs   = FALSE;
     p->mSampleRate      = 100;
     p->hideRaw          = FALSE;
-    p->i2cBusNumber     = 1;
+    //p->i2cBusNumber     = 1;
+    p->i2cBusNumber     = busDevs[eRASPI_I2C_BUS].busNumber;
     p->i2c_fd           = 0;
     p->jsonFlag         = FALSE;
 
@@ -334,22 +364,26 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->showTotal        = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?b:B:c:Cd:D:HhjlL:mM:o:PqrR:sSTt:vXxYyhqVZ")) != -1)
+    while((c = getopt(argc, argv, "?ab:B:c:Cd:D:HhjlL:mM:o:PqrR:sSTt:vXxYyhqVZ")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
         {
+            case 'a':
+                listSBCs();
+                break;
             case 'b':
                 p->i2cBusNumber = atoi(optarg);
+                //p->SBCType = -1;
                 break;
             case 'B':
                 p->doBist = atoi(optarg);
+                printf("Not implemented yet.");
                 break;
             case 'c':
                 p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
                 break;
             case 'C':
-                // fprintf(stdout, "CycleCount: '%s'\n", optarg);
                 p->readBackCCRegs = TRUE;
                 break;
             case 'd':
@@ -434,6 +468,7 @@ int getCommandLine(int argc, char** argv, pList *p)
             case '?':
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
+                fprintf(stdout, "   -a                     :  List known SBCs\n");
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
@@ -451,7 +486,6 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
                 fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex).\n");
                 fprintf(stdout, "   -s                     :  Return single reading.\n");
-//                fprintf(stdout, "   -S                     :  Read Simple Magnetometer Support Board.\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
                 fprintf(stdout, "   -t                     :  Get/Set Continuous Measurement Mode Data Rate.\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
@@ -571,7 +605,7 @@ int main(int argc, char** argv)
     float cTemp = 0.0;
     int rv = 0;
     struct tm *utcTime = getUTC();
-    
+
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
         return rv;

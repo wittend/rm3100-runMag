@@ -63,6 +63,7 @@ typedef enum
 //------------------------------------------
 typedef struct tag_pList
 {
+    int SBCType;
     int boardType;
     int boardMode;
     int doBist; 
@@ -111,6 +112,7 @@ typedef struct tag_pList
 //-------------------------------------------
 // Device paths for different platforms
 //-------------------------------------------
+#define OTHER_BUS           ""
 #define RASPI_I2C_BUS       "/dev/i2c-1"
 #define ODROIDC0_I2C_BUS    "/dev/i2c-1"
 #define ODROIDC1_I2C_BUS    "/dev/i2c-1"
@@ -123,10 +125,26 @@ typedef struct tag_pList
 #define NV_NANO_I2C_BUS     "/dev/i2c-1"
 
 //-------------------------------------------
+// Known SBC device platforms 
+//-------------------------------------------
+#define sOTHER_BUS           "Other           "
+#define sRASPI_I2C_BUS       "Rasoberry Pi 3/4"
+#define sODROIDC0_I2C_BUS    "Odroid CO bus 1 "
+#define sODROIDC1_I2C_BUS    "Odroid C1 bus 1 "
+#define sODROIDC2_I2C_BUS    "Odroid C2 bus 1 "
+#define sODROIDC4_I2C_BUS    "Odroid C4 bus 1 "
+#define sODROIDC4_I2C_BUS3   "Odroid C4 bus 3 "
+#define sODROIDN2_I2C_BUS    "Odroid N2 bus 2 "
+#define sODROIDN2_I2C_BUS3   "Odroid N2 bus 3 "
+#define sNV_XAVIER_I2C_BUS   "NV Xavier bus 8 "
+#define sNV_NANO_I2C_BUS     "NV Nano bus 1   "
+
+//-------------------------------------------
 // Device paths for different platforms
 //-------------------------------------------
 typedef enum
 {
+//    eOTHER_BUS = -1,
     eRASPI_I2C_BUS = 0,
     eODROIDC0_I2C_BUS,
     eODROIDC1_I2C_BUS,
@@ -145,7 +163,9 @@ typedef enum
 struct busDev
 {
     const char *devPath;
+    const char *SBCString;
     int         enumVal;
+    int         busNumber;
 };
 
 //-------------------------------------------
@@ -153,18 +173,19 @@ struct busDev
 //-------------------------------------------
 static struct busDev busDevs[] =
 {
-    /* Darice Path,     enum Value*/
-    {RASPI_I2C_BUS,     eRASPI_I2C_BUS},
-    {ODROIDC0_I2C_BUS,  eODROIDC0_I2C_BUS},
-    {ODROIDC1_I2C_BUS,  eODROIDC1_I2C_BUS},
-    {ODROIDN2_I2C_BUS,  eODROIDC2_I2C_BUS},
-    {ODROIDC4_I2C_BUS,  eODROIDC4_I2C_BUS},
-    {ODROIDC4_I2C_BUS3, eODROIDC4_I2C_BUS3},
-    {ODROIDN2_I2C_BUS,  eODROIDN2_I2C_BUS},
-    {ODROIDN2_I2C_BUS3, eODROIDN2_I2C_BUS3},
-    {NV_XAVIER_I2C_BUS, eNV_XAVIER_I2C_BUS},
-    {NV_NANO_I2C_BUS,   eNV_NANO_I2C_BUS},
-    {NULL,              -1}
+    /* Device Path,     SBCString,          enum Value          Bus Number*/
+//    {OTHER_BUS,         sOTHER_BUS,          eOTHER_BUS,         -1},
+    {RASPI_I2C_BUS,     sRASPI_I2C_BUS,      eRASPI_I2C_BUS,     1},
+    {ODROIDC0_I2C_BUS,  sODROIDC0_I2C_BUS,   eODROIDC0_I2C_BUS,  1},
+    {ODROIDC1_I2C_BUS,  sODROIDC1_I2C_BUS,   eODROIDC1_I2C_BUS,  1},
+    {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDC2_I2C_BUS,  1},
+    {ODROIDC4_I2C_BUS,  sODROIDC4_I2C_BUS,   eODROIDC4_I2C_BUS,  2},
+    {ODROIDC4_I2C_BUS3, sODROIDC4_I2C_BUS3,  eODROIDC4_I2C_BUS3, 3},
+    {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDN2_I2C_BUS,  2},
+    {ODROIDN2_I2C_BUS3, sODROIDN2_I2C_BUS3,  eODROIDN2_I2C_BUS3, 3},
+    {NV_XAVIER_I2C_BUS, sNV_XAVIER_I2C_BUS,  eNV_XAVIER_I2C_BUS, 8},
+    {NV_NANO_I2C_BUS,   sNV_NANO_I2C_BUS,    eNV_NANO_I2C_BUS,   1},
+    {NULL,              NULL,                -1,                -1}
 };
 
 
