@@ -10,6 +10,11 @@
 #ifndef PNIRM3100_I2C_H
 #define PNIRM3100_I2C_H
 
+#include "main.h"
+
+//------------------------------------------
+// Prototypes
+//------------------------------------------
 int i2c_open(pList *p);
 void i2c_close(int fd);
 void i2c_setAddress(int fd, int devAddr);

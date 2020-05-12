@@ -58,49 +58,6 @@ typedef enum
     SensorStatusPending = 255,      /**< @brief Reserved for internal used */
 } SensorStatus;
  
-//------------------------------------------
-// Parameter List
-//------------------------------------------
-typedef struct tag_pList
-{
-    int SBCType;
-    int boardType;
-    int boardMode;
-    int doBist; 
-
-    int cc_x;
-    int cc_y;
-    int cc_z;
- 
-    int x_gain;
-    int y_gain;
-    int z_gain;
-    int readBackCCRegs;
-
-    int hideRaw;
-    int i2cBusNumber;
-    int i2c_fd;
-    int jsonFlag;
-
-    int localTempOnly;
-    int localTempAddr;
-    int magnetometerOnly;
-    int magnetometerAddr;
-    int outDelay;
-    int quietFlag;
-    int remoteTempOnly;
-    int remoteTempAddr;
-    int showParameters;
-    int singleRead;
-    int tsMilliseconds;
-    int TMRCRate;
-    int verboseFlag;
-    int mSampleRate;
-    int showTotal;
-
-    char *Version;
-} pList;
-
 #define CMMMODE_START 1
 #define CMMMODE_DRDM  4     // Dont Use
 #define CMMMODE_CMX   16
@@ -185,7 +142,7 @@ static struct busDev busDevs[] =
     {ODROIDN2_I2C_BUS3, sODROIDN2_I2C_BUS3,  eODROIDN2_I2C_BUS3, 3},
     {NV_XAVIER_I2C_BUS, sNV_XAVIER_I2C_BUS,  eNV_XAVIER_I2C_BUS, 8},
     {NV_NANO_I2C_BUS,   sNV_NANO_I2C_BUS,    eNV_NANO_I2C_BUS,   1},
-    {NULL,              NULL,                -1,                -1}
+    {0,                 0,                  -1,                 -1}
 };
 
 

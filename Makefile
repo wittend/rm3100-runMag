@@ -8,10 +8,10 @@
 CC = gcc
 LD = gcc
 CXX = g++
-DEPS = device_defs.h i2c.h
-SRCS = runMag.c i2c.c
+DEPS = main.h MCP9808.h device_defs.h i2c.h runMag.h
+SRCS = main.c runMag.c i2c.c
 OBJS = $(subst .c,.o,$(SRCS))
-DOBJS = runMag.o i2c.o
+DOBJS = main.o runMag.o i2c.o
 LIBS = -lm
 DEBUG = -g 
 CFLAGS = -I.
@@ -26,13 +26,15 @@ RM = rm -f
 
 all: release
 
-debug: runMag.c $(DEPS) 
+debug: main.c $(DEPS) 
+	$(CC) -c $(DEBUG) runMag.c  
 	$(CC) -c $(DEBUG) i2c.c  
-	$(CC) -o $(TARGET) $(DEBUG) runMag.c i2c.o $(LIBS)
+	$(CC) -o $(TARGET) $(DEBUG) main.c runMag.c i2c.o $(LIBS)
 
 release: runMag.c $(DEPS)
+	$(CC) -c $(DEBUG) runMag.c
 	$(CC) -c $(CFLAGS) i2c.c  
-	$(CC) -o $(TARGET) $(CFLAGS) runMag.c i2c.o $(LIBS)
+	$(CC) -o $(TARGET) $(CFLAGS) main.c runMag.c i2c.o $(LIBS)
 
 clean:
 	$(RM) $(OBJS) $(TARGET)

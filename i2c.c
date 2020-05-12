@@ -13,23 +13,24 @@
 // Date:        April 21, 2020
 // License:     GPL 3.0
 //=========================================================================
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <sys/time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <memory.h>
+//#include <stdint.h>
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <ctype.h>
+//#include <sys/types.h>
+//#include <sys/stat.h>
+//#include <sys/ioctl.h>
+//#include <sys/time.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <unistd.h>
+//#include <fcntl.h>
+//#include <memory.h>
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 #include "device_defs.h"
 #include "i2c.h"
+#include "main.h"
 
 //------------------------------------------
 // i2cInit()
@@ -206,53 +207,3 @@ int i2c_readbuf(int fd, uint8_t reg, char* buf, short int length)
 // *
 // * @returns The actual sample rate of the sensor.
 // */
-//unsigned short mag_set_sample_rate(unsigned short sample_rate)
-//{
-//    int i;
-//    static char i2cbuffer[1];
-//    const unsigned short int supported_rates[][2] = \
-//    {
-//        /* [Hz], register value */
-//        {   2, 0x0A},   // up to 2Hz
-//        {   4, 0x09},   // up to 4Hz
-//        {   8, 0x08},   // up to 8Hz
-//        {  16, 0x07},   // up to 16Hz
-//        {  31, 0x06},   // up to 31Hz
-//        {  62, 0x05},   // up to 62Hz
-//        {  125, 0x04},  // up to 125Hz
-//        {  220, 0x03}   // up to 250Hz
-//    };
-//    for(i = 0; i < sizeof(supported_rates)/(sizeof(unsigned short int)*2) - 1; i++)
-//    {
-//        if(sample_rate <= supported_rates[i][0])
-//        {
-//            break;
-//        }
-//    }
-//    if (mSensorMode == SensorPowerModeActive) 
-//    {
-//        mag_disable_interrupts();
-//    }
-//    mSampleRate = supported_rates[i][0];
-//    i2cbuffer[0]= (char)supported_rates[i][1];
-//    rm3100_i2c_write(RM3100_TMRC_REG, i2cbuffer, 1);
-//    if (mSensorMode == SensorPowerModeActive) 
-//    {
-//        mag_enable_interrupts();
-//    }
-//    return mSampleRate;
-//
-//}
-//
-///**
-// * @fn unsigned short int mag_get_sample_rate();
-// *
-// * @brief Retrieves the mset sample rate of the sensor.
-// *
-// * @returns The actual sample rate of the sensor.
-// */
-//unsigned short mag_get_sample_rate()
-//{
-//    return mSampleRate;
-//}
-//
