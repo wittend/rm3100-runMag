@@ -7,14 +7,6 @@ For now just clone this project into your home directory on the Raspberry Pi or 
 Then do:
 
     $ cd rm3100-runMag
-    
-
-    Kluge Alert:
-    check line 64 in I2C to be sure that the constant (from device_defs.h) for your single board computer is used.
-    e.g.:     char i2cFname[] = ODROIDN2_I2C_BUS;
-    This will be fixed!
-
-
     $ make
     
 
@@ -44,6 +36,7 @@ and now you should see some results!
     
     Parameters:
     
+       -a                     :  List known SBC I2C bus numbers (for use with -b).
        -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].
        -b <bus as integer>    :  I2C bus number as integer.
        -C                     :  Read back cycle count registers before sampling.
