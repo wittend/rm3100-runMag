@@ -30,5 +30,6 @@ int readMag(pList *p, int32_t *XYZ);
 void readCycleCountRegs(pList *p);
 void setCycleCountRegs(pList *p);
 void showSettings(pList *p);
+int runBIST(pList *p);
 
 #endif // SWX3100RUNMag_h

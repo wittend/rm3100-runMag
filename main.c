@@ -25,8 +25,8 @@
 char version[] = SIMPLEI2C_VERSION;
 static char  mSamples[9];
 
-
-#define DEBUG 0
+//#define DEBUG 0
+#define OUTBUFLEN 60
 
 //------------------------------------------
 // currentTimeMillis()
@@ -37,8 +37,6 @@ long currentTimeMillis()
     gettimeofday(&time, NULL);
     return time.tv_sec * 1000 + time.tv_usec / 1000;
 }
-
-#define UTC (0) 
 
 //------------------------------------------
 // getUTC()
@@ -65,7 +63,7 @@ struct tm *getUTC()
 void listSBCs()
 {
     int i = 0;
-    fprintf(stdout, "\nList of internally known single board computer types\n  (others may be used by setting -b to specify the bus number required\n\n");
+    fprintf(stdout, "\nList of some known single board computer types\n  (use -b to specify the bus number required\n\n");
     fprintf(stdout, " Index        SBC Name                     Path     Bus Number \n");
     while(busDevs[i].devPath != NULL)
     {
@@ -274,7 +272,7 @@ int getCommandLine(int argc, char** argv, pList *p)
             case '?':
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
-                fprintf(stdout, "   -a                     :  List known SBCs\n");
+                fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers (use with -b).\n");
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
@@ -395,8 +393,6 @@ int readMag(pList *p, int32_t *XYZ)
 
     return bytes_read;
 }
-
-#define OUTBUFLEN 60
 
 //------------------------------------------
 //  main()
