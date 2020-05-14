@@ -12,7 +12,8 @@
 //-----------------------------------
 // MCP9808 Bus Address.
 //-----------------------------------
-#define MCP9808_I2CADDR_DEFAULT         0x18       // alt: (selected by chip hardware 0x19 - 0x1F
+#define MCP9808_LCL_I2CADDR_DEFAULT         0x18       // alt: (selected by chip hardware 0x19 - 0x1F
+#define MCP9808_RMT_I2CADDR_DEFAULT         0x18       // alt: (selected by chip hardware 0x19 - 0x1F
 
 // MCP9808 Registers
 //-----------------------------------

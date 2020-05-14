@@ -80,8 +80,9 @@ long currentTimeMillis();
 void listSBCs();
 void showSettings(pList *p);
 int getCommandLine(int argc, char** argv, pList *p);
-int readTemp(pList *p,int devAddr);
-int readMag(pList *p, int32_t *XYZ);
+int readTemp(pList *p, int devAddr);
+//int readMag(pList *p, int32_t *XYZ);
+int readMag(pList *p, int devAddr, int32_t *XYZ);
 int main(int argc, char** argv);
 
 

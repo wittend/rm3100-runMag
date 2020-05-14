@@ -26,7 +26,7 @@ char version[] = SIMPLEI2C_VERSION;
 static char  mSamples[9];
 
 //#define DEBUG 0
-#define OUTBUFLEN 60
+#define UTCBUFLEN 64
 
 //------------------------------------------
 // currentTimeMillis()
@@ -153,11 +153,11 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->jsonFlag         = FALSE;
 
     p->localTempOnly    = FALSE;
-    p->localTempAddr    = 0x19;
+    p->localTempAddr    = MCP9808_LCL_I2CADDR_DEFAULT;
     p->remoteTempOnly   = FALSE;
-    p->remoteTempAddr   = 0x18;  
+    p->remoteTempAddr   = MCP9808_RMT_I2CADDR_DEFAULT;  
     p->magnetometerOnly = FALSE;
-    p->magnetometerAddr = 0x20;
+    p->magnetometerAddr = RM3100_I2C_ADDRESS;
     p->outDelay         = 1000000;
     p->quietFlag        = TRUE;
     p->showParameters   = FALSE;
@@ -322,7 +322,7 @@ int getCommandLine(int argc, char** argv, pList *p)
 //------------------------------------------
 // readTemp()
 //------------------------------------------
-int readTemp(pList *p,int devAddr)
+int readTemp(pList *p, int devAddr)
 {
     int temp = -99;
     char data[2] = {0};
@@ -349,13 +349,13 @@ int readTemp(pList *p,int devAddr)
 //------------------------------------------
 // readMag()
 //------------------------------------------
-int readMag(pList *p, int32_t *XYZ)
+int readMag(pList *p, int devAddr, int32_t *XYZ)
 {
     int rv = 0;
     int bytes_read = 0;
     short cmmMode = (CMMMODE_ALL);   // 71 d
 
-    i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
+    i2c_setAddress(p->i2c_fd, devAddr);
 
 #if DEBUG
     printf("Write RM3100I2C_CMM.  Mode: 0x%x. (AKA Beacon)\n", cmmMode);
@@ -400,11 +400,12 @@ int readMag(pList *p, int32_t *XYZ)
 int main(int argc, char** argv)
 {
     pList p;
-    char outStr[OUTBUFLEN] = "";
+    char utcStr[UTCBUFLEN] = "";
     int32_t rXYZ[3];
     int32_t xyz[3];
     int temp = 0;
-    float cTemp = 0.0;
+    float lcTemp = 0.0;
+    float rcTemp = 0.0;
     int rv = 0;
     struct tm *utcTime = getUTC();
 
@@ -441,14 +442,29 @@ int main(int argc, char** argv)
         //  Read temp sensor.
         if(!p.magnetometerOnly)
         {
-            temp = readTemp(&p, MCP9808_I2CADDR_DEFAULT);
-            cTemp = temp * 0.0625;
+            if(p.remoteTempOnly)
+            {
+                temp = readTemp(&p, p.remoteTempAddr);  //MCP9808_I2CADDR_DEFAULT);
+                rcTemp = temp * 0.0625;
+            }
+            else if(p.localTempOnly)
+            {
+                temp = readTemp(&p, p.localTempAddr);
+                lcTemp = temp * 0.0625;
+            }
+            else
+            {
+                temp = readTemp(&p, p.remoteTempAddr);
+                rcTemp = temp * 0.0625;
+                temp = readTemp(&p, p.localTempAddr);
+                lcTemp = temp * 0.0625;
+            }
         }
  
         // Read Magnetometer.
-        if(!p.localTempOnly)
+        if((!p.localTempOnly) || (!p.remoteTempOnly))
         {
-            readMag(&p,rXYZ);
+            readMag(&p, p.magnetometerAddr, rXYZ);
             xyz[0] = (rXYZ[0] / p.x_gain);
             xyz[1] = (rXYZ[1] / p.y_gain);
             xyz[2] = (rXYZ[2] / p.z_gain);
@@ -464,10 +480,22 @@ int main(int argc, char** argv)
             else
             {
                 utcTime = getUTC();
-                strftime(outStr, OUTBUFLEN, "%d %b %Y %T", utcTime);                
-                fprintf(stdout, "Time: %s", outStr);
+                strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);                
+                fprintf(stdout, "Time: %s", utcStr);
             }
-            fprintf(stdout, ", Temp: %.2f",    cTemp);
+            if(p.remoteTempOnly)
+            {
+                fprintf(stdout, ", rTemp: %.2f",    rcTemp);
+            }
+            else if(p.localTempOnly)
+            {
+                fprintf(stdout, ", lTemp: %.2f",    lcTemp);
+            }
+            else
+            {
+                fprintf(stdout, ", rTemp: %.2f",    rcTemp);
+                fprintf(stdout, ", lTemp: %.2f",    lcTemp);
+            }
             fprintf(stdout, ", x: %i",           xyz[0]);
             fprintf(stdout, ", y: %i",           xyz[1]);
             fprintf(stdout, ", z: %i",           xyz[2]);
@@ -493,18 +521,31 @@ int main(int argc, char** argv)
             else
             {
                 utcTime = getUTC();
-                strftime(outStr, OUTBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
-                fprintf(stdout, "ts:\"%s\", ", outStr);
+                strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
+                fprintf(stdout, "ts:\"%s\", ", utcStr);
             }
-            fprintf(stdout, " lt:\"%.2f\"",  cTemp);
-            fprintf(stdout, ", x:\"%i\" ",    xyz[0]);
-            fprintf(stdout, ", y:\"%i\" ",    xyz[1]);
-            fprintf(stdout, ", z:\"%i\"",     xyz[2]);
+            if(p.remoteTempOnly)
+            {
+                fprintf(stdout, " rt:\"%.2f\"",  rcTemp);
+//                fprintf(stdout, ", rTemp: %.2f", cTemp);
+           }
+            else if(p.localTempOnly)
+            {
+                fprintf(stdout, " lt:\"%.2f\"",  lcTemp);
+            }
+            else
+            {
+                fprintf(stdout, " rt:\"%.2f\"",  rcTemp);
+                fprintf(stdout, " lt:\"%.2f\"",  lcTemp);
+            }
+            fprintf(stdout, ", x:\"%i\"", xyz[0]);
+            fprintf(stdout, ", y:\"%i\"", xyz[1]);
+            fprintf(stdout, ", z:\"%i\"", xyz[2]);
             if(!p.hideRaw)
             {
-                fprintf(stdout, ", rx:\"%i\"",    rXYZ[0]);
-                fprintf(stdout, ", ry:\"%i\"",    rXYZ[1]);
-                fprintf(stdout, ", rz:\"%i\"",     rXYZ[2]);
+                fprintf(stdout, ", rx:\"%i\"", rXYZ[0]);
+                fprintf(stdout, ", ry:\"%i\"", rXYZ[1]);
+                fprintf(stdout, ", rz:\"%i\"", rXYZ[2]);
             }
             if(p.showTotal)
             {
