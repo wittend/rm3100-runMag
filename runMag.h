@@ -19,18 +19,15 @@
 //------------------------------------------
 // Prototypes
 //------------------------------------------
+unsigned short mag_set_sample_rate(pList *p, unsigned short sample_rate);
+unsigned short mag_get_sample_rate(pList *p);;
 int setup_mag(pList *p);
-long currentTimeMillis();
-int getTMRCReg(pList *p);
-void setTMRCReg(pList *p);
+int runBIST(pList *p);
 int getCMMReg(pList *p);
 void setCMMReg(pList *p);
-unsigned short mag_set_sample_rate(pList *p, unsigned short sample_rate);
-//int readMag(pList *p, int32_t *XYZ);
-//int readMag(pList *p, int devAddr, int32_t *XYZ);
-void readCycleCountRegs(pList *p);
+int getTMRCReg(pList *p);
+void setTMRCReg(pList *p);
 void setCycleCountRegs(pList *p);
-//void showSettings(pList *p);
-//int runBIST(pList *p);
+void readCycleCountRegs(pList *p);
 
 #endif // SWX3100RUNMag_h

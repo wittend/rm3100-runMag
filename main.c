@@ -421,10 +421,8 @@ int main(int argc, char** argv)
     {
         showSettings(&p);
     }
-
     // Open I2C bus (only one at a time for now)    
     i2c_open(&p);
-
     // Setup the magnetometer.
     setup_mag(&p);
     mag_set_sample_rate(&p, 100);
@@ -460,7 +458,6 @@ int main(int argc, char** argv)
                 lcTemp = temp * 0.0625;
             }
         }
- 
         // Read Magnetometer.
         if((!p.localTempOnly) || (!p.remoteTempOnly))
         {
@@ -469,7 +466,6 @@ int main(int argc, char** argv)
             xyz[1] = (rXYZ[1] / p.y_gain);
             xyz[2] = (rXYZ[2] / p.z_gain);
         }
-    
         // Output the results.
         if(!(p.jsonFlag))
         {

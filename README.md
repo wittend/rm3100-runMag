@@ -37,21 +37,21 @@ and now you should see some results!
     Parameters:
     
        -a                     :  List known SBC I2C bus numbers (for use with -b).
-       -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].
+       -B <reg mask>          :  Do built in self test (BIST).                  [Not really implemented].
        -b <bus as integer>    :  I2C bus number as integer.
        -C                     :  Read back cycle count registers before sampling.
        -c <count>             :  Set cycle counts as integer (default 200).
-       -D <rate>              :  Set magnetometer sample rate [TMRC].
+       -D <rate>              :  Set magnetometer sample rate (TMRC register).
        -d <count>             :  Set polling delay (default 1000000 uSec).
        -H                     :  Hide raw measurments.
        -j                     :  Format output as JSON.
        -L [addr as integer]   :  Local temperature address (default 19 hex).
-       -l                     :  Read local temperature only.  [Not really implemented].
+       -l                     :  Read local temperature only.                   [testing].
        -M [addr as integer]   :  Magnetometer address (default 20 hex).
        -m                     :  Read magnetometer only.
        -P                     :  Show Parameters.
-       -q                     :  Quiet mode.                   [Not really implemented].
-       -r                     :  Read remote temperature only.
+       -q                     :  Quiet mode.                                    [partial].
+       -r                     :  Read remote temperature only                   [testing].
        -R [addr as integer]   :  Remote temperature address (default 18 hex).
        -s                     :  Return single reading.
        -T                     :  Raw timestamp in milliseconds (default: UTC string).
@@ -60,8 +60,8 @@ and now you should see some results!
        -v                     :  Verbose output.
        -X                     :  Read Simple Magnetometer Board (SMSB).
        -x                     :  Read board with extender (MSBx).
-       -Y                     :  Read Scotty's RPi Mag HAT standalone. [UNTESTED]
-       -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]
+       -Y                     :  Read Scotty's RPi Mag HAT standalone.          [UNTESTED]
+       -y                     :  Read Scotty's RPi Mag HAT in extended mode.    [UNTESTED]
        -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
        -h or -?               :  Display this help.
 

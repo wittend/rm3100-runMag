@@ -13,19 +13,6 @@
 // Date:        April 21, 2020
 // License:     GPL 3.0
 //=========================================================================
-//#include <stdint.h>
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <ctype.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <sys/ioctl.h>
-//#include <sys/time.h>
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <unistd.h>
-//#include <fcntl.h>
-//#include <memory.h>
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 #include "device_defs.h"
