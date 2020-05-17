@@ -19,6 +19,8 @@
 //------------------------------------------
 // Prototypes
 //------------------------------------------
+int openI2CBus(pList *p);
+void closeI2CBus(int i2c_fd);
 unsigned short mag_set_sample_rate(pList *p, unsigned short sample_rate);
 unsigned short mag_get_sample_rate(pList *p);;
 int setup_mag(pList *p);

@@ -18,7 +18,7 @@
 
 #define SIMPLEI2C_VERSION "0.0.3"
 
-#define MAX_I2C_WRITE               32
+#define MAX_I2C_WRITE 32
 
 #ifndef TRUE
 #define TRUE 1
@@ -70,7 +70,9 @@ typedef enum
 // Device paths for different platforms
 //-------------------------------------------
 #define OTHER_BUS           ""
-#define RASPI_I2C_BUS       "/dev/i2c-1"
+#define KHADAS_EDGE_I2C3    "/dev/i2c-3"
+#define KHADAS_VIM3_I2C3    "/dev/i2c-3"
+#define KHADAS_VIM3_I2C4    "/dev/i2c-4"
 #define ODROIDC0_I2C_BUS    "/dev/i2c-1"
 #define ODROIDC1_I2C_BUS    "/dev/i2c-1"
 #define ODROIDC2_I2C_BUS    "/dev/i2c-1"
@@ -80,21 +82,25 @@ typedef enum
 #define ODROIDN2_I2C_BUS3   "/dev/i2c-3"
 #define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
 #define NV_NANO_I2C_BUS     "/dev/i2c-1"
+#define RASPI_I2C_BUS       "/dev/i2c-1"
 
 //-------------------------------------------
 // Known SBC device platforms 
 //-------------------------------------------
-#define sOTHER_BUS           "Other           "
-#define sRASPI_I2C_BUS       "Rasoberry Pi 3/4"
-#define sODROIDC0_I2C_BUS    "Odroid CO bus 1 "
-#define sODROIDC1_I2C_BUS    "Odroid C1 bus 1 "
-#define sODROIDC2_I2C_BUS    "Odroid C2 bus 1 "
-#define sODROIDC4_I2C_BUS    "Odroid C4 bus 1 "
-#define sODROIDC4_I2C_BUS3   "Odroid C4 bus 3 "
-#define sODROIDN2_I2C_BUS    "Odroid N2 bus 2 "
-#define sODROIDN2_I2C_BUS3   "Odroid N2 bus 3 "
-#define sNV_XAVIER_I2C_BUS   "NV Xavier bus 8 "
-#define sNV_NANO_I2C_BUS     "NV Nano bus 1   "
+#define sOTHER_BUS           "Other             "
+#define sKHADAS_EDGE_BUS3    "KHADAS EDGE bus 3 "
+#define sVIM3_I2C_BUS3       "KHADAS VIM3 bus 3 "
+#define sVIM3_I2C_BUS4       "KHADAS VIM3 bus 4 "
+#define sNV_XAVIER_I2C_BUS   "NV Xavier   bus 8 "
+#define sNV_NANO_I2C_BUS     "NV Nano     bus 1 "
+#define sODROIDC0_I2C_BUS    "Odroid CO   bus 1 "
+#define sODROIDC1_I2C_BUS    "Odroid C1   bus 1 "
+#define sODROIDC2_I2C_BUS    "Odroid C2   bus 1 "
+#define sODROIDC4_I2C_BUS    "Odroid C4   bus 1 "
+#define sODROIDC4_I2C_BUS3   "Odroid C4   bus 3 "
+#define sODROIDN2_I2C_BUS    "Odroid N2   bus 2 "
+#define sODROIDN2_I2C_BUS3   "Odroid N2   bus 3 "
+#define sRASPI_I2C_BUS       "Raspberry Pi 3/4  "
 
 //-------------------------------------------
 // Device paths for different platforms
@@ -102,7 +108,11 @@ typedef enum
 typedef enum
 {
 //    eOTHER_BUS = -1,
-    eRASPI_I2C_BUS = 0,
+    eKHADAS_EDGE_I2C3 = 0,
+    eVIM3_I2C_BUS3,
+    eVIM3_I2C_BUS4,
+    eNV_XAVIER_I2C_BUS,
+    eNV_NANO_I2C_BUS,
     eODROIDC0_I2C_BUS,
     eODROIDC1_I2C_BUS,
     eODROIDC2_I2C_BUS,
@@ -110,8 +120,7 @@ typedef enum
     eODROIDC4_I2C_BUS3,
     eODROIDN2_I2C_BUS,
     eODROIDN2_I2C_BUS3,
-    eNV_XAVIER_I2C_BUS,
-    eNV_NANO_I2C_BUS,
+    eRASPI_I2C_BUS ,
 } i2cBusEnum;
 
 //-------------------------------------------
@@ -132,7 +141,11 @@ static struct busDev busDevs[] =
 {
     /* Device Path,     SBCString,          enum Value          Bus Number*/
 //    {OTHER_BUS,         sOTHER_BUS,          eOTHER_BUS,         -1},
-    {RASPI_I2C_BUS,     sRASPI_I2C_BUS,      eRASPI_I2C_BUS,     1},
+    {KHADAS_EDGE_I2C3,  sKHADAS_EDGE_BUS3,   eKHADAS_EDGE_I2C3,  3},
+    {KHADAS_VIM3_I2C3,  sVIM3_I2C_BUS3,      eVIM3_I2C_BUS3,     3},
+    {KHADAS_VIM3_I2C4,  sVIM3_I2C_BUS4,      eVIM3_I2C_BUS4,     4},
+    {NV_XAVIER_I2C_BUS, sNV_XAVIER_I2C_BUS,  eNV_XAVIER_I2C_BUS, 8},
+    {NV_NANO_I2C_BUS,   sNV_NANO_I2C_BUS,    eNV_NANO_I2C_BUS,   1},
     {ODROIDC0_I2C_BUS,  sODROIDC0_I2C_BUS,   eODROIDC0_I2C_BUS,  1},
     {ODROIDC1_I2C_BUS,  sODROIDC1_I2C_BUS,   eODROIDC1_I2C_BUS,  1},
     {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDC2_I2C_BUS,  1},
@@ -140,8 +153,7 @@ static struct busDev busDevs[] =
     {ODROIDC4_I2C_BUS3, sODROIDC4_I2C_BUS3,  eODROIDC4_I2C_BUS3, 3},
     {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDN2_I2C_BUS,  2},
     {ODROIDN2_I2C_BUS3, sODROIDN2_I2C_BUS3,  eODROIDN2_I2C_BUS3, 3},
-    {NV_XAVIER_I2C_BUS, sNV_XAVIER_I2C_BUS,  eNV_XAVIER_I2C_BUS, 8},
-    {NV_NANO_I2C_BUS,   sNV_NANO_I2C_BUS,    eNV_NANO_I2C_BUS,   1},
+    {RASPI_I2C_BUS,     sRASPI_I2C_BUS,      eRASPI_I2C_BUS,     1},
     {0,                 0,                  -1,                 -1}
 };
 
@@ -167,6 +179,20 @@ static struct busDev busDevs[] =
 #define CCP1        0x00
 #define NOS         0x01        // Number of Samples for averaging
 #define TMRC        0x04        // Default rate 125 Hz 
+
+//-------------------------------------------
+// BIST bit positions.
+//-------------------------------------------
+#define BIST_BPO    0   // BIST LR Periods.
+#define BIST_BP1    1   //   (BP0=1 & BP1=0) = 1 period; (BP0=0 & BP1=1) = 2 periods; (BP0=1 & BP1=1) = 4 periods.
+#define BIST_BW0    2   // BW0 & BW1 Determine the BIST timeout [Sleep Oscillation Cycle (30 µs)].
+#define BIST_BW1    3   //   (BW0=1 & BW1=0) = 30 uSec;  (BW0=0 & BW1=1) = 60 uSec; (BW0=1 & BW1=1) = 120 uSec.
+#define BIST_XOK    4   // Read only. Valid only when STE = 1 
+#define BIST_YOK    5   // Read only. Valid only when STE = 1 
+#define BIST_ZOK    6   // Read only. Valid only when STE = 1 
+#define BIST_STE    7   // Setting this to 1 commands the RM3100 Testing Boards to run the builtin self-test when
+                        //    the POLL register is written to. The end of the built-in self-test sequence will be
+                        //    indicated by DRDY going HIGH.
 
 //-------------------------------------------
 // Gain values (decimal)

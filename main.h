@@ -38,7 +38,7 @@ typedef struct tag_pList
     int SBCType;
     int boardType;
     int boardMode;
-    int doBist; 
+    int doBistMask; 
 
     int cc_x;
     int cc_y;

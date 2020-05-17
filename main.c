@@ -25,7 +25,7 @@
 char version[] = SIMPLEI2C_VERSION;
 static char  mSamples[9];
 
-//#define DEBUG 0
+#define DEBUG 1
 #define UTCBUFLEN 64
 
 //------------------------------------------
@@ -63,14 +63,15 @@ struct tm *getUTC()
 void listSBCs()
 {
     int i = 0;
-    fprintf(stdout, "\nList of some known single board computer types\n  (use -b to specify the bus number required\n\n");
-    fprintf(stdout, " Index        SBC Name                     Path     Bus Number \n");
+    fprintf(stdout, "\nList of some known single board computer types\n  For default distibutions of Linux.\n  Remember, these may be remapped (or not mapped at all) by the device tree.\n  (use -b to specify the bus number required\n\n");
+    fprintf(stdout, " Index        SBC Name                        Path      Bus Number \n");
     while(busDevs[i].devPath != NULL)
     {
-        fprintf(stdout, "   %i      %s             %s        %i\n", busDevs[i].enumVal, busDevs[i].SBCString, busDevs[i].devPath, busDevs[i].busNumber);
+        fprintf(stdout, "   %2i      %s             %s        %i\n", busDevs[i].enumVal, busDevs[i].SBCString, busDevs[i].devPath, busDevs[i].busNumber);
         i++;
     }
     fprintf(stdout, "\n");
+    exit(0);
 }
 
 //------------------------------------------
@@ -78,7 +79,7 @@ void listSBCs()
 //------------------------------------------
 void showSettings(pList *p)
 {
-    char pathStr[64] = "";
+    char pathStr[128] = "";
     snprintf(pathStr, sizeof(pathStr), "/dev/i2c-%i", p->i2cBusNumber);
     
     fprintf(stdout, "\nVersion = %s\n", version);
@@ -89,33 +90,33 @@ void showSettings(pList *p)
     //fprintf(stdout, "   I2C bus path as string:                     %s\n",      p->SBCType == -1 ? "/dev/i2c-0" : busDevs[p->SBCType].devPath);
     fprintf(stdout, "   I2C bus number as integer:                  %i\n",      p->i2cBusNumber);
     fprintf(stdout, "   I2C bus path as string:                     %s\n",      pathStr);
-    fprintf(stdout, "   Built in self test (BIST) value:            0x%X\n",    p->doBist);
+    fprintf(stdout, "   Built in self test (BIST) value:            0x%X\n",    p->doBistMask);
     fprintf(stdout, "   Cycle count X as integer:                   %i\n",      p->cc_x);
     fprintf(stdout, "   Cycle count Y as integer:                   %i\n",      p->cc_y);
     fprintf(stdout, "   Cycle count Z as integer:                   %i\n",      p->cc_z);
     fprintf(stdout, "   X gain (depends on X CC):                   %i\n",      p->x_gain);
     fprintf(stdout, "   Y gain (depends on Y CC):                   %i\n",      p->y_gain);
     fprintf(stdout, "   Z gain (depends on Z CC):                   %i\n",      p->z_gain);
-    fprintf(stdout, "   Read back CC Regs after set:                %s\n",      p->readBackCCRegs ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Loop Delay (uSec):                          %i\n",      p->outDelay);
+    fprintf(stdout, "   Read back CC Regs after set:                %s\n",      p->readBackCCRegs   ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Polling Loop Delay (uSec):                  %i\n",      p->outDelay);
     fprintf(stdout, "   Magnetometer sample rate:                   %i\n",      p->mSampleRate);
-    fprintf(stdout, "   Hide raw measurements:                      %s\n",      p->hideRaw ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Format output as JSON:                      %s\n",      p->jsonFlag ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Read local temperature only:                %s\n",      p->localTempOnly ? "TRUE" : "FALSE");
+    fprintf(stdout, "   CMM magnetometer sample rate (TMRC reg):    %i\n",      p->TMRCRate);
+    fprintf(stdout, "   Format output as JSON:                      %s\n",      p->jsonFlag         ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Read local temperature only:                %s\n",      p->localTempOnly    ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read remote temperature only:               %s\n",      p->remoteTempOnly   ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read magnetometer only:                     %s\n",      p->magnetometerOnly ? "TRUE" : "FALSE");
     fprintf(stdout, "   Local temperature address:                  %2X h\n",   p->localTempAddr);
-    fprintf(stdout, "   Read magnetometer only:                     %s\n",      p->magnetometerOnly ?  "TRUE" : "FALSE");
-    fprintf(stdout, "   Magnetometer address:                       %2X h\n",   p->magnetometerAddr);
-    fprintf(stdout, "   Show Parameters:                            %s\n",      p->showParameters ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Quiet mode:                                 %s\n",      p->quietFlag ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Read remote temperature only:               %s\n",      p->remoteTempOnly ? "TRUE" : "FALSE");
     fprintf(stdout, "   Remote temperature address:                 %2X\n",     p->remoteTempAddr);
-    fprintf(stdout, "   Return single magnetometer reading:         %s\n",      p->singleRead ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Simple Magnetometer Support Board:     %i\n",      p->boardType);
-    fprintf(stdout, "   Timestamp format:                           %s\n",      p->tsMilliseconds ? "RAW" : "UTCSTRING");
-    fprintf(stdout, "   Continuous Measurement Mode Data Rate:      %i\n",      p->TMRCRate);
-    fprintf(stdout, "   Verbose output:                             %s\n",      p->verboseFlag ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Show total field:                           %s\n",      p->showTotal ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Board with Extender:                   %i\n",      p->boardType);
+    fprintf(stdout, "   Magnetometer address:                       %2X h\n",   p->magnetometerAddr);
+    fprintf(stdout, "   Show parameters:                            %s\n",      p->showParameters   ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Quiet mode:                                 %s\n",      p->quietFlag        ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Hide raw measurements:                      %s\n",      p->hideRaw          ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Return single magnetometer reading:         %s\n",      p->singleRead       ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Simple Magnetometer Board (SMSB):      %i\n",      p->boardType);
+    fprintf(stdout, "   Read Board with Extender (MSBx:             %i\n",      p->boardType);
+    fprintf(stdout, "   Timestamp format:                           %s\n",      p->tsMilliseconds   ? "RAW"  : "UTCSTRING");
+    fprintf(stdout, "   Verbose output:                             %s\n",      p->verboseFlag      ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Show total field:                           %s\n",      p->showTotal        ? "TRUE" : "FALSE");
     fprintf(stdout, "\n\n");
 }
 
@@ -135,7 +136,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->SBCType          = eRASPI_I2C_BUS;
     p->boardType        = 0;
     p->boardMode        = LOCAL;
-    p->doBist           = FALSE;
+    p->doBistMask       = FALSE;
 
     p->cc_x             = CC_200;
     p->cc_y             = CC_200;
@@ -181,8 +182,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 //p->SBCType = -1;
                 break;
             case 'B':
-                p->doBist = atoi(optarg);
-                printf("Not implemented yet.");
+                p->doBistMask = atoi(optarg);
+                // printf("Not implemented yet.");
                 break;
             case 'c':
                 p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
@@ -273,30 +274,30 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers (use with -b).\n");
-                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST). [Not really implemented].\n");
+                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).             [Not yet implemented].\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
-                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer (default 200).\n");
-                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate [TMRC].\n");
+                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer  (default 200).\n");
+                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate (TMRC reg).\n");
                 fprintf(stdout, "   -d <count>             :  Set polling delay (default 1000000 uSec).\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
-                fprintf(stdout, "   -l                     :  Read local temperature only.  [Not really implemented].\n");
+                fprintf(stdout, "   -l                     :  Read local temperature only.               [testing].\n");
                 fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
-                fprintf(stdout, "   -q                     :  Quiet mode.                   [Not really implemented].\n");
+                fprintf(stdout, "   -q                     :  Quiet mode.                                [partial].\n");
+                fprintf(stdout, "   -v                     :  Verbose output.\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
                 fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex).\n");
                 fprintf(stdout, "   -s                     :  Return single reading.\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
                 fprintf(stdout, "   -t                     :  Get/Set Continuous Measurement Mode Data Rate.\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
-                fprintf(stdout, "   -v                     :  Verbose output.\n");
                 fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
                 fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
-                fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone. [UNTESTED]\n");
+                fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone.       [UNTESTED]\n");
                 fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]\n");
                 fprintf(stdout, "   -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
@@ -358,19 +359,19 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
     i2c_setAddress(p->i2c_fd, devAddr);
 
 #if DEBUG
-    printf("Write RM3100I2C_CMM.  Mode: 0x%x. (AKA Beacon)\n", cmmMode);
+    //printf("Write RM3100I2C_CMM.  Mode: 0x%x. (AKA Beacon)\n", cmmMode);
 #endif    
     // Write command to  use polling.
     i2c_write(p->i2c_fd, RM3100I2C_CMM, cmmMode);    // Start CMM on X, Y, Z
 #if DEBUG
-    printf("Waiting for DRDY...\n");
+    // printf("Waiting for DRDY...\n");
 #endif
     // Check if DRDY went high and wait unit high before reading results
     while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
     }
 #if DEBUG
-    printf("Got DRDY...\n");
+    //printf("Got DRDY...\n");
 #endif    
     // Read the XYZ registers
     if((bytes_read = i2c_readbuf(p->i2c_fd, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))
@@ -378,7 +379,7 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
         perror("i2c transaction i2c_readbuf() failed.\n");
     }
 #if DEBUG
-    printf("After i2c_readbuf()...\n");
+    //printf("After i2c_readbuf()...\n");
 #endif    
 
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
@@ -413,23 +414,30 @@ int main(int argc, char** argv)
     {
         return rv;
     }
+    if(p.doBistMask)
+    {
+        fprintf(stdout, "\nBIST using mask: %2X returns: %2X\n", p.doBistMask, runBIST(&p));
+        exit(0);
+    }
     if(p.verboseFlag)
     {
-        printf("\nUTC time: %s", asctime(utcTime));
+        fprintf(stdout,"\nUTC time: %s", asctime(utcTime));
     }
     if(p.showParameters)
     {
         showSettings(&p);
     }
     // Open I2C bus (only one at a time for now)    
-    i2c_open(&p);
+    openI2CBus(&p);
     // Setup the magnetometer.
     setup_mag(&p);
     mag_set_sample_rate(&p, 100);
     // TMRC Reg mysteriously gets bolluxed up, probably setting CMM rates.  Brute force fix for now.
-    p.TMRCRate = 0x96;
+    p.TMRCRate = p.TMRCRate;
     setTMRCReg(&p);
-    printf("TMRS reg value: %i\n", getTMRCReg(&p));
+#if DEBUG
+    fprintf(stdout,"TMRC reg value: %i\n", getTMRCReg(&p));
+#endif    
     if(p.readBackCCRegs)
     {
         readCycleCountRegs(&p);
@@ -442,7 +450,7 @@ int main(int argc, char** argv)
         {
             if(p.remoteTempOnly)
             {
-                temp = readTemp(&p, p.remoteTempAddr);  //MCP9808_I2CADDR_DEFAULT);
+                temp = readTemp(&p, p.remoteTempAddr);  // MCP9808_I2CADDR_DEFAULT);
                 rcTemp = temp * 0.0625;
             }
             else if(p.localTempOnly)
@@ -523,7 +531,6 @@ int main(int argc, char** argv)
             if(p.remoteTempOnly)
             {
                 fprintf(stdout, " rt:\"%.2f\"",  rcTemp);
-//                fprintf(stdout, ", rTemp: %.2f", cTemp);
            }
             else if(p.localTempOnly)
             {
@@ -557,7 +564,7 @@ int main(int argc, char** argv)
         // wait p.outDelay (1000 ms default) for next poll.
         usleep(p.outDelay);
     }
-    i2c_close(p.i2c_fd);
+    closeI2CBus(p.i2c_fd);
     return 0;
 }
 
