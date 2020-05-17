@@ -25,7 +25,7 @@
 char version[] = SIMPLEI2C_VERSION;
 static char  mSamples[9];
 
-#define DEBUG 1
+#define DEBUG 0
 #define UTCBUFLEN 64
 
 //------------------------------------------
