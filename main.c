@@ -90,7 +90,7 @@ void showSettings(pList *p)
     //fprintf(stdout, "   I2C bus path as string:                     %s\n",      p->SBCType == -1 ? "/dev/i2c-0" : busDevs[p->SBCType].devPath);
     fprintf(stdout, "   I2C bus number as integer:                  %i\n",      p->i2cBusNumber);
     fprintf(stdout, "   I2C bus path as string:                     %s\n",      pathStr);
-    fprintf(stdout, "   Built in self test (BIST) value:            0x%X\n",    p->doBistMask);
+    fprintf(stdout, "   Built in self test (BIST) value:            %2X hex\n", p->doBistMask);
     fprintf(stdout, "   Cycle count X as integer:                   %i\n",      p->cc_x);
     fprintf(stdout, "   Cycle count Y as integer:                   %i\n",      p->cc_y);
     fprintf(stdout, "   Cycle count Z as integer:                   %i\n",      p->cc_z);
@@ -105,9 +105,9 @@ void showSettings(pList *p)
     fprintf(stdout, "   Read local temperature only:                %s\n",      p->localTempOnly    ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read remote temperature only:               %s\n",      p->remoteTempOnly   ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read magnetometer only:                     %s\n",      p->magnetometerOnly ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Local temperature address:                  %2X h\n",   p->localTempAddr);
-    fprintf(stdout, "   Remote temperature address:                 %2X\n",     p->remoteTempAddr);
-    fprintf(stdout, "   Magnetometer address:                       %2X h\n",   p->magnetometerAddr);
+    fprintf(stdout, "   Local temperature address:                  %2X hex\n", p->localTempAddr);
+    fprintf(stdout, "   Remote temperature address:                 %2X hex\n", p->remoteTempAddr);
+    fprintf(stdout, "   Magnetometer address:                       %2X hex\n", p->magnetometerAddr);
     fprintf(stdout, "   Show parameters:                            %s\n",      p->showParameters   ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Quiet mode:                                 %s\n",      p->quietFlag        ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Hide raw measurements:                      %s\n",      p->hideRaw          ? "TRUE" : "FALSE" );
@@ -325,7 +325,7 @@ int getCommandLine(int argc, char** argv, pList *p)
 //------------------------------------------
 int readTemp(pList *p, int devAddr)
 {
-    int temp = -99;
+    int temp = -9999;
     char data[2] = {0};
     char reg[1] = {MCP9808_REG_AMBIENT_TEMP};
 
@@ -436,7 +436,7 @@ int main(int argc, char** argv)
     p.TMRCRate = p.TMRCRate;
     setTMRCReg(&p);
 #if DEBUG
-    fprintf(stdout,"TMRC reg value: %i\n", getTMRCReg(&p));
+//    fprintf(stdout,"TMRC reg value: %i\n", getTMRCReg(&p));
 #endif    
     if(p.readBackCCRegs)
     {
@@ -450,19 +450,31 @@ int main(int argc, char** argv)
         {
             if(p.remoteTempOnly)
             {
-                temp = readTemp(&p, p.remoteTempAddr);  // MCP9808_I2CADDR_DEFAULT);
+                temp = readTemp(&p, p.remoteTempAddr);
+#if DEBUG
+                fprintf(stdout,"REMOTE :: readTemp(&p, %2x) returns: %i\n", p.remoteTempAddr, temp);
+#endif    
                 rcTemp = temp * 0.0625;
             }
             else if(p.localTempOnly)
             {
                 temp = readTemp(&p, p.localTempAddr);
+#if DEBUG
+                fprintf(stdout,"LOCAL :: readTemp(&p, %2x) returns: %i\n", p.localTempAddr, temp);
+#endif    
                 lcTemp = temp * 0.0625;
             }
             else
             {
                 temp = readTemp(&p, p.remoteTempAddr);
+#if DEBUG
+                fprintf(stdout,"REMOTE :: readTemp(&p, %2x) returns: %i\n", p.remoteTempAddr, temp);
+#endif    
                 rcTemp = temp * 0.0625;
                 temp = readTemp(&p, p.localTempAddr);
+#if DEBUG
+                fprintf(stdout,"LOCAL :: readTemp(&p, %2x) returns: %i\n", p.localTempAddr, temp);
+#endif    
                 lcTemp = temp * 0.0625;
             }
         }
