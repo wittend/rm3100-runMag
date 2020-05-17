@@ -16,7 +16,7 @@
 #ifndef SWX3100DEFS_h
 #define SWX3100DEFS_h
 
-#define SIMPLEI2C_VERSION "0.0.3"
+#define SIMPLEI2C_VERSION "0.0.4"
 
 #define MAX_I2C_WRITE 32
 
