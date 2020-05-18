@@ -169,7 +169,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->showTotal        = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?ab:B:c:Cd:D:HhjlL:mM:o:PqrR:sSTt:vXxYyhqVZ")) != -1)
+    while((c = getopt(argc, argv, "?ab:B:c:Cd:D:HhjlL:mM:o:PqrR:sSTt:XxYyvVZ")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -215,11 +215,11 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 'M':
                 p->magnetometerAddr = atoi(optarg);
                 break;
-            case 'P':
-                p->showParameters = TRUE;
-                break;
             case 'o':
                 p->outDelay = atoi(optarg) * 1000;
+                break;
+            case 'P':
+                p->showParameters = TRUE;
                 break;
             case 'q':
                 p->quietFlag = TRUE;
@@ -336,7 +336,7 @@ int readTemp(pList *p, int devAddr)
         printf("Error : Input/Output error \n");
     }
     else
-    {
+    {works
         // Convert the data to 13-bits
         temp = ((data[0] & 0x1F) * 256 + data[1]);
         if(temp > 4095)
@@ -357,31 +357,17 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
     short cmmMode = (CMMMODE_ALL);   // 71 d
 
     i2c_setAddress(p->i2c_fd, devAddr);
-
-#if DEBUG
-    //printf("Write RM3100I2C_CMM.  Mode: 0x%x. (AKA Beacon)\n", cmmMode);
-#endif    
     // Write command to  use polling.
     i2c_write(p->i2c_fd, RM3100I2C_CMM, cmmMode);    // Start CMM on X, Y, Z
-#if DEBUG
-    // printf("Waiting for DRDY...\n");
-#endif
     // Check if DRDY went high and wait unit high before reading results
     while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
     }
-#if DEBUG
-    //printf("Got DRDY...\n");
-#endif    
     // Read the XYZ registers
     if((bytes_read = i2c_readbuf(p->i2c_fd, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))
     {
         perror("i2c transaction i2c_readbuf() failed.\n");
     }
-#if DEBUG
-    //printf("After i2c_readbuf()...\n");
-#endif    
-
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
     XYZ[0] |= mSamples[2];
@@ -414,15 +400,18 @@ int main(int argc, char** argv)
     {
         return rv;
     }
+    // BIST - Built In Self Test
     if(p.doBistMask)
     {
         fprintf(stdout, "\nBIST using mask: %2X returns: %2X\n", p.doBistMask, runBIST(&p));
         exit(0);
     }
+    // if Verbose == TRUE
     if(p.verboseFlag)
     {
         fprintf(stdout,"\nUTC time: %s", asctime(utcTime));
     }
+    // Show initial (command line) parameters
     if(p.showParameters)
     {
         showSettings(&p);
@@ -432,7 +421,7 @@ int main(int argc, char** argv)
     // Setup the magnetometer.
     setup_mag(&p);
     mag_set_sample_rate(&p, 100);
-    // TMRC Reg mysteriously gets bolluxed up, probably setting CMM rates.  Brute force fix for now.
+    // TMRC Reg mysteriously gets bollixed up, probably setting CMM rates.  Brute force fix for now.
     p.TMRCRate = p.TMRCRate;
     setTMRCReg(&p);
 #if DEBUG
@@ -501,29 +490,29 @@ int main(int argc, char** argv)
             }
             if(p.remoteTempOnly)
             {
-                fprintf(stdout, ", rTemp: %.2f",    rcTemp);
+                fprintf(stdout, ", rTemp: %.2f", rcTemp);
             }
             else if(p.localTempOnly)
             {
-                fprintf(stdout, ", lTemp: %.2f",    lcTemp);
+                fprintf(stdout, ", lTemp: %.2f", lcTemp);
             }
             else
             {
-                fprintf(stdout, ", rTemp: %.2f",    rcTemp);
-                fprintf(stdout, ", lTemp: %.2f",    lcTemp);
+                fprintf(stdout, ", rTemp: %.2f", rcTemp);
+                fprintf(stdout, ", lTemp: %.2f", lcTemp);
             }
-            fprintf(stdout, ", x: %i",           xyz[0]);
-            fprintf(stdout, ", y: %i",           xyz[1]);
-            fprintf(stdout, ", z: %i",           xyz[2]);
+            fprintf(stdout, ", x: %i", xyz[0]);
+            fprintf(stdout, ", y: %i", xyz[1]);
+            fprintf(stdout, ", z: %i", xyz[2]);
             if(!p.hideRaw)
             {
-                fprintf(stdout, ", rx: %i",           rXYZ[0]);
-                fprintf(stdout, ", ry: %i",           rXYZ[1]);
-                fprintf(stdout, ", rz: %i",           rXYZ[2]);
+                fprintf(stdout, ", rx: %i", rXYZ[0]);
+                fprintf(stdout, ", ry: %i", rXYZ[1]);
+                fprintf(stdout, ", rz: %i", rXYZ[2]);
             }
             if(p.showTotal)
             {
-                fprintf(stdout, ", Tm: %.0f",           sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(stdout, ", Tm: %.0f", sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
             fprintf(stdout, "\n");
         }
