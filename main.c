@@ -336,7 +336,7 @@ int readTemp(pList *p, int devAddr)
         printf("Error : Input/Output error \n");
     }
     else
-    {works
+    {
         // Convert the data to 13-bits
         temp = ((data[0] & 0x1F) * 256 + data[1]);
         if(temp > 4095)
