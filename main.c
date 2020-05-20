@@ -90,7 +90,7 @@ void showSettings(pList *p)
     //fprintf(stdout, "   I2C bus path as string:                     %s\n",      p->SBCType == -1 ? "/dev/i2c-0" : busDevs[p->SBCType].devPath);
     fprintf(stdout, "   I2C bus number as integer:                  %i\n",      p->i2cBusNumber);
     fprintf(stdout, "   I2C bus path as string:                     %s\n",      pathStr);
-    fprintf(stdout, "   Built in self test (BIST) value:            %2X hex\n", p->doBistMask);
+    fprintf(stdout, "   Built in self test (BIST) value:            %02X hex\n", p->doBistMask);
     fprintf(stdout, "   Cycle count X as integer:                   %i\n",      p->cc_x);
     fprintf(stdout, "   Cycle count Y as integer:                   %i\n",      p->cc_y);
     fprintf(stdout, "   Cycle count Z as integer:                   %i\n",      p->cc_z);
@@ -105,15 +105,18 @@ void showSettings(pList *p)
     fprintf(stdout, "   Read local temperature only:                %s\n",      p->localTempOnly    ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read remote temperature only:               %s\n",      p->remoteTempOnly   ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read magnetometer only:                     %s\n",      p->magnetometerOnly ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Local temperature address:                  %2X hex\n", p->localTempAddr);
-    fprintf(stdout, "   Remote temperature address:                 %2X hex\n", p->remoteTempAddr);
-    fprintf(stdout, "   Magnetometer address:                       %2X hex\n", p->magnetometerAddr);
+    fprintf(stdout, "   Local temperature address:                  %02X hex\n", p->localTempAddr);
+    fprintf(stdout, "   Remote temperature address:                 %02X hex\n", p->remoteTempAddr);
+    fprintf(stdout, "   Magnetometer address:                       %02X hex\n", p->magnetometerAddr);
     fprintf(stdout, "   Show parameters:                            %s\n",      p->showParameters   ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Quiet mode:                                 %s\n",      p->quietFlag        ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Hide raw measurements:                      %s\n",      p->hideRaw          ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Return single magnetometer reading:         %s\n",      p->singleRead       ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Simple Magnetometer Board (SMSB):      %i\n",      p->boardType);
-    fprintf(stdout, "   Read Board with Extender (MSBx:             %i\n",      p->boardType);
+    fprintf(stdout, "   Read Simple Magnetometer Board (SMSB):      %s\n",      (p->boardType == 0) ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Board with Extender (MSBx):            %s\n",      (p->boardType == 1) ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Scotty's RPi Mag HAT standalone:       %s\n",      (p->boardType == 2) ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Read Scotty's RPi Mag HAT in extended mode: %s\n",      (p->boardType == 3) ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Magnetometer configuation:                  %s\n",      (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
     fprintf(stdout, "   Timestamp format:                           %s\n",      p->tsMilliseconds   ? "RAW"  : "UTCSTRING");
     fprintf(stdout, "   Verbose output:                             %s\n",      p->verboseFlag      ? "TRUE" : "FALSE");
     fprintf(stdout, "   Show total field:                           %s\n",      p->showTotal        ? "TRUE" : "FALSE");
@@ -333,7 +336,7 @@ int readTemp(pList *p, int devAddr)
     write(p->i2c_fd, reg, 1);
     if(read(p->i2c_fd, data, 2) != 2)
     {
-        printf("Error : Input/Output error \n");
+        fprintf(stderr, "Error : I/O error reading temp sensor at address: [0x%2X].\n", devAddr);
     }
     else
     {
@@ -389,7 +392,7 @@ int main(int argc, char** argv)
     pList p;
     char utcStr[UTCBUFLEN] = "";
     int32_t rXYZ[3];
-    int32_t xyz[3];
+    double xyz[3];
     int temp = 0;
     float lcTemp = 0.0;
     float rcTemp = 0.0;
@@ -440,30 +443,18 @@ int main(int argc, char** argv)
             if(p.remoteTempOnly)
             {
                 temp = readTemp(&p, p.remoteTempAddr);
-#if DEBUG
-                fprintf(stdout,"REMOTE :: readTemp(&p, %2x) returns: %i\n", p.remoteTempAddr, temp);
-#endif    
                 rcTemp = temp * 0.0625;
             }
             else if(p.localTempOnly)
             {
                 temp = readTemp(&p, p.localTempAddr);
-#if DEBUG
-                fprintf(stdout,"LOCAL :: readTemp(&p, %2x) returns: %i\n", p.localTempAddr, temp);
-#endif    
                 lcTemp = temp * 0.0625;
             }
             else
             {
                 temp = readTemp(&p, p.remoteTempAddr);
-#if DEBUG
-                fprintf(stdout,"REMOTE :: readTemp(&p, %2x) returns: %i\n", p.remoteTempAddr, temp);
-#endif    
                 rcTemp = temp * 0.0625;
                 temp = readTemp(&p, p.localTempAddr);
-#if DEBUG
-                fprintf(stdout,"LOCAL :: readTemp(&p, %2x) returns: %i\n", p.localTempAddr, temp);
-#endif    
                 lcTemp = temp * 0.0625;
             }
         }
@@ -471,9 +462,9 @@ int main(int argc, char** argv)
         if((!p.localTempOnly) || (!p.remoteTempOnly))
         {
             readMag(&p, p.magnetometerAddr, rXYZ);
-            xyz[0] = (rXYZ[0] / p.x_gain);
-            xyz[1] = (rXYZ[1] / p.y_gain);
-            xyz[2] = (rXYZ[2] / p.z_gain);
+            xyz[0] = ((double)rXYZ[0] / p.x_gain);
+            xyz[1] = ((double)rXYZ[1] / p.y_gain);
+            xyz[2] = ((double)rXYZ[2] / p.z_gain);
         }
         // Output the results.
         if(!(p.jsonFlag))
@@ -486,24 +477,52 @@ int main(int argc, char** argv)
             {
                 utcTime = getUTC();
                 strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);                
-                fprintf(stdout, "Time: %s", utcStr);
+                fprintf(stdout, " Time: %s", utcStr);
             }
             if(p.remoteTempOnly)
             {
-                fprintf(stdout, ", rTemp: %.2f", rcTemp);
+                if(rcTemp < -100.0)
+                {
+                    fprintf(stdout, ", rTemp: ERROR");
+                }
+                else
+                {
+                    fprintf(stdout, ", rTemp: %.2f", rcTemp);
+                }
             }
             else if(p.localTempOnly)
             {
-                fprintf(stdout, ", lTemp: %.2f", lcTemp);
+                if(lcTemp < -100.0)
+                {
+                    fprintf(stdout, ", lTemp: ERROR");
+                }
+                else
+                {
+                    fprintf(stdout, ", lTemp: %.2f", lcTemp);
+                }
             }
             else
             {
-                fprintf(stdout, ", rTemp: %.2f", rcTemp);
-                fprintf(stdout, ", lTemp: %.2f", lcTemp);
+                if(rcTemp < -100.0)
+                {
+                    fprintf(stdout, ", rTemp: ERROR");
+                }
+                else
+                {
+                    fprintf(stdout, ", rTemp: %.2f", rcTemp);
+                }
+                if(lcTemp < -100.0)
+                {
+                    fprintf(stdout, ", lTemp: ERROR");
+                }
+                else
+                {
+                    fprintf(stdout, ", lTemp: %.2f", lcTemp);
+                }
             }
-            fprintf(stdout, ", x: %i", xyz[0]);
-            fprintf(stdout, ", y: %i", xyz[1]);
-            fprintf(stdout, ", z: %i", xyz[2]);
+            fprintf(stdout, ", x: %.3f", xyz[0]);
+            fprintf(stdout, ", y: %.3f", xyz[1]);
+            fprintf(stdout, ", z: %.3f", xyz[2]);
             if(!p.hideRaw)
             {
                 fprintf(stdout, ", rx: %i", rXYZ[0]);
@@ -512,7 +531,8 @@ int main(int argc, char** argv)
             }
             if(p.showTotal)
             {
-                fprintf(stdout, ", Tm: %.0f", sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+//                fprintf(stdout, ", Tm: %5.3f", sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(stdout, ", Tm: %.5f", sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
             fprintf(stdout, "\n");
         }
@@ -521,30 +541,58 @@ int main(int argc, char** argv)
             fprintf(stdout, "{ ");
             if(p.tsMilliseconds)
             {
-                fprintf(stdout, "\"%ld\", ",  currentTimeMillis());
+                fprintf(stdout, "\"%ld\"",  currentTimeMillis());
             }
             else
             {
                 utcTime = getUTC();
                 strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
-                fprintf(stdout, "ts:\"%s\", ", utcStr);
+                fprintf(stdout, "ts:\"%s\"", utcStr);
             }
             if(p.remoteTempOnly)
             {
-                fprintf(stdout, " rt:\"%.2f\"",  rcTemp);
+                if(rcTemp < -100.0)
+                {
+                    fprintf(stdout, ", rt:\"ERROR\"");
+                }
+                else
+                {
+                    fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
+                }
            }
             else if(p.localTempOnly)
             {
-                fprintf(stdout, " lt:\"%.2f\"",  lcTemp);
+                if(lcTemp < -100.0)
+                {
+                    fprintf(stdout, ", lt:\"ERROR\"");
+                }
+                else
+                {
+                    fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
+                }
             }
             else
             {
-                fprintf(stdout, " rt:\"%.2f\"",  rcTemp);
-                fprintf(stdout, " lt:\"%.2f\"",  lcTemp);
+                if(rcTemp < -100.0)
+                {
+                    fprintf(stdout, ", rt:\"ERROR\"");
+                }
+                else
+                {
+                    fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
+                }
+                if(lcTemp <-100.0)
+                {
+                    fprintf(stdout, ", lt:\"ERROR\"");
+                }
+                else
+                {
+                    fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
+                }
             }
-            fprintf(stdout, ", x:\"%i\"", xyz[0]);
-            fprintf(stdout, ", y:\"%i\"", xyz[1]);
-            fprintf(stdout, ", z:\"%i\"", xyz[2]);
+            fprintf(stdout, ", x:\"%.3f\"", xyz[0]);
+            fprintf(stdout, ", y:\"%.3f\"", xyz[1]);
+            fprintf(stdout, ", z:\"%.3f\"", xyz[2]);
             if(!p.hideRaw)
             {
                 fprintf(stdout, ", rx:\"%i\"", rXYZ[0]);
@@ -553,7 +601,7 @@ int main(int argc, char** argv)
             }
             if(p.showTotal)
             {
-                fprintf(stdout, ", Tm: \"%.0f\"",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(stdout, ", Tm: \"%.5f\"",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
            fprintf(stdout, " }\n");
         }

@@ -166,15 +166,6 @@ static struct busDev busDevs[] =
 #define I2C_FASTMODE            1000000
 #define I2C_HIGHSPEED           3400000
 
-//-------------------------------------------
-// Cycle Count values (16 bit)
-//-------------------------------------------
-#define CC_50       0x32        // 50  decimal
-#define CC_100      0x64        // 100 decimal
-#define CC_200      0xC8        // 200 decimal (default)
-#define CC_300      0x12C       // 300 decimal
-#define CC_400      0x190       // 400 decimal
-
 #define CCP0        0xC8        // 200 Cycle Count
 #define CCP1        0x00
 #define NOS         0x01        // Number of Samples for averaging
@@ -195,6 +186,15 @@ static struct busDev busDevs[] =
                         //    indicated by DRDY going HIGH.
 
 //-------------------------------------------
+// Cycle Count values (16 bit)
+//-------------------------------------------
+#define CC_50       0x32        // 50  decimal
+#define CC_100      0x64        // 100 decimal
+#define CC_200      0xC8        // 200 decimal (default)
+#define CC_300      0x12C       // 300 decimal
+#define CC_400      0x190       // 400 decimal
+
+//-------------------------------------------
 // Gain values (decimal)
 //-------------------------------------------
 #define GAIN_20     20
@@ -202,6 +202,24 @@ static struct busDev busDevs[] =
 #define GAIN_75     75
 #define GAIN_113    113
 #define GAIN_150    150
+
+typedef enum 
+{
+    gain_20  = GAIN_20,
+    gain_38  = GAIN_38,
+    gain_75  = GAIN_75,
+    gain_113 = GAIN_113,
+    gain_150 = GAIN_150,
+} eGainVals;
+
+typedef enum
+{
+    cc_50  = CC_50,
+    cc_100 = CC_100,
+    cc_200 = CC_200,
+    cc_300 = CC_300,
+    cc_400 = CC_400,
+} eCCVals;
 
 //-------------------------------------------
 // Address of the device
