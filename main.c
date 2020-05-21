@@ -479,45 +479,48 @@ int main(int argc, char** argv)
                 strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);                
                 fprintf(stdout, " Time: %s", utcStr);
             }
-            if(p.remoteTempOnly)
+            if(!p.magnetometerOnly)
             {
-                if(rcTemp < -100.0)
+                if(p.remoteTempOnly)
                 {
-                    fprintf(stdout, ", rTemp: ERROR");
+                    if(rcTemp < -100.0)
+                    {
+                        fprintf(stdout, ", rTemp: ERROR");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", rTemp: %.2f", rcTemp);
+                    }
+                }
+                else if(p.localTempOnly)
+                {
+                    if(lcTemp < -100.0)
+                    {
+                        fprintf(stdout, ", lTemp: ERROR");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", lTemp: %.2f", lcTemp);
+                    }
                 }
                 else
                 {
-                    fprintf(stdout, ", rTemp: %.2f", rcTemp);
-                }
-            }
-            else if(p.localTempOnly)
-            {
-                if(lcTemp < -100.0)
-                {
-                    fprintf(stdout, ", lTemp: ERROR");
-                }
-                else
-                {
-                    fprintf(stdout, ", lTemp: %.2f", lcTemp);
-                }
-            }
-            else
-            {
-                if(rcTemp < -100.0)
-                {
-                    fprintf(stdout, ", rTemp: ERROR");
-                }
-                else
-                {
-                    fprintf(stdout, ", rTemp: %.2f", rcTemp);
-                }
-                if(lcTemp < -100.0)
-                {
-                    fprintf(stdout, ", lTemp: ERROR");
-                }
-                else
-                {
-                    fprintf(stdout, ", lTemp: %.2f", lcTemp);
+                    if(rcTemp < -100.0)
+                    {
+                        fprintf(stdout, ", rTemp: ERROR");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", rTemp: %.2f", rcTemp);
+                    }
+                    if(lcTemp < -100.0)
+                    {
+                        fprintf(stdout, ", lTemp: ERROR");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", lTemp: %.2f", lcTemp);
+                    }
                 }
             }
             fprintf(stdout, ", x: %.3f", xyz[0]);
@@ -549,45 +552,48 @@ int main(int argc, char** argv)
                 strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
                 fprintf(stdout, "ts:\"%s\"", utcStr);
             }
-            if(p.remoteTempOnly)
+            if(!p.magnetometerOnly)
             {
-                if(rcTemp < -100.0)
+                if(p.remoteTempOnly)
                 {
-                    fprintf(stdout, ", rt:\"ERROR\"");
+                    if(rcTemp < -100.0)
+                    {
+                        fprintf(stdout, ", rt:\"ERROR\"");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
+                    }
+                }
+                else if(p.localTempOnly)
+                {
+                    if(lcTemp < -100.0)
+                    {
+                        fprintf(stdout, ", lt:\"ERROR\"");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
+                    }
                 }
                 else
                 {
-                    fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
-                }
-           }
-            else if(p.localTempOnly)
-            {
-                if(lcTemp < -100.0)
-                {
-                    fprintf(stdout, ", lt:\"ERROR\"");
-                }
-                else
-                {
-                    fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
-                }
-            }
-            else
-            {
-                if(rcTemp < -100.0)
-                {
-                    fprintf(stdout, ", rt:\"ERROR\"");
-                }
-                else
-                {
-                    fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
-                }
-                if(lcTemp <-100.0)
-                {
-                    fprintf(stdout, ", lt:\"ERROR\"");
-                }
-                else
-                {
-                    fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
+                    if(rcTemp < -100.0)
+                    {
+                        fprintf(stdout, ", rt:\"ERROR\"");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
+                    }
+                    if(lcTemp <-100.0)
+                    {
+                        fprintf(stdout, ", lt:\"ERROR\"");
+                    }
+                    else
+                    {
+                        fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
+                    }
                 }
             }
             fprintf(stdout, ", x:\"%.3f\"", xyz[0]);
