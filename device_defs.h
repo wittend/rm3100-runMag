@@ -16,7 +16,7 @@
 #ifndef SWX3100DEFS_h
 #define SWX3100DEFS_h
 
-#define SIMPLEI2C_VERSION "0.0.4"
+// #define RUNMAG_VERSION "0.0.4"
 
 #define MAX_I2C_WRITE 32
 
@@ -58,6 +58,9 @@ typedef enum
     SensorStatusPending = 255,      /**< @brief Reserved for internal used */
 } SensorStatus;
  
+//-------------------------------------------
+// Continuous Measurement Mode
+//-------------------------------------------
 #define CMMMODE_START 1
 #define CMMMODE_DRDM  4     // Dont Use
 #define CMMMODE_CMX   16
@@ -107,7 +110,6 @@ typedef enum
 //-------------------------------------------
 typedef enum
 {
-//    eOTHER_BUS = -1,
     eKHADAS_EDGE_I2C3 = 0,
     eVIM3_I2C_BUS3,
     eVIM3_I2C_BUS4,
@@ -135,7 +137,7 @@ struct busDev
 };
 
 //-------------------------------------------
-// 
+//  Informative list of known SBC defaults, 
 //-------------------------------------------
 static struct busDev busDevs[] =
 {
@@ -168,22 +170,8 @@ static struct busDev busDevs[] =
 
 #define CCP0        0xC8        // 200 Cycle Count
 #define CCP1        0x00
-#define NOS         0x01        // Number of Samples for averaging
-#define TMRC        0x04        // Default rate 125 Hz 
 
-//-------------------------------------------
-// BIST bit positions.
-//-------------------------------------------
-#define BIST_BPO    0   // BIST LR Periods.
-#define BIST_BP1    1   //   (BP0=1 & BP1=0) = 1 period; (BP0=0 & BP1=1) = 2 periods; (BP0=1 & BP1=1) = 4 periods.
-#define BIST_BW0    2   // BW0 & BW1 Determine the BIST timeout [Sleep Oscillation Cycle (30 µs)].
-#define BIST_BW1    3   //   (BW0=1 & BW1=0) = 30 uSec;  (BW0=0 & BW1=1) = 60 uSec; (BW0=1 & BW1=1) = 120 uSec.
-#define BIST_XOK    4   // Read only. Valid only when STE = 1 
-#define BIST_YOK    5   // Read only. Valid only when STE = 1 
-#define BIST_ZOK    6   // Read only. Valid only when STE = 1 
-#define BIST_STE    7   // Setting this to 1 commands the RM3100 Testing Boards to run the builtin self-test when
-                        //    the POLL register is written to. The end of the built-in self-test sequence will be
-                        //    indicated by DRDY going HIGH.
+// #define NOS         0x01        // Number of Samples for averaging
 
 //-------------------------------------------
 // Cycle Count values (16 bit)
@@ -203,23 +191,44 @@ static struct busDev busDevs[] =
 #define GAIN_113    113
 #define GAIN_150    150
 
-typedef enum 
-{
-    gain_20  = GAIN_20,
-    gain_38  = GAIN_38,
-    gain_75  = GAIN_75,
-    gain_113 = GAIN_113,
-    gain_150 = GAIN_150,
-} eGainVals;
+//-------------------------------------------------------------------------------------------------
+// CMM Update Rates
+//
+// Note: The Cycle Count Registers establish the maximum data rate of the sensors. For instance, if
+// the cycle count is set to 200D, then the maximum single-axis update rate is ~430 Hz. If TMRC is
+// set to 0x92, indicating an update rate of ~600 Hz, the rate established by the cycle count will
+// override the TMRC request, and the actual update rate will be ~430 Hz.
+//-------------------------------------------------------------------------------------------------
+#define TMRC            0x04
+#define TMRC_VAL_600    0x92    // Time between readings: ~1.7 ms
+#define TMRC_VAL_300    0x93    // Time between readings: ~3 ms
+#define TMRC_VAL_150    0x94    // Time between readings: ~7 ms
+#define TMRC_VAL_75     0x95    // Time between readings: ~13 ms
+#define TMRC_VAL_37     0x96    // Time between readings: ~27 ms
+#define TMRC_VAL_18     0x97    // Time between readings: ~55 ms
+#define TMRC_VAL_9      0x98    // Time between readings: ~110 ms
+#define TMRC_VAL_4p5    0x99    // Time between readings: ~220 ms
+#define TMRC_VAL_2p3    0x9A    // Time between readings: ~440 ms
+#define TMRC_VAL_1p2    0x9B    // Time between readings: ~0.8 s
+#define TMRC_VAL_0p6    0x9C    // Time between readings: ~1.6 s
+#define TMRC_VAL_0p3    0x9D    // Time between readings: ~3.3 s
+#define TMRC_VAL_0p15   0x9E    // Time between readings: ~6.7 s
+#define TMRC_VAL_0p07   0x9F    // Time between readings: ~13 s 
+// Default rate 125 Hz 
 
-typedef enum
-{
-    cc_50  = CC_50,
-    cc_100 = CC_100,
-    cc_200 = CC_200,
-    cc_300 = CC_300,
-    cc_400 = CC_400,
-} eCCVals;
+//-------------------------------------------
+// BIST bit positions.
+//-------------------------------------------
+#define BIST_BPO    0   // BIST LR Periods.
+#define BIST_BP1    1   //   (BP0=1 & BP1=0) = 1 period; (BP0=0 & BP1=1) = 2 periods; (BP0=1 & BP1=1) = 4 periods.
+#define BIST_BW0    2   // BW0 & BW1 Determine the BIST timeout [Sleep Oscillation Cycle (30 µs)].
+#define BIST_BW1    3   //   (BW0=1 & BW1=0) = 30 uSec;  (BW0=0 & BW1=1) = 60 uSec; (BW0=1 & BW1=1) = 120 uSec.
+#define BIST_XOK    4   // Read only. Valid only when STE = 1 
+#define BIST_YOK    5   // Read only. Valid only when STE = 1 
+#define BIST_ZOK    6   // Read only. Valid only when STE = 1 
+#define BIST_STE    7   // Setting this to 1 commands the RM3100 Testing Boards to run the builtin self-test when
+                        //    the POLL register is written to. The end of the built-in self-test sequence will be
+                        //    indicated by DRDY going HIGH.
 
 //-------------------------------------------
 // Address of the device
@@ -262,7 +271,7 @@ typedef enum
 #define RM3100I2C_CCZ_1     0x08
 #define RM3100I2C_CCZ_0     0x09
 
-// NOS ?
+// NOS ? - taken from mBed code but not currently understood. May mean "Number of Samples for averaging".
 #define RM3100I2C_NOS       0x0A
 
 // TMRC   |      0B          |  RW      | 96            |     [7:0]      | Sets Continuous Measurement Mode Data Rate
@@ -310,5 +319,15 @@ typedef enum
 #define CALIBRATION_TIMEOUT 5000        // timeout in milliseconds
 #define DEG_PER_RAD (180.0/3.14159265358979)
 
+// Regs and Values taken from mBed code but not currently understood.
+//--------------------------------------------------------------------
+#define RM3100I2C_ENABLED   0x79
+#define RM3100I2C_DISABLED  0x00
+
+#define RM3100_TEST3_REG            0x72
+#define RM3100_LROSCADJ_REG         0x63
+
+#define RM3100_LROSCADJ_VALUE       0xA7
+#define RM3100_SLPOSCADJ_VALUE      0x08 
 
 #endif  //SWX3100DEFS_h

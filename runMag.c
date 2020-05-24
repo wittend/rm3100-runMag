@@ -54,26 +54,26 @@ void closeI2CBus(int i2c_fd)
 }
 
 //------------------------------------------
-// mag_set_sample_rate()
+// setMagSampleRate()
 //------------------------------------------
-unsigned short mag_set_sample_rate(pList *p, unsigned short sample_rate)
+unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
 {
     int i;
     static char i2cbuffer[1];
-    const unsigned short int supported_rates[][2] = \
+    const unsigned short int supported_rates[][2] = 
     {
         /* [Hz], register value */
-        {   2, 0x0A},   // up to 2Hz
-        {   4, 0x09},   // up to 4Hz
-        {   8, 0x08},   // up to 8Hz
-        {  16, 0x07},   // up to 16Hz
-        {  31, 0x06},   // up to 31Hz
-        {  62, 0x05},   // up to 62Hz
-        {  125, 0x04},  // up to 125Hz
-        {  220, 0x03}   // up to 250Hz
-        };
+        {   2,  0x0A},   // up to 2Hz
+        {   4,  0x09},   // up to 4Hz
+        {   8,  0x08},   // up to 8Hz
+        {  16,  0x07},   // up to 16Hz
+        {  31,  0x06},   // up to 31Hz
+        {  62,  0x05},   // up to 62Hz
+        { 125,  0x04},   // up to 125Hz
+        { 220,  0x03}    // up to 250Hz
+    };
         
-    for(i = 0; i < sizeof(supported_rates)/(sizeof(unsigned short int)*2) - 1; i++)
+    for(i = 0; i < sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1; i++)
     {
         if(sample_rate <= supported_rates[i][0])
         {
@@ -84,6 +84,7 @@ unsigned short mag_set_sample_rate(pList *p, unsigned short sample_rate)
     //{
     //    mag_disable_interrupts();
     //}
+    //printf("\nSelecting sample rate %i\n", supported_rates[i][0]);
     p->mSampleRate = supported_rates[i][0];
 //    i2cbuffer[0] = (char)supported_rates[i][1];
 //    rm3100_i2c_write(RM3100_TMRC_REG, i2cbuffer, 1);
@@ -96,12 +97,40 @@ unsigned short mag_set_sample_rate(pList *p, unsigned short sample_rate)
 }
 
 //------------------------------------------
-// mag_get_sample_rate();
+// getMagSampleRate();
 // The actual sample rate of the sensor.
 //------------------------------------------
-unsigned short mag_get_sample_rate(pList *p)
+unsigned short getMagSampleRate(pList *p)
 {
     return p->mSampleRate;
+}
+
+//------------------------------------------
+// getMagRev(pList *p)
+//------------------------------------------
+int getMagRev(pList *p)
+{
+    // Set address of the RM3100
+    i2c_setAddress(p->i2c_fd,  p->magnetometerAddr);
+
+    // Check Version
+    if((p->magRevId = i2c_read(p->i2c_fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
+    {
+        // Fail, exit...
+        fprintf(stderr, "RM3100 REVID NOT CORRECT: ");
+        fprintf(stderr, "RM3100 REVID: 0x%X <> EXPECTED: 0x%X.\n\n", p->magRevId, RM3100_VER_EXPECTED);
+        fflush(stdout);
+        return 0;
+    }
+    else
+    {
+        if(p->verboseFlag)
+        {
+             fprintf(stdout,"RM3100 Detected Properly: ");
+             fprintf(stdout,"REVID: %x.\n", p->magRevId);
+        }
+    }
+    return p->magRevId;
 }
 
 //------------------------------------------
@@ -110,33 +139,20 @@ unsigned short mag_get_sample_rate(pList *p)
 int setup_mag(pList *p)
 {
     uint8_t ver = 0;
-    uint8_t i2cbuffer[2];
     int rv = SensorOK;
 
     // Set address of the RM3100
     i2c_setAddress(p->i2c_fd,  p->magnetometerAddr);
-
     // Check Version
-    if((ver = i2c_read(p->i2c_fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
+    if(!getMagRev(p))
     {
-        // Fail, exit...
-        fprintf(stderr, "RM3100 REVID NOT CORRECT: ");
-        fprintf(stderr, "RM3100 REVID: 0x%X <> EXPECTED: 0x%X.\n\n", ver, RM3100_VER_EXPECTED);
-        fflush(stdout);
-        exit(1);
+        exit (1);
     }
-    else
-    {
-        if(p->verboseFlag)
-        {
-             printf("RM3100 Detected Properly: ");
-             printf("REVID: %x.\n", ver);
-        }
-        i2c_write(p->i2c_fd, RM3100_MAG_POLL, 0);
-        i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);
-        // Initialize CC settings
-        setCycleCountRegs(p);
-    }
+    i2c_write(p->i2c_fd, RM3100_MAG_POLL, 0);
+    i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);
+    // Initialize CC settings
+    setCycleCountRegs(p);
+    
     // Sleep for 1 second
     usleep(100000);                           // delay to help monitor DRDY pin on eval board
     return rv;
@@ -189,7 +205,38 @@ void setTMRCReg(pList *p)
 {
     //To set the TMRC register, send the register address, 0x0B, followed by the desired
     //TMRC register value. To read the TMRC register, send 0x8B.
+    // printf("\nSetting TMRC reg: %i\n", p->TMRCRate);
     i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
+}
+
+//------------------------------------------
+// setMagSampleRate()
+//------------------------------------------
+unsigned short getCCGainEquiv(unsigned short CCVal)
+{
+    int i = 0;
+    unsigned short gain = 0;
+    const unsigned short int cc_values[][2] = 
+    {
+        /* [Hz], register value */
+        {   CC_50,  GAIN_20},   // up to 2Hz
+        {  CC_100,  GAIN_38},   // up to 4Hz
+        {  CC_200,  GAIN_75},   // up to 8Hz
+        {  CC_300, GAIN_113},   // up to 16Hz
+        {  CC_400, GAIN_150}    // up to 31Hz
+    };
+    // for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2) - 1; i++)
+    for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2); i++)
+    {
+        // printf("Testing (%i <= cc_values[ %i][0])\n", CCVal, i);
+        if(CCVal <= cc_values[i][0])
+        {
+            // printf ("Got it!\n");
+            gain = cc_values[i][1];
+            break;
+        }
+    }
+    return gain;
 }
 
 //------------------------------------------
@@ -197,14 +244,18 @@ void setTMRCReg(pList *p)
 //------------------------------------------
 void setCycleCountRegs(pList *p)
 {
-    int i = 0;
+    //int i = 0;
     i2c_write(p->i2c_fd, RM3100I2C_CCX_1, (p->cc_x >> 8));
     i2c_write(p->i2c_fd, RM3100I2C_CCX_0, (p->cc_x & 0xff));
+    p->x_gain = getCCGainEquiv(p->cc_x);
     i2c_write(p->i2c_fd, RM3100I2C_CCY_1, (p->cc_y >> 8));
     i2c_write(p->i2c_fd, RM3100I2C_CCY_0, (p->cc_y & 0xff));
+    p->y_gain = getCCGainEquiv(p->cc_y);
     i2c_write(p->i2c_fd, RM3100I2C_CCZ_1, (p->cc_x >> 8));
     i2c_write(p->i2c_fd, RM3100I2C_CCZ_0, (p->cc_y & 0xff));
-    i2c_write(p->i2c_fd, RM3100I2C_NOS,   NOS);
+    p->z_gain = getCCGainEquiv(p->cc_z);
+    // printf("Gains - X: %u, Y: %u, Z: %u.\n", p->x_gain, p->y_gain, p->z_gain);
+    // i2c_write(p->i2c_fd, RM3100I2C_NOS,   NOS);
 }
 
 //------------------------------------------

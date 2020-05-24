@@ -30,6 +30,8 @@
 #include "i2c.h"
 #include "MCP9808.h"
 
+#define RUNMAG_VERSION "0.0.5"
+
 //------------------------------------------
 // Parameter List struct
 //------------------------------------------
@@ -47,8 +49,10 @@ typedef struct tag_pList
     int x_gain;
     int y_gain;
     int z_gain;
+    int NOSRegValue;
     int readBackCCRegs;
-
+    int magRevId;
+    
     int hideRaw;
     int i2cBusNumber;
     int i2c_fd;
