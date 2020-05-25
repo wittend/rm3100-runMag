@@ -56,6 +56,27 @@ struct tm *getUTC()
     return ptm;
 }
 
+//------------------------------------------
+// showCountGainRelationship()
+//------------------------------------------
+void showCountGainRelationship()
+{
+    // Probably a bit of silliness.
+    fprintf(stdout, "    -----------------------------------------------------------------------\n");
+    fprintf(stdout, "    |    Cycle Count/Gain/Sensitivity        |     RM3100 Measurement     |\n");
+    fprintf(stdout, "    |---------------------------------------------------------------------|\n");
+    fprintf(stdout, "    | Cycle |   Gain   |                     |                            |\n");
+    fprintf(stdout, "    | Count | (LSB/uT) | Sensitivity(nT/LSB) | in count | microTesla (uT) |\n");
+    fprintf(stdout, "    |---------------------------------------------------------------------|\n");
+    fprintf(stdout, "    |   50  |    20    |      50.000         |   3000   |     150.000     |\n");
+    fprintf(stdout, "    |  100  |    38    |      26.316         |   3000   |      78.947     |\n");
+    fprintf(stdout, "    |  200  |    75    |      13.333         |   3000   |      40.000     |\n");
+    fprintf(stdout, "    |  300  |   113    |       8.850         |   3000   |      26.549     |\n");
+    fprintf(stdout, "    |  400  |   150    |       6.667         |   3000   |      20.000     |\n");
+    fprintf(stdout, "    -----------------------------------------------------------------------\n");
+    fprintf(stdout, "From: RM3100_FAQ_R02.pdf\n\n");
+    exit(0);
+}
 
 //------------------------------------------
 // listSBCs()
@@ -70,8 +91,28 @@ void listSBCs()
         fprintf(stdout, "   %2i      %s             %s        %i\n", busDevs[i].enumVal, busDevs[i].SBCString, busDevs[i].devPath, busDevs[i].busNumber);
         i++;
     }
-    fprintf(stdout, "\n");
+    fprintf(stdout, "\n\n");
     exit(0);
+}
+
+//------------------------------------------
+// readConfigFromFile()
+//------------------------------------------
+int readConfigFromFile(pList *p, char *cfgFile)
+{
+    int rv = 0;
+    printf("\nRead config from file: %s\n\n", cfgFile);
+    return rv;
+}
+
+//------------------------------------------
+// saveConfigToFile()
+//------------------------------------------
+int saveConfigToFile(pList *p, char *cfgFile)
+{
+    int rv = 0;
+    printf("\nSave config to file: %s\n\n", cfgFile);    
+    return rv;
 }
 
 //------------------------------------------
@@ -89,10 +130,6 @@ void showSettings(pList *p)
         getMagRev(p);
     }
     fprintf(stdout, "   Magnetometer revision ID detected:          %i (dec)\n",    p->magRevId);
-    //fprintf(stdout, "   Single Board Computer type:                 %i\n",      p->SBCType);
-    //fprintf(stdout, "   Single Board Computer type as string:       %s\n",      p->SBCType == -1 ? "UNKNOWN - using default." : busDevs[p->SBCType].SBCString);
-    //fprintf(stdout, "   I2C bus number as integer:                  %i\n",      p->SBCType == -1 ? 0 : busDevs[p->SBCType].busNumber);
-    //fprintf(stdout, "   I2C bus path as string:                     %s\n",      p->SBCType == -1 ? "/dev/i2c-0" : busDevs[p->SBCType].devPath);
     fprintf(stdout, "   I2C bus number as integer:                  %i (dec)\n",    p->i2cBusNumber);
     fprintf(stdout, "   I2C bus path as string:                     %s\n",          pathStr);
     fprintf(stdout, "   Built in self test (BIST) value:            %02X (hex)\n",  p->doBistMask);
@@ -175,7 +212,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->showTotal        = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:HhjlL:mM:o:PqrR:sSTt:XxYyvVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:HhjlL:mM:o:PqrR:sSTt:XxYyvVZ")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -214,6 +251,15 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'D':
                 p->mSampleRate = atoi(optarg);
+                break;
+            case 'E':
+                showCountGainRelationship();
+                break;
+            case 'f':
+                readConfigFromFile(p, optarg);
+                break;
+            case 'F':
+                saveConfigToFile(p, optarg);
                 break;
             case 'H':
                 p->hideRaw = TRUE;
@@ -293,12 +339,15 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers (use with -b).\n");
                 //fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.            [Not yet implemented]\n");
-                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).             [Not yet implemented].\n");
+                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).               [Not implemented].\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
                 fprintf(stdout, "   -c <count>             :  Set cycle counts as integer  (default 200).\n");
                 fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate (TMRC reg).\n");
                 fprintf(stdout, "   -d <count>             :  Set polling delay (default 1000000 uSec).\n");
+                fprintf(stdout, "   -E                     :  Show cycle count/gain/sensitivity relationship.\n");
+                fprintf(stdout, "   -f <filename>          :  Read configuration from file (JSON)         [Not implemented].\n");
+                fprintf(stdout, "   -F <filename>          :  Save configuration to file (JSON)           [Not implemented].\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
@@ -306,7 +355,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
-                fprintf(stdout, "   -q                     :  Quiet mode.                                [partial].\n");
+                fprintf(stdout, "   -q                     :  Quiet mode.                                 [partial].\n");
                 fprintf(stdout, "   -v                     :  Verbose output.\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
                 fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex).\n");

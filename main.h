@@ -83,6 +83,9 @@ typedef struct tag_pList
 long currentTimeMillis();
 struct tm *getUTC();
 void listSBCs();
+void showCountGainRelationship();
+int readConfigFromFile(pList *p, char *cfgFile);
+int saveConfigToFile(pList *p, char *cfgFile);
 void showSettings(pList *p);
 int getCommandLine(int argc, char** argv, pList *p);
 int readTemp(pList *p, int devAddr);

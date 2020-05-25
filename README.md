@@ -31,39 +31,60 @@ and now you should see some results!
 ## Example output using -h or -? option:
 
     dave@odroid:~/$ sudo ./runMag -h
+    
+   ./runMag Version = 0.0.5
+   
+   Parameters:
+   
+        -a                     :  List known SBC I2C bus numbers (use with -b).
+        -B <reg mask>          :  Do built in self test (BIST).               [Not implemented].
+        -b <bus as integer>    :  I2C bus number as integer.
+        -C                     :  Read back cycle count registers before sampling.
+        -c <count>             :  Set cycle counts as integer  (default 200).
+        -D <rate>              :  Set magnetometer sample rate (TMRC reg).
+        -d <count>             :  Set polling delay (default 1000000 uSec).
+        -E                     :  Show cycle count/gain/sensitivity relationship.
+        -f <filename>          :  Read configuration from file (JSON)         [Not implemented].
+        -F <filename>          :  Save configuration to file (JSON)           [Not implemented].
+        -H                     :  Hide raw measurments.
+        -j                     :  Format output as JSON.
+        -L [addr as integer]   :  Local temperature address (default 19 hex).
+        -l                     :  Read local temperature only.
+        -M [addr as integer]   :  Magnetometer address (default 20 hex).
+        -m                     :  Read magnetometer only.
+        -P                     :  Show Parameters.
+        -q                     :  Quiet mode.                                 [partial].
+        -v                     :  Verbose output.
+        -r                     :  Read remote temperature only.
+        -R [addr as integer]   :  Remote temperature address (default 18 hex).
+        -s                     :  Return single reading.
+        -T                     :  Raw timestamp in milliseconds (default: UTC string).
+        -t                     :  Get/Set Continuous Measurement Mode Data Rate.
+        -V                     :  Display software version and exit.
+        -X                     :  Read Simple Magnetometer Board (SMSB).
+        -x                     :  Read board with extender (MSBx).
+        -Y                     :  Read Scotty's RPi Mag HAT standalone.       [UNTESTED]
+        -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]
+        -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
+        -h or -?               :  Display this help.
 
-    ./runMag Version = 0.0.5
-    
-    Parameters:
-    
-       -a                     :  List known SBC I2C bus numbers (use with -b).
-       -B <reg mask>          :  Do built in self test (BIST).             [Not yet implemented].
-       -b <bus as integer>    :  I2C bus number as integer.
-       -C                     :  Read back cycle count registers before sampling.
-       -c <count>             :  Set cycle counts as integer  (default 200).
-       -D <rate>              :  Set magnetometer sample rate (TMRC reg).
-       -d <count>             :  Set polling delay (default 1000000 uSec).
-       -H                     :  Hide raw measurments.
-       -j                     :  Format output as JSON.
-       -L [addr as integer]   :  Local temperature address (default 19 hex).
-       -l                     :  Read local temperature only.
-       -M [addr as integer]   :  Magnetometer address (default 20 hex).
-       -m                     :  Read magnetometer only.
-       -P                     :  Show Parameters.
-       -q                     :  Quiet mode.                                [partial].
-       -v                     :  Verbose output.
-       -r                     :  Read remote temperature only.
-       -R [addr as integer]   :  Remote temperature address (default 18 hex).
-       -s                     :  Return single reading.
-       -T                     :  Raw timestamp in milliseconds (default: UTC string).
-       -t                     :  Get/Set Continuous Measurement Mode Data Rate.
-       -V                     :  Display software version and exit.
-       -X                     :  Read Simple Magnetometer Board (SMSB).
-       -x                     :  Read board with extender (MSBx).
-       -Y                     :  Read Scotty's RPi Mag HAT standalone.       [UNTESTED]
-       -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]
-       -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
-       -h or -?               :  Display this help.
+
+## Example output using the -E option:
+
+    dave@odroid:~/projects/rm3100-runMag$ sudo ./runMag -E
+        -----------------------------------------------------------------------
+        |    Cycle Count/Gain/Sensitivity        |     RM3100 Measurement     |
+        |---------------------------------------------------------------------|
+        | Cycle |   Gain   |                     |                            |
+        | Count | (LSB/uT) | Sensitivity(nT/LSB) | in count | microTesla (uT) |
+        |---------------------------------------------------------------------|
+        |   50  |    20    |      50.000         |   3000   |     150.000     |
+        |  100  |    38    |      26.316         |   3000   |      78.947     |
+        |  200  |    75    |      13.333         |   3000   |      40.000     |
+        |  300  |   113    |       8.850         |   3000   |      26.549     |
+        |  400  |   150    |       6.667         |   3000   |      20.000     |
+        -----------------------------------------------------------------------
+    From: RM3100_FAQ_R02.pdf
 
 
 ## Example output using the -P option:
