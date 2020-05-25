@@ -97,12 +97,8 @@ void showSettings(pList *p)
     fprintf(stdout, "   I2C bus path as string:                     %s\n",          pathStr);
     fprintf(stdout, "   Built in self test (BIST) value:            %02X (hex)\n",  p->doBistMask);
     fprintf(stdout, "   NOS Register value:                         %02X (hex)\n",  p->NOSRegValue);
-    fprintf(stdout, "   Cycle count X as integer:                   %i (dec)\n",    p->cc_x);
-    fprintf(stdout, "   Cycle count Y as integer:                   %i (dec)\n",    p->cc_y);
-    fprintf(stdout, "   Cycle count Z as integer:                   %i (dec)\n",    p->cc_z);
-    fprintf(stdout, "   X gain (depends on X CC):                   %i (dec)\n",    p->x_gain);
-    fprintf(stdout, "   Y gain (depends on Y CC):                   %i (dec)\n",    p->y_gain);
-    fprintf(stdout, "   Z gain (depends on Z CC):                   %i (dec)\n",    p->z_gain);
+    fprintf(stdout, "   Cycle counts by vector:                     X: %i (dec), Y: %i (dec), Z: %i (dec)\n", p->cc_x, p->cc_y, p->cc_z);
+    fprintf(stdout, "   Gain by vector:                             X: %i (dec), Y: %i (dec), Z: %i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
     fprintf(stdout, "   Read back CC Regs after set:                %s\n",          p->readBackCCRegs   ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Polling Loop Delay (uSec):                  %i (dec)\n",    p->outDelay);
     fprintf(stdout, "   Magnetometer sample rate:                   %i (dec)\n",    p->mSampleRate);
@@ -306,7 +302,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
-                fprintf(stdout, "   -l                     :  Read local temperature only.               [testing].\n");
+                fprintf(stdout, "   -l                     :  Read local temperature only.\n");
                 fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");

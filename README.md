@@ -28,16 +28,16 @@ and now you should see some results!
     ...
     
 
-## Example:
+## Example output using -h or -? option:
 
     dave@odroid:~/$ sudo ./runMag -h
-    
-    ./runMag Version = 0.0.4
+
+    ./runMag Version = 0.0.5
     
     Parameters:
     
-       -a                     :  List known SBC I2C bus numbers (for use with -b).
-       -B <reg mask>          :  Do built in self test (BIST).               [Not yet implemented].
+       -a                     :  List known SBC I2C bus numbers (use with -b).
+       -B <reg mask>          :  Do built in self test (BIST).             [Not yet implemented].
        -b <bus as integer>    :  I2C bus number as integer.
        -C                     :  Read back cycle count registers before sampling.
        -c <count>             :  Set cycle counts as integer  (default 200).
@@ -46,11 +46,11 @@ and now you should see some results!
        -H                     :  Hide raw measurments.
        -j                     :  Format output as JSON.
        -L [addr as integer]   :  Local temperature address (default 19 hex).
-       -l                     :  Read local temperature only.                [testing].
+       -l                     :  Read local temperature only.
        -M [addr as integer]   :  Magnetometer address (default 20 hex).
        -m                     :  Read magnetometer only.
        -P                     :  Show Parameters.
-       -q                     :  Quiet mode.                                 [partial].
+       -q                     :  Quiet mode.                                [partial].
        -v                     :  Verbose output.
        -r                     :  Read remote temperature only.
        -R [addr as integer]   :  Remote temperature address (default 18 hex).
@@ -65,3 +65,50 @@ and now you should see some results!
        -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
        -h or -?               :  Display this help.
 
+
+## Example output using the -P option:
+    
+    dave@odroid:~/projects/rm3100-runMag$ sudo ./runMag -b 2 -l -P
+    
+    Version = 0.0.5
+    
+    Current Parameters:
+    
+        Magnetometer revision ID detected:          34 (dec)
+        I2C bus number as integer:                  2 (dec)
+        I2C bus path as string:                     /dev/i2c-2
+        Built in self test (BIST) value:            00 (hex)
+        NOS Register value:                         00 (hex)
+        Cycle counts by vector:                     X: 200 (dec), Y: 200 (dec), Z: 200 (dec)
+        Gain by vector:                             X: 75 (dec), Y: 75 (dec), Z: 75 (dec)
+        Read back CC Regs after set:                FALSE
+        Polling Loop Delay (uSec):                  1000000 (dec)
+        Magnetometer sample rate:                   100 (dec)
+        CMM magnetometer sample rate (TMRC reg):    96 (dec)
+        Format output as JSON:                      FALSE
+        Read local temperature only:                TRUE
+        Read remote temperature only:               FALSE
+        Read magnetometer only:                     FALSE
+        Local temperature address:                  18 (hex)
+        Remote temperature address:                 19 (hex)
+        Magnetometer address:                       20 {hex)
+        Show parameters:                            TRUE
+        Quiet mode:                                 TRUE
+        Hide raw measurements:                      FALSE
+        Return single magnetometer reading:         FALSE
+        Read Simple Magnetometer Board (SMSB):      TRUE
+        Read Board with Extender (MSBx):            FALSE
+        Read Scotty's RPi Mag HAT standalone:       FALSE
+        Read Scotty's RPi Mag HAT in extended mode: FALSE
+        Magnetometer configuation:                  Local standalone
+        Timestamp format:                           UTCSTRING
+        Verbose output:                             FALSE
+        Show total field:                           FALSE
+    
+    
+     Time: 25 May 2020 14:36:36, lTemp: 24.44, x: 14.293, y: -16.453, z: 49.000, rx: 1072, ry: -1234, rz: 3675
+     Time: 25 May 2020 14:36:37, lTemp: 24.44, x: 14.227, y: -16.427, z: 49.080, rx: 1067, ry: -1232, rz: 3681
+     Time: 25 May 2020 14:36:38, lTemp: 24.44, x: 14.267, y: -16.480, z: 49.013, rx: 1070, ry: -1236, rz: 3676
+     Time: 25 May 2020 14:36:39, lTemp: 24.44, x: 14.213, y: -16.493, z: 49.013, rx: 1066, ry: -1237, rz: 3676
+     Time: 25 May 2020 14:36:40, lTemp: 24.44, x: 14.093, y: -16.453, z: 49.000, rx: 1057, ry: -1234, rz: 3675
+    ^C
