@@ -425,8 +425,8 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
     short cmmMode = (CMMMODE_ALL);   // 71 d
 
     i2c_setAddress(p->i2c_fd, devAddr);
-    // Write command to  use polling.
-    i2c_write(p->i2c_fd, RM3100I2C_CMM, cmmMode);    // Start CMM on X, Y, Z
+    // Write command to  use Continuous measurement Mode.
+    // i2c_write(p->i2c_fd, RM3100I2C_CMM, cmmMode);    // Start CMM on X, Y, Z
     // Check if DRDY went high and wait unit high before reading results
     while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
@@ -463,6 +463,7 @@ int main(int argc, char** argv)
     float rcTemp = 0.0;
     int rv = 0;
     struct tm *utcTime = getUTC();
+    short cmmMode = (CMMMODE_ALL);   // 71 d
 
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
@@ -491,7 +492,7 @@ int main(int argc, char** argv)
     setMagSampleRate(&p, 100);
     // TMRC Reg mysteriously gets bollixed up, probably setting CMM rates.  Brute force fix for now.
     // p.TMRCRate = p.TMRCRate;
-    setTMRCReg(&p);
+    setTMRCReg(&p);   
 #if DEBUG
 //    fprintf(stdout,"TMRC reg value: %i\n", getTMRCReg(&p));
 #endif    
@@ -499,7 +500,9 @@ int main(int argc, char** argv)
     {
         readCycleCountRegs(&p);
     }
-    // loop
+    // Start CMM on X, Y, Z 
+    i2c_write(p.i2c_fd, RM3100I2C_CMM, cmmMode);   
+    // loop   
     while(1)
     {
         //  Read temp sensor.

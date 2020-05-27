@@ -148,6 +148,7 @@ int setup_mag(pList *p)
     {
         exit (1);
     }
+    // Clear out these registers
     i2c_write(p->i2c_fd, RM3100_MAG_POLL, 0);
     i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);
     // Initialize CC settings

@@ -1,6 +1,11 @@
 # rm3100-runMag
 
-For now just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
+This is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.  It is written in simple C intended for use on boards such as the Raspberry Pi 4, Odroid, Nvidia Nano and their kin. It uses Linux
+OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
+/dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
+
+
+Just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
     git clone https://github.com/wittend/rm3100-runMag.git
 
