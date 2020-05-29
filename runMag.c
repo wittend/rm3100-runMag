@@ -54,6 +54,17 @@ void closeI2CBus(int i2c_fd)
 }
 
 //------------------------------------------
+// setNOSReg()
+//------------------------------------------
+int setNOSReg(pList *p)
+{
+    int rv;
+    printf("\nIn setNOSReg():: Setting undocumented NOS register to value: %i\n", p->NOSRegValue);
+    rv = i2c_write(p->i2c_fd, RM3100I2C_NOS, p->NOSRegValue);
+    return rv;
+}
+
+//------------------------------------------
 // setMagSampleRate()
 //------------------------------------------
 unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
@@ -80,19 +91,9 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
             break;
         }
     }
-    //if(mSensorMode == SensorPowerModeActive) 
-    //{
-    //    mag_disable_interrupts();
-    //}
-    //printf("\nSelecting sample rate %i\n", supported_rates[i][0]);
     p->mSampleRate = supported_rates[i][0];
-//    i2cbuffer[0] = (char)supported_rates[i][1];
-//    rm3100_i2c_write(RM3100_TMRC_REG, i2cbuffer, 1);
+    printf("\nIn setMagSampleRate(():: Setting TMRC sample rate to value: %i\n", p->mSampleRate);
     i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->mSampleRate);
-    //if (mSensorMode == SensorPowerModeActive) 
-    //{
-    //    mag_enable_interrupts();
-    //}
     return p->mSampleRate;
 }
 
@@ -153,7 +154,6 @@ int setup_mag(pList *p)
     i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);
     // Initialize CC settings
     setCycleCountRegs(p);
-    
     // Sleep for 1 second
     usleep(100000);                           // delay to help monitor DRDY pin on eval board
     return rv;
@@ -167,6 +167,19 @@ int runBIST(pList *p)
 {
     return 0;
     //return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
+}
+
+//------------------------------------------
+// startCMM()
+// Starts Continuous Measurement Mode
+//------------------------------------------
+int startCMM(pList *p)
+{
+    int rv = 0;
+    short cmmMode = (CMMMODE_ALL);   // 71 d
+    // Start CMM on X, Y, Z 
+    rv = i2c_write(p->i2c_fd, RM3100I2C_CMM, cmmMode);
+    return rv;
 }
 
 //------------------------------------------
@@ -206,7 +219,7 @@ void setTMRCReg(pList *p)
 {
     //To set the TMRC register, send the register address, 0x0B, followed by the desired
     //TMRC register value. To read the TMRC register, send 0x8B.
-    // printf("\nSetting TMRC reg: %i\n", p->TMRCRate);
+    printf("\nIn setTMRCReg(():: Setting TMRC sample rate to value: %i\n", p->TMRCRate);
     i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
 }
 

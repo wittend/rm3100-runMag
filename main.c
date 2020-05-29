@@ -134,10 +134,11 @@ void showSettings(pList *p)
     fprintf(stdout, "   I2C bus path as string:                     %s\n",          pathStr);
     fprintf(stdout, "   Built in self test (BIST) value:            %02X (hex)\n",  p->doBistMask);
     fprintf(stdout, "   NOS Register value:                         %02X (hex)\n",  p->NOSRegValue);
+    fprintf(stdout, "   Device sampling mode:                       %s\n",          p->samplingMode     ? "CONTINUOUS" : "POLL");
     fprintf(stdout, "   Cycle counts by vector:                     X: %i (dec), Y: %i (dec), Z: %i (dec)\n", p->cc_x, p->cc_y, p->cc_z);
     fprintf(stdout, "   Gain by vector:                             X: %i (dec), Y: %i (dec), Z: %i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
     fprintf(stdout, "   Read back CC Regs after set:                %s\n",          p->readBackCCRegs   ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Polling Loop Delay (uSec):                  %i (dec)\n",    p->outDelay);
+    fprintf(stdout, "   Software Loop Delay (uSec):                 %i (dec)\n",    p->outDelay);
     fprintf(stdout, "   Magnetometer sample rate:                   %i (dec)\n",    p->mSampleRate);
     fprintf(stdout, "   CMM magnetometer sample rate (TMRC reg):    %i (dec)\n",    p->TMRCRate);
     fprintf(stdout, "   Format output as JSON:                      %s\n",          p->jsonFlag         ? "TRUE" : "FALSE" );
@@ -188,8 +189,9 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->y_gain           = GAIN_75;
     p->z_gain           = GAIN_75;
     
+    p->samplingMode     = POLL;
     p->readBackCCRegs   = FALSE;
-    p->mSampleRate      = 100;
+    p->mSampleRate      = 200;
     p->hideRaw          = FALSE;
     //p->i2cBusNumber     = 1;
     p->i2cBusNumber     = busDevs[eRASPI_I2C_BUS].busNumber;
@@ -207,12 +209,12 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->showParameters   = FALSE;
     p->singleRead       = FALSE;
     p->tsMilliseconds   = FALSE;
-    p->TMRCRate         = 96;
+    p->TMRCRate         = 0x96;
     p->verboseFlag      = FALSE;
     p->showTotal        = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:HhjlL:mM:o:PqrR:sSTt:XxYyvVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjlL:mM:o:PqrR:sTt:XxYyvVZ")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -221,14 +223,12 @@ int getCommandLine(int argc, char** argv, pList *p)
                 listSBCs();
                 break;
             case 'A':
-                fprintf(stdout, "\nThe -A option is intended to allow setting a value in the NOS register. It is not implemented yet.\n\n");
+                fprintf(stdout, "\nThe -A option is intended to allow setting a value in the NOS register.\n\n");
                 p->NOSRegValue = atoi(optarg);
-                exit(1);
-                // setNOSReg();
+                setNOSReg(p);
                 break;
             case 'b':
                 p->i2cBusNumber = atoi(optarg);
-                //p->SBCType = -1;
                 break;
             case 'B':
                 p->doBistMask = atoi(optarg);
@@ -260,6 +260,9 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'F':
                 saveConfigToFile(p, optarg);
+                break;
+            case 'g':
+                p->samplingMode = atoi(optarg);
                 break;
             case 'H':
                 p->hideRaw = TRUE;
@@ -298,9 +301,6 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 's':
                 p->singleRead = TRUE;
                 break;
-            case 'S':
-                //p->boardType = 1;
-                break;
             case 'T':
                 p->tsMilliseconds = TRUE;
                 break;
@@ -338,16 +338,17 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers (use with -b).\n");
-                //fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.            [Not yet implemented]\n");
-                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).               [Not implemented].\n");
+                fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.              [Don't use unless you know what you are doing]\n");
+                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).               [Not implemented]\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
                 fprintf(stdout, "   -c <count>             :  Set cycle counts as integer  (default 200).\n");
-                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate (TMRC reg).\n");
+                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate (TMRC reg 96 hex default).\n");
                 fprintf(stdout, "   -d <count>             :  Set polling delay (default 1000000 uSec).\n");
                 fprintf(stdout, "   -E                     :  Show cycle count/gain/sensitivity relationship.\n");
-                fprintf(stdout, "   -f <filename>          :  Read configuration from file (JSON)         [Not implemented].\n");
-                fprintf(stdout, "   -F <filename>          :  Save configuration to file (JSON)           [Not implemented].\n");
+                fprintf(stdout, "   -f <filename>          :  Read configuration from file (JSON)         [Not implemented]\n");
+                fprintf(stdout, "   -F <filename>          :  Write configuration to file (JSON)          [Not implemented]\n");
+                fprintf(stdout, "   -g <mode>              :  Device sampling mode.        [POLL=0 (default), CONTINUOUS=1]\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
                 fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
@@ -355,18 +356,18 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
-                fprintf(stdout, "   -q                     :  Quiet mode.                                 [partial].\n");
+                fprintf(stdout, "   -q                     :  Quiet mode.                                 [partial]\n");
                 fprintf(stdout, "   -v                     :  Verbose output.\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
-                fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex).\n");
+                fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex)\n");
                 fprintf(stdout, "   -s                     :  Return single reading.\n");
-                fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string).\n");
-                fprintf(stdout, "   -t                     :  Get/Set Continuous Measurement Mode Data Rate.\n");
+                fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string)\n");
+                fprintf(stdout, "   -t                     :  Set Continuous Measurement Mode Data Rate (96 hex default).\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
                 fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
-                fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone.       [UNTESTED]\n");
-                fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]\n");
+                fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone.       [Not implemented].\n");
+                fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [Not implemented].\n");
                 fprintf(stdout, "   -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
                 return 1;
@@ -416,9 +417,9 @@ int readTemp(pList *p, int devAddr)
 }
 
 //------------------------------------------
-// readMag()
+// readMagCMM()
 //------------------------------------------
-int readMag(pList *p, int devAddr, int32_t *XYZ)
+int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
 {
     int rv = 0;
     int bytes_read = 0;
@@ -427,6 +428,40 @@ int readMag(pList *p, int devAddr, int32_t *XYZ)
     i2c_setAddress(p->i2c_fd, devAddr);
     // Write command to  use Continuous measurement Mode.
     // i2c_write(p->i2c_fd, RM3100I2C_CMM, cmmMode);    // Start CMM on X, Y, Z
+    // Check if DRDY went high and wait unit high before reading results
+    while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
+    {
+    }
+    // Read the XYZ registers
+    if((bytes_read = i2c_readbuf(p->i2c_fd, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))
+    {
+        perror("i2c transaction i2c_readbuf() failed.\n");
+    }
+    XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
+    XYZ[0] |= mSamples[1] * 256;
+    XYZ[0] |= mSamples[2];
+    XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
+    XYZ[1] |= mSamples[4] * 256;
+    XYZ[1] |= mSamples[5];
+    XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
+    XYZ[2] |= mSamples[7] * 256;
+    XYZ[2] |= mSamples[8];
+
+    return bytes_read;
+}
+
+//------------------------------------------
+// readMagPOLL()
+//------------------------------------------
+int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
+{
+    int rv = 0;
+    int bytes_read = 0;
+    short pmMode = (PMMODE_ALL);
+
+    i2c_setAddress(p->i2c_fd, devAddr);
+    // Write command to  use Continuous measurement Mode.
+    i2c_write(p->i2c_fd, RM3100_MAG_POLL, pmMode);
     // Check if DRDY went high and wait unit high before reading results
     while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
@@ -463,7 +498,7 @@ int main(int argc, char** argv)
     float rcTemp = 0.0;
     int rv = 0;
     struct tm *utcTime = getUTC();
-    short cmmMode = (CMMMODE_ALL);   // 71 d
+    // short cmmMode = (CMMMODE_ALL);   // 71 d
 
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
@@ -489,19 +524,17 @@ int main(int argc, char** argv)
     }
     // Setup the magnetometer.
     setup_mag(&p);
-    setMagSampleRate(&p, 100);
-    // TMRC Reg mysteriously gets bollixed up, probably setting CMM rates.  Brute force fix for now.
-    // p.TMRCRate = p.TMRCRate;
-    setTMRCReg(&p);   
-#if DEBUG
-//    fprintf(stdout,"TMRC reg value: %i\n", getTMRCReg(&p));
-#endif    
-    if(p.readBackCCRegs)
+    setMagSampleRate(&p, p.mSampleRate);
+    //setTMRCReg(&p);   
+    if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
     {
         readCycleCountRegs(&p);
     }
-    // Start CMM on X, Y, Z 
-    i2c_write(p.i2c_fd, RM3100I2C_CMM, cmmMode);   
+    // Start CMM on X, Y, Z
+    if(p.samplingMode == CONTINUOUS)
+    {
+        startCMM(&p);
+    }
     // loop   
     while(1)
     {
@@ -529,7 +562,14 @@ int main(int argc, char** argv)
         // Read Magnetometer.
         if((!p.localTempOnly) || (!p.remoteTempOnly))
         {
-            readMag(&p, p.magnetometerAddr, rXYZ);
+            if(p.samplingMode == POLL)
+            {
+                readMagPOLL(&p, p.magnetometerAddr, rXYZ);
+            }
+            else                                            // (p->samplingMode == CONTINUOUS)   
+            {
+                readMagCMM(&p, p.magnetometerAddr, rXYZ);
+            }
             xyz[0] = ((double)rXYZ[0] / p.x_gain);
             xyz[1] = ((double)rXYZ[1] / p.y_gain);
             xyz[2] = ((double)rXYZ[2] / p.z_gain);

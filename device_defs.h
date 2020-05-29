@@ -57,7 +57,13 @@ typedef enum
  
     SensorStatusPending = 255,      /**< @brief Reserved for internal used */
 } SensorStatus;
- 
+
+//-------------------------------------------
+// Device  sampling mode
+//-------------------------------------------
+#define POLL        0
+#define CONTINUOUS  1
+
 //-------------------------------------------
 // Continuous Measurement Mode
 //-------------------------------------------
@@ -70,95 +76,13 @@ typedef enum
 #define CMMMODE_ALL   (CMMMODE_START | CMMMODE_CMX | CMMMODE_CMY | CMMMODE_CMZ)
 
 //-------------------------------------------
-// Device paths for different platforms
+// Polled Measurement Mode
 //-------------------------------------------
-#define OTHER_BUS           ""
-#define KHADAS_EDGE_I2C3    "/dev/i2c-3"
-#define KHADAS_VIM3_I2C3    "/dev/i2c-3"
-#define KHADAS_VIM3_I2C4    "/dev/i2c-4"
-#define ODROIDC0_I2C_BUS    "/dev/i2c-1"
-#define ODROIDC1_I2C_BUS    "/dev/i2c-1"
-#define ODROIDC2_I2C_BUS    "/dev/i2c-1"
-#define ODROIDC4_I2C_BUS    "/dev/i2c-2"
-#define ODROIDC4_I2C_BUS3   "/dev/i2c-3"
-#define ODROIDN2_I2C_BUS    "/dev/i2c-2"
-#define ODROIDN2_I2C_BUS3   "/dev/i2c-3"
-#define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
-#define NV_NANO_I2C_BUS     "/dev/i2c-1"
-#define RASPI_I2C_BUS       "/dev/i2c-1"
+#define PMMODE_CMX   16
+#define PMMODE_CMY   32
+#define PMMODE_CMZ   64
 
-//-------------------------------------------
-// Known SBC device platforms 
-//-------------------------------------------
-#define sOTHER_BUS           "Other             "
-#define sKHADAS_EDGE_BUS3    "KHADAS EDGE bus 3 "
-#define sVIM3_I2C_BUS3       "KHADAS VIM3 bus 3 "
-#define sVIM3_I2C_BUS4       "KHADAS VIM3 bus 4 "
-#define sNV_XAVIER_I2C_BUS   "NV Xavier   bus 8 "
-#define sNV_NANO_I2C_BUS     "NV Nano     bus 1 "
-#define sODROIDC0_I2C_BUS    "Odroid CO   bus 1 "
-#define sODROIDC1_I2C_BUS    "Odroid C1   bus 1 "
-#define sODROIDC2_I2C_BUS    "Odroid C2   bus 1 "
-#define sODROIDC4_I2C_BUS    "Odroid C4   bus 1 "
-#define sODROIDC4_I2C_BUS3   "Odroid C4   bus 3 "
-#define sODROIDN2_I2C_BUS    "Odroid N2   bus 2 "
-#define sODROIDN2_I2C_BUS3   "Odroid N2   bus 3 "
-#define sRASPI_I2C_BUS       "Raspberry Pi 3/4  "
-
-//-------------------------------------------
-// Device paths for different platforms
-//-------------------------------------------
-typedef enum
-{
-    eKHADAS_EDGE_I2C3 = 0,
-    eVIM3_I2C_BUS3,
-    eVIM3_I2C_BUS4,
-    eNV_XAVIER_I2C_BUS,
-    eNV_NANO_I2C_BUS,
-    eODROIDC0_I2C_BUS,
-    eODROIDC1_I2C_BUS,
-    eODROIDC2_I2C_BUS,
-    eODROIDC4_I2C_BUS,
-    eODROIDC4_I2C_BUS3,
-    eODROIDN2_I2C_BUS,
-    eODROIDN2_I2C_BUS3,
-    eRASPI_I2C_BUS ,
-} i2cBusEnum;
-
-//-------------------------------------------
-// I2C Bus Path entries
-//-------------------------------------------
-struct busDev
-{
-    const char *devPath;
-    const char *SBCString;
-    int         enumVal;
-    int         busNumber;
-};
-
-//-------------------------------------------
-//  Informative list of known SBC defaults, 
-//-------------------------------------------
-static struct busDev busDevs[] =
-{
-    /* Device Path,     SBCString,          enum Value          Bus Number*/
-//    {OTHER_BUS,         sOTHER_BUS,          eOTHER_BUS,         -1},
-    {KHADAS_EDGE_I2C3,  sKHADAS_EDGE_BUS3,   eKHADAS_EDGE_I2C3,  3},
-    {KHADAS_VIM3_I2C3,  sVIM3_I2C_BUS3,      eVIM3_I2C_BUS3,     3},
-    {KHADAS_VIM3_I2C4,  sVIM3_I2C_BUS4,      eVIM3_I2C_BUS4,     4},
-    {NV_XAVIER_I2C_BUS, sNV_XAVIER_I2C_BUS,  eNV_XAVIER_I2C_BUS, 8},
-    {NV_NANO_I2C_BUS,   sNV_NANO_I2C_BUS,    eNV_NANO_I2C_BUS,   1},
-    {ODROIDC0_I2C_BUS,  sODROIDC0_I2C_BUS,   eODROIDC0_I2C_BUS,  1},
-    {ODROIDC1_I2C_BUS,  sODROIDC1_I2C_BUS,   eODROIDC1_I2C_BUS,  1},
-    {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDC2_I2C_BUS,  1},
-    {ODROIDC4_I2C_BUS,  sODROIDC4_I2C_BUS,   eODROIDC4_I2C_BUS,  2},
-    {ODROIDC4_I2C_BUS3, sODROIDC4_I2C_BUS3,  eODROIDC4_I2C_BUS3, 3},
-    {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDN2_I2C_BUS,  2},
-    {ODROIDN2_I2C_BUS3, sODROIDN2_I2C_BUS3,  eODROIDN2_I2C_BUS3, 3},
-    {RASPI_I2C_BUS,     sRASPI_I2C_BUS,      eRASPI_I2C_BUS,     1},
-    {0,                 0,                  -1,                 -1}
-};
-
+#define PMMODE_ALL   (PMMODE_CMX | PMMODE_CMY | PMMODE_CMZ)
 
 //-------------------------------------------
 // I2C bus speed options available
