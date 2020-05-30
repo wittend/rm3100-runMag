@@ -135,12 +135,12 @@ void showSettings(pList *p)
     fprintf(stdout, "   Built in self test (BIST) value:            %02X (hex)\n",  p->doBistMask);
     fprintf(stdout, "   NOS Register value:                         %02X (hex)\n",  p->NOSRegValue);
     fprintf(stdout, "   Device sampling mode:                       %s\n",          p->samplingMode     ? "CONTINUOUS" : "POLL");
-    fprintf(stdout, "   Cycle counts by vector:                     X: %i (dec), Y: %i (dec), Z: %i (dec)\n", p->cc_x, p->cc_y, p->cc_z);
-    fprintf(stdout, "   Gain by vector:                             X: %i (dec), Y: %i (dec), Z: %i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
+    fprintf(stdout, "   Cycle counts by vector:                     X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->cc_x, p->cc_y, p->cc_z);
+    fprintf(stdout, "   Gain by vector:                             X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
     fprintf(stdout, "   Read back CC Regs after set:                %s\n",          p->readBackCCRegs   ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Software Loop Delay (uSec):                 %i (dec)\n",    p->outDelay);
-    fprintf(stdout, "   Magnetometer sample rate:                   %i (dec)\n",    p->mSampleRate);
-    fprintf(stdout, "   CMM magnetometer sample rate (TMRC reg):    %i (dec)\n",    p->TMRCRate);
+    fprintf(stdout, "   Magnetometer sample rate:                   %3i (dec)\n",   p->mSampleRate);
+    fprintf(stdout, "   CMM magnetometer sample rate (TMRC reg):    %3i (dec)\n",   p->TMRCRate);
     fprintf(stdout, "   Format output as JSON:                      %s\n",          p->jsonFlag         ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Read local temperature only:                %s\n",          p->localTempOnly    ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read remote temperature only:               %s\n",          p->remoteTempOnly   ? "TRUE" : "FALSE");

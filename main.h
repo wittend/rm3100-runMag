@@ -49,10 +49,16 @@ typedef struct tag_pList
     int x_gain;
     int y_gain;
     int z_gain;
+    
+    int TMRCRate;
+    int mSampleRate;
+
+    int samplingMode;
+
     int NOSRegValue;
+
     int readBackCCRegs;
     int magRevId;
-    int samplingMode;
     
     int hideRaw;
     int i2cBusNumber;
@@ -61,18 +67,19 @@ typedef struct tag_pList
 
     int localTempOnly;
     int localTempAddr;
+
     int magnetometerOnly;
     int magnetometerAddr;
-    int outDelay;
-    int quietFlag;
+
     int remoteTempOnly;
     int remoteTempAddr;
+
+    int outDelay;
+    int quietFlag;
     int showParameters;
     int singleRead;
     int tsMilliseconds;
-    int TMRCRate;
     int verboseFlag;
-    int mSampleRate;
     int showTotal;
 
     char *Version;

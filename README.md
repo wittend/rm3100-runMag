@@ -23,7 +23,7 @@ and if all goes well type:
 
 and now you should see some results!
 
-## Example (on Odroid N2, output JSON, include totalized magnetic field): 
+## Example (on Odroid N2).  Output JSON.  Show Tm : totalized magnetic field (sqrt((x*x) + (y*y) + (z*z))): 
 
     dave@odroid:~/$ sudo ./runMag -j -Z -b 2
     
@@ -35,22 +35,24 @@ and now you should see some results!
 
 ## Example output using -h or -? option:
 
-    dave@odroid:~/$ sudo ./runMag -h
-    
-   ./runMag Version = 0.0.5
-   
-   Parameters:
-   
+    dave@odroid:~/$ sudo ./runMag -b 2 -h
+
+        ./runMag Version = 0.0.5
+        
+        Parameters:
+        
         -a                     :  List known SBC I2C bus numbers (use with -b).
-        -B <reg mask>          :  Do built in self test (BIST).               [Not implemented].
+        -A <reg value>         :  Set NOS (0x0A) register value.              [Don't use unless you know what you are doing]
+        -B <reg mask>          :  Do built in self test (BIST).               [Not implemented]
         -b <bus as integer>    :  I2C bus number as integer.
         -C                     :  Read back cycle count registers before sampling.
         -c <count>             :  Set cycle counts as integer  (default 200).
-        -D <rate>              :  Set magnetometer sample rate (TMRC reg).
+        -D <rate>              :  Set magnetometer sample rate (TMRC reg 96 hex default).
         -d <count>             :  Set polling delay (default 1000000 uSec).
         -E                     :  Show cycle count/gain/sensitivity relationship.
-        -f <filename>          :  Read configuration from file (JSON)         [Not implemented].
-        -F <filename>          :  Save configuration to file (JSON)           [Not implemented].
+        -f <filename>          :  Read configuration from file (JSON).        [Not implemented]
+        -F <filename>          :  Write configuration to file  (JSON).        [Not implemented]
+        -g <mode>              :  Device sampling mode.        [POLL=0 (default), CONTINUOUS=1]
         -H                     :  Hide raw measurments.
         -j                     :  Format output as JSON.
         -L [addr as integer]   :  Local temperature address (default 19 hex).
@@ -58,18 +60,18 @@ and now you should see some results!
         -M [addr as integer]   :  Magnetometer address (default 20 hex).
         -m                     :  Read magnetometer only.
         -P                     :  Show Parameters.
-        -q                     :  Quiet mode.                                 [partial].
+        -q                     :  Quiet mode.                                 [partial]
         -v                     :  Verbose output.
         -r                     :  Read remote temperature only.
-        -R [addr as integer]   :  Remote temperature address (default 18 hex).
+        -R [addr as integer]   :  Remote temperature address (default 18 hex)
         -s                     :  Return single reading.
-        -T                     :  Raw timestamp in milliseconds (default: UTC string).
-        -t                     :  Get/Set Continuous Measurement Mode Data Rate.
+        -T                     :  Raw timestamp in milliseconds (default: UTC string)
+        -t                     :  Set Continuous Measurement Mode Data Rate (96 hex default).
         -V                     :  Display software version and exit.
         -X                     :  Read Simple Magnetometer Board (SMSB).
         -x                     :  Read board with extender (MSBx).
-        -Y                     :  Read Scotty's RPi Mag HAT standalone.       [UNTESTED]
-        -y                     :  Read Scotty's RPi Mag HAT in extended mode. [UNTESTED]
+        -Y                     :  Read Scotty's RPi Mag HAT standalone.       [Not implemented].
+        -y                     :  Read Scotty's RPi Mag HAT in extended mode. [Not implemented].
         -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
         -h or -?               :  Display this help.
 
@@ -106,11 +108,11 @@ and now you should see some results!
         Built in self test (BIST) value:            00 (hex)
         NOS Register value:                         00 (hex)
         Cycle counts by vector:                     X: 200 (dec), Y: 200 (dec), Z: 200 (dec)
-        Gain by vector:                             X: 75 (dec), Y: 75 (dec), Z: 75 (dec)
+        Gain by vector:                             X:  75 (dec), Y:  75 (dec), Z:  75 (dec)
         Read back CC Regs after set:                FALSE
         Polling Loop Delay (uSec):                  1000000 (dec)
-        Magnetometer sample rate:                   100 (dec)
-        CMM magnetometer sample rate (TMRC reg):    96 (dec)
+        Magnetometer sample rate:                   200 (dec)
+        CMM magnetometer sample rate (TMRC reg):    150 (dec)
         Format output as JSON:                      FALSE
         Read local temperature only:                TRUE
         Read remote temperature only:               FALSE
