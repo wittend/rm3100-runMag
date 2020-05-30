@@ -23,7 +23,8 @@ and if all goes well type:
 
 and now you should see some results!
 
-## Example (on Odroid N2).  Output JSON.  Show Tm : totalized magnetic field (sqrt((x*x) + (y*y) + (z*z))): 
+## Example (on Odroid N2, output JSON, show totalized magnetic field.
+### Tm: (sqrt((x*x) + (y*y) + (z*z))): 
 
     dave@odroid:~/$ sudo ./runMag -j -Z -b 2
     
