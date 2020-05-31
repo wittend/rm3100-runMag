@@ -123,7 +123,6 @@ typedef enum
 // set to 0x92, indicating an update rate of ~600 Hz, the rate established by the cycle count will
 // override the TMRC request, and the actual update rate will be ~430 Hz.
 //-------------------------------------------------------------------------------------------------
-#define TMRC            0x04
 #define TMRC_VAL_600    0x92    // Time between readings: ~1.7 ms
 #define TMRC_VAL_300    0x93    // Time between readings: ~3 ms
 #define TMRC_VAL_150    0x94    // Time between readings: ~7 ms
