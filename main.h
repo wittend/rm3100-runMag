@@ -30,7 +30,7 @@
 #include "i2c.h"
 #include "MCP9808.h"
 
-#define RUNMAG_VERSION "0.0.5"
+#define RUNMAG_VERSION "0.0.6"
 
 //------------------------------------------
 // Parameter List struct

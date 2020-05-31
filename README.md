@@ -1,6 +1,6 @@
 # rm3100-runMag
 
-This is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.  It is written in simple C intended for use on boards such as the Raspberry Pi 4, Odroid, Nvidia Nano and their kin. It uses Linux
+This is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.  It is written in simple C. It is intended for use on boards such as the Raspberry Pi 4, Odroid, Nvidia Nano and their kin. It uses Linux
 OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
 /dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
 
@@ -39,7 +39,7 @@ and now you should see some results!
 
     dave@odroid:~/$ sudo ./runMag -b 2 -h
 
-        ./runMag Version = 0.0.5
+        ./runMag Version = 0.0.6
         
         Parameters:
         
@@ -100,7 +100,7 @@ and now you should see some results!
     
     dave@odroid:~/projects/rm3100-runMag$ sudo ./runMag -b 2 -l -P
     
-    Version = 0.0.5
+    Version = 0.0.6
     
     Current Parameters:
     
