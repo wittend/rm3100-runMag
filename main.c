@@ -101,7 +101,88 @@ void listSBCs()
 int readConfigFromFile(pList *p, char *cfgFile)
 {
     int rv = 0;
+    struct stat fs;
+    char js[256] = "";
+    char jsonstr[1024] = "";
+    
     printf("\nRead config from file: %s\n\n", cfgFile);
+    if(lstat(cfgFile, &fs) == -1)
+    {
+        perror("lstat");
+        exit(EXIT_FAILURE);
+    }
+
+    sprintf(js, "SBCType: %i,", p->SBCType);
+    strcat(jsonstr, js);
+    sprintf(js, "boardType: %i,", p->boardType);
+    strcat(jsonstr, js);
+    sprintf(js, "boardMode: %i,", p->boardMode);
+    strcat(jsonstr, js);
+    sprintf(js, "doBistMask: %i,", p->doBistMask);
+    strcat(jsonstr, js);
+
+//    int cc_x;
+    sprintf(js, "cc_x: %i,", p->cc_x);
+    strcat(jsonstr, js);
+//    int cc_y;
+    sprintf(js, "cc_y: %i,", p->cc_y);
+    strcat(jsonstr, js);
+//    int cc_z;
+    sprintf(js, "cc_z: %i,", p->cc_z);
+    strcat(jsonstr, js);
+
+//    int x_gain;
+    sprintf(js, "x_gain: %i,", p->x_gain);
+    strcat(jsonstr, js);
+//    int y_gain;
+    sprintf(js, "y_gain: %i,", p->y_gain);
+    strcat(jsonstr, js);
+//    int z_gain;
+    sprintf(js, "z_gain: %i,", p->z_gain);
+    strcat(jsonstr, js);
+    
+//    int TMRCRate;
+    sprintf(js, "TMRCRate: %i,", p->TMRCRate);
+    strcat(jsonstr, js);
+//    int mSampleRate;
+    sprintf(js, "mSampleRate: %i,", p->mSampleRate);
+    strcat(jsonstr, js);
+
+//    int samplingMode;
+    sprintf(js, "samplingMode: %i,", p->samplingMode);
+    strcat(jsonstr, js);
+    
+    printf("%s", jsonstr);
+
+    int NOSRegValue;
+
+    int readBackCCRegs;
+    int magRevId;
+    
+    int hideRaw;
+    int i2cBusNumber;
+    int i2c_fd;
+    int jsonFlag;
+
+    int localTempOnly;
+    int localTempAddr;
+
+    int magnetometerOnly;
+    int magnetometerAddr;
+
+    int remoteTempOnly;
+    int remoteTempAddr;
+
+    int outDelay;
+    int quietFlag;
+    int showParameters;
+    int singleRead;
+    int tsMilliseconds;
+    int verboseFlag;
+    int showTotal;
+
+    char *Version;
+    
     return rv;
 }
 
