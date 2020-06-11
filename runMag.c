@@ -92,7 +92,7 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
         }
     }
     p->mSampleRate = supported_rates[i][0];
-    printf("\nIn setMagSampleRate(():: Setting TMRC sample rate to value: %i\n", p->mSampleRate);
+    //printf("\nIn setMagSampleRate(():: Setting TMRC sample rate to value: %i\n", p->mSampleRate);
     i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->mSampleRate);
     return p->mSampleRate;
 }
@@ -118,7 +118,7 @@ int getMagRev(pList *p)
     if((p->magRevId = i2c_read(p->i2c_fd, RM3100I2C_REVID)) != (uint8_t)RM3100_VER_EXPECTED)
     {
         // Fail, exit...
-        fprintf(stderr, "RM3100 REVID NOT CORRECT: ");
+        fprintf(stderr, "\nRM3100 REVID NOT CORRECT: ");
         fprintf(stderr, "RM3100 REVID: 0x%X <> EXPECTED: 0x%X.\n\n", p->magRevId, RM3100_VER_EXPECTED);
         fflush(stdout);
         return 0;
@@ -219,7 +219,7 @@ void setTMRCReg(pList *p)
 {
     //To set the TMRC register, send the register address, 0x0B, followed by the desired
     //TMRC register value. To read the TMRC register, send 0x8B.
-    printf("\nIn setTMRCReg(():: Setting TMRC sample rate to value: %i\n", p->TMRCRate);
+    // printf("\nIn setTMRCReg(():: Setting TMRC sample rate to value: %i\n", p->TMRCRate);
     i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
 }
 
@@ -283,12 +283,12 @@ void readCycleCountRegs(pList *p)
     i2c_setAddress(p->i2c_fd, p->magnetometerAddr);
     //  Read register settings
     i2c_readbuf(p->i2c_fd, RM3100I2C_CCX_1, regCC, 7);
-    printf("regCC[%i]: 0x%X\n",    0, (uint8_t)regCC[0]);
-    printf("regCC[%i]: 0x%X\n",    1, (uint8_t)regCC[1]);
-    printf("regCC[%i]: 0x%X\n",    2, (uint8_t)regCC[2]);
-    printf("regCC[%i]: 0x%X\n",    3, (uint8_t)regCC[3]);
-    printf("regCC[%i]: 0x%X\n",    4, (uint8_t)regCC[4]);
-    printf("regCC[%i]: 0x%X\n",    5, (uint8_t)regCC[5]);
-    printf("regCC[%i]: 0x%X\n\n",  6, (uint8_t)regCC[6]);
+    fprintf(stdout, "regCC[%i]: 0x%X\n",    0, (uint8_t)regCC[0]);
+    fprintf(stdout, "regCC[%i]: 0x%X\n",    1, (uint8_t)regCC[1]);
+    fprintf(stdout, "regCC[%i]: 0x%X\n",    2, (uint8_t)regCC[2]);
+    fprintf(stdout, "regCC[%i]: 0x%X\n",    3, (uint8_t)regCC[3]);
+    fprintf(stdout, "regCC[%i]: 0x%X\n",    4, (uint8_t)regCC[4]);
+    fprintf(stdout, "regCC[%i]: 0x%X\n",    5, (uint8_t)regCC[5]);
+    fprintf(stdout, "regCC[%i]: 0x%X\n\n",  6, (uint8_t)regCC[6]);
 }
 

@@ -81,7 +81,7 @@ typedef struct tag_pList
     int tsMilliseconds;
     int verboseFlag;
     int showTotal;
-
+    char *outputFilePath;
     char *Version;
 } pList;
 

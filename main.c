@@ -17,16 +17,22 @@
 #include "i2c.h"
 #include "MCP9808.h"
 #include "runMag.h"
+#include "jsmn.h"
 #include "main.h"
+
+#define _DEBUG 0
+#define UTCBUFLEN 64
+#define MAXPATHBUFLEN 1025
+#define JSONBUFLEN 1025
+#define JSONBUFTOKENCOUNT 1024
 
 //------------------------------------------
 // Static variables 
 //------------------------------------------
 char version[] = RUNMAG_VERSION;
-static char  mSamples[9];
+char outFilePath[MAXPATHBUFLEN] = "./";
 
-#define DEBUG 0
-#define UTCBUFLEN 64
+static char  mSamples[9];
 
 //------------------------------------------
 // currentTimeMillis()
@@ -102,87 +108,85 @@ int readConfigFromFile(pList *p, char *cfgFile)
 {
     int rv = 0;
     struct stat fs;
-    char js[256] = "";
-    char jsonstr[1024] = "";
+    FILE *fd = NULL;
+    char jsonstr[JSONBUFLEN] = "";
     
-    printf("\nRead config from file: %s\n\n", cfgFile);
     if(lstat(cfgFile, &fs) == -1)
     {
         perror("lstat");
         exit(EXIT_FAILURE);
     }
-
-    sprintf(js, "SBCType: %i,", p->SBCType);
-    strcat(jsonstr, js);
-    sprintf(js, "boardType: %i,", p->boardType);
-    strcat(jsonstr, js);
-    sprintf(js, "boardMode: %i,", p->boardMode);
-    strcat(jsonstr, js);
-    sprintf(js, "doBistMask: %i,", p->doBistMask);
-    strcat(jsonstr, js);
-
-//    int cc_x;
-    sprintf(js, "cc_x: %i,", p->cc_x);
-    strcat(jsonstr, js);
-//    int cc_y;
-    sprintf(js, "cc_y: %i,", p->cc_y);
-    strcat(jsonstr, js);
-//    int cc_z;
-    sprintf(js, "cc_z: %i,", p->cc_z);
-    strcat(jsonstr, js);
-
-//    int x_gain;
-    sprintf(js, "x_gain: %i,", p->x_gain);
-    strcat(jsonstr, js);
-//    int y_gain;
-    sprintf(js, "y_gain: %i,", p->y_gain);
-    strcat(jsonstr, js);
-//    int z_gain;
-    sprintf(js, "z_gain: %i,", p->z_gain);
-    strcat(jsonstr, js);
+    if((fd = fopen(cfgFile, "r")) != NULL)
+    {
+        if(fread(jsonstr, fs.st_size, 1, fd))
+        {
+            printf("\nConfig read from file: %s\n\n", cfgFile);
+#if _DEBUG
+            printf(jsonstr);
+#endif
+        }
+        else
+        {
+            perror("reading config file");
+            exit(EXIT_FAILURE);
+        }
+    }
+    jsmn_parser parser;
+    jsmntok_t t[JSONBUFTOKENCOUNT]; /* We expect no more than JSONBUFTOKENCOUNT JSON tokens */
     
-//    int TMRCRate;
-    sprintf(js, "TMRCRate: %i,", p->TMRCRate);
-    strcat(jsonstr, js);
-//    int mSampleRate;
-    sprintf(js, "mSampleRate: %i,", p->mSampleRate);
-    strcat(jsonstr, js);
-
-//    int samplingMode;
-    sprintf(js, "samplingMode: %i,", p->samplingMode);
-    strcat(jsonstr, js);
-    
-    printf("%s", jsonstr);
-
-    int NOSRegValue;
-
-    int readBackCCRegs;
-    int magRevId;
-    
-    int hideRaw;
-    int i2cBusNumber;
-    int i2c_fd;
-    int jsonFlag;
-
-    int localTempOnly;
-    int localTempAddr;
-
-    int magnetometerOnly;
-    int magnetometerAddr;
-
-    int remoteTempOnly;
-    int remoteTempAddr;
-
-    int outDelay;
-    int quietFlag;
-    int showParameters;
-    int singleRead;
-    int tsMilliseconds;
-    int verboseFlag;
-    int showTotal;
-
-    char *Version;
-    
+    jsmn_init(&parser);
+    rv = jsmn_parse(&parser, jsonstr, strlen(jsonstr), t, JSONBUFTOKENCOUNT);
+#if _DEBUG
+    printf("\n");
+    switch(rv)
+    {
+        case JSMN_ERROR_INVAL:
+            printf("njsmn_parse() returns JSMN_ERROR_INVAL.\nBad token, JSON string is corrupted.\n");
+            break;
+        case JSMN_ERROR_NOMEM:
+            printf("jsmn_parse() returns JSMN_ERROR_NOMEM.\nNot enough tokens, JSON string is too large\n");
+            break;
+        case JSMN_ERROR_PART:
+            printf("jsmn_parse() returns JSMN_ERROR_PART.\nJSON string is too short, expecting more JSON data\n");
+            break;
+        default:
+            printf("jsmn_parse() returns %i tokens.\n", rv);
+            for(int i =  0; i < rv; i++)
+            {
+                char js[65] = "";
+                int type = t[i].type;
+                
+                printf("t[%i] type: ", i);
+                switch(type)
+                {
+                    case JSMN_UNDEFINED:        // = 0,
+                        printf("JSMN_UNDEFINED.\n");
+                        break;
+                    case JSMN_OBJECT:           // = 1,
+                        printf("JSMN_OBJECT.\n");
+                        break;
+                    case JSMN_ARRAY:            // = 2,
+                        printf("JSMN_ARRAY.\n");
+                        break;
+                    case JSMN_STRING:           // = 3,
+                        printf("JSMN_STRING.  Value: ");
+                        strncpy(js, jsonstr + t[i].start, t[i].end - t[i].start);
+//                        js[t[i].end] = 0;
+                        printf("%s\n", js);
+                        break;
+                    case JSMN_PRIMITIVE:        // = 4
+                        printf("JSMN_PRIMITIVE. Value: ");
+                        strncpy(js, jsonstr + t[i].start, t[i].end - t[i].start);
+//                        js[t[i].end] = 0;
+                        printf("%s\n", js);
+                        break;
+                }
+            }
+            printf("\n");
+            break;
+    }
+    printf("\n");
+#endif
     return rv;
 }
 
@@ -192,7 +196,166 @@ int readConfigFromFile(pList *p, char *cfgFile)
 int saveConfigToFile(pList *p, char *cfgFile)
 {
     int rv = 0;
-    printf("\nSave config to file: %s\n\n", cfgFile);    
+    FILE *fd = NULL;
+    char js[256] = "";
+    char jsonstr[JSONBUFLEN] = "";
+    
+    sprintf(js, "[\n  {");
+    strcat(jsonstr, js);
+    
+    //char *Version;
+    sprintf(js, "\n    \"swVersion\": \"%s\",", version);
+    strcat(jsonstr, js);
+    
+    sprintf(js, "\n    \"SBCType\": %i,", p->SBCType);
+    strcat(jsonstr, js);
+    sprintf(js, "\n    \"boardType\": %i,", p->boardType);
+    strcat(jsonstr, js);
+    sprintf(js, "\n    \"boardMode\": %i,", p->boardMode);
+    strcat(jsonstr, js);
+    sprintf(js, "\n    \"doBistMask\": %i,", p->doBistMask);
+    strcat(jsonstr, js);
+
+//    int cc_x;
+    sprintf(js, "\n    \"cc_x\": %i,", p->cc_x);
+    strcat(jsonstr, js);
+//    int cc_y;
+    sprintf(js, "\n    \"cc_y\": %i,", p->cc_y);
+    strcat(jsonstr, js);
+//    int cc_z;
+    sprintf(js, "\n    \"cc_z\": %i,", p->cc_z);
+    strcat(jsonstr, js);
+
+//    int x_gain;
+    sprintf(js, "\n    \"x_gain\": %i,", p->x_gain);
+    strcat(jsonstr, js);
+//    int y_gain;
+    sprintf(js, "\n    \"y_gain\": %i,", p->y_gain);
+    strcat(jsonstr, js);
+//    int z_gain;
+    sprintf(js, "\n    \"z_gain\": %i,", p->z_gain);
+    strcat(jsonstr, js);
+    
+//    int TMRCRate;
+    sprintf(js, "\n    \"TMRCRate\": %i,", p->TMRCRate);
+    strcat(jsonstr, js);
+//    int mSampleRate;
+    sprintf(js, "\n    \"mSampleRate\": %i,", p->mSampleRate);
+    strcat(jsonstr, js);
+
+//    int samplingMode;
+    sprintf(js, "\n    \"samplingMode\": %i,", p->samplingMode);
+    strcat(jsonstr, js);
+    
+    //int NOSRegValue;
+    sprintf(js, "\n    \"NOSRegValue\": %i,", p->NOSRegValue);
+    strcat(jsonstr, js);
+
+    //int readBackCCRegs;
+    sprintf(js, "\n    \"readBackCCRegs\": %i,", p->readBackCCRegs);
+    strcat(jsonstr, js);
+    
+    ////int magRevId;
+    //sprintf(js, "\n  magRevId: %i,", p->magRevId);
+    //strcat(jsonstr, js);
+    
+    //int hideRaw;
+    sprintf(js, "\n    \"hideRaw\": %i,", p->hideRaw);
+    strcat(jsonstr, js);
+    //int i2cBusNumber;
+    sprintf(js, "\n    \"i2cBusNumber\": %i,", p->i2cBusNumber);
+    strcat(jsonstr, js);
+    
+    // int i2c_fd;
+    //sprintf(js, "\n  samplingMode: %i,", p->samplingMode);
+    //strcat(jsonstr, js);
+    
+    // int jsonFlag;
+    sprintf(js, "\n    \"jsonFlag\": %i,", p->jsonFlag);
+    strcat(jsonstr, js);
+
+    // int localTempOnly;
+    sprintf(js, "\n    \"localTempOnly\": %i,", p->localTempOnly);
+    strcat(jsonstr, js);
+    //int localTempAddr;
+    sprintf(js, "\n    \"localTempAddr\": %i,", p->localTempAddr);
+    strcat(jsonstr, js);
+
+    //int magnetometerOnly;
+    sprintf(js, "\n    \"magnetometerOnly\": %i,", p->magnetometerOnly);
+    strcat(jsonstr, js);
+    //int magnetometerAddr;
+    sprintf(js, "\n    \"magnetometerAddr\": %i,", p->magnetometerAddr);
+    strcat(jsonstr, js);
+
+    //int remoteTempOnly;
+    sprintf(js, "\n    \"remoteTempOnly\": %i,", p->remoteTempOnly);
+    strcat(jsonstr, js);
+    //int remoteTempAddr;
+    sprintf(js, "\n    \"remoteTempAddr\": %i,", p->remoteTempAddr);
+    strcat(jsonstr, js);
+
+    //int outDelay;
+    sprintf(js, "\n    \"outDelay\": %i,", p->outDelay);
+    strcat(jsonstr, js);
+    //int quietFlag;
+    sprintf(js, "\n    \"quietFlag\": %i,", p->quietFlag);
+    strcat(jsonstr, js);
+    //int showParameters;
+    sprintf(js, "\n    \"showParameters\": %i,", p->showParameters);
+    strcat(jsonstr, js);
+    //int singleRead;
+    sprintf(js, "\n    \"singleRead\": %i,", p->singleRead);
+    strcat(jsonstr, js);
+    //int tsMilliseconds;
+    sprintf(js, "\n    \"tsMilliseconds\": %i,", p->tsMilliseconds);
+    strcat(jsonstr, js);
+    //int verboseFlag;
+    sprintf(js, "\n    \"verboseFlag\": %i,", p->verboseFlag);
+    strcat(jsonstr, js);
+    //int showTotal;
+    sprintf(js, "\n    \"showTotal\": %i", p->showTotal);
+    strcat(jsonstr, js);
+
+    sprintf(js, "\n  }\n]\n");
+    strcat(jsonstr, js);
+
+#if _DEBUG
+    printf("%s", jsonstr);
+#endif
+
+    if((fd = fopen(cfgFile, "w")) != NULL)
+    {
+        if(fwrite(jsonstr, strlen(jsonstr), 1, fd))
+        {
+            printf("\nSaved config to file: %s\n\n", cfgFile);
+        }
+        else
+        {
+            perror("writing config file");
+        }
+        fclose(fd);
+    }
+    return rv;
+}
+
+//------------------------------------------
+// setOutputFilePath()
+//------------------------------------------
+int setOutputFilePath(pList *p, char *outPath)
+{
+    int rv = 0;
+    
+    if(strlen(outPath) > MAXPATHBUFLEN - 1)
+    {
+        fprintf(stderr, "\nOutput path length exceeds maximum allowed length (%i)\n", MAXPATHBUFLEN - 1);
+        rv =  1;
+    }
+    else
+    {
+        strncpy(outFilePath, outPath, strlen(outPath));
+        p->outputFilePath = outFilePath;
+    }
     return rv;
 }
 
@@ -211,6 +374,7 @@ void showSettings(pList *p)
         getMagRev(p);
     }
     fprintf(stdout, "   Magnetometer revision ID detected:          %i (dec)\n",    p->magRevId);
+    fprintf(stdout, "   Output file path:                           %s\n",          p->outputFilePath);
     fprintf(stdout, "   I2C bus number as integer:                  %i (dec)\n",    p->i2cBusNumber);
     fprintf(stdout, "   I2C bus path as string:                     %s\n",          pathStr);
     fprintf(stdout, "   Built in self test (BIST) value:            %02X (hex)\n",  p->doBistMask);
@@ -235,8 +399,8 @@ void showSettings(pList *p)
     fprintf(stdout, "   Return single magnetometer reading:         %s\n",          p->singleRead       ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Simple Magnetometer Board (SMSB):      %s\n",          (p->boardType == 0) ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read Board with Extender (MSBx):            %s\n",          (p->boardType == 1) ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Scotty's RPi Mag HAT standalone:       %s\n",          (p->boardType == 2) ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Scotty's RPi Mag HAT in extended mode: %s\n",          (p->boardType == 3) ? "TRUE" : "FALSE");
+//    fprintf(stdout, "   Read Scotty's RPi Mag HAT standalone:       %s\n",          (p->boardType == 2) ? "TRUE" : "FALSE");
+//    fprintf(stdout, "   Read Scotty's RPi Mag HAT in extended mode: %s\n",          (p->boardType == 3) ? "TRUE" : "FALSE");
     fprintf(stdout, "   Magnetometer configuation:                  %s\n",          (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
     fprintf(stdout, "   Timestamp format:                           %s\n",          p->tsMilliseconds   ? "RAW"  : "UTCSTRING");
     fprintf(stdout, "   Verbose output:                             %s\n",          p->verboseFlag      ? "TRUE" : "FALSE");
@@ -293,9 +457,10 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->TMRCRate         = 0x96;
     p->verboseFlag      = FALSE;
     p->showTotal        = FALSE;
+    p->outputFilePath   = outFilePath;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjlL:mM:o:PqrR:sTt:XxYyvVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjlL:mM:o:O:PqrR:sTt:XxYyvVZ")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -365,6 +530,9 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'o':
                 p->outDelay = atoi(optarg) * 1000;
+                break;
+            case 'O':
+                setOutputFilePath(p, optarg);
                 break;
             case 'P':
                 p->showParameters = TRUE;
@@ -436,6 +604,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -l                     :  Read local temperature only.\n");
                 fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
+                fprintf(stdout, "   -O <filename>          :  Output file.\n");
+                fprintf(stdout, "   -o [delay as ms]       :  Output dekay (1000 ms default).\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
                 fprintf(stdout, "   -q                     :  Quiet mode.                                 [partial]\n");
                 fprintf(stdout, "   -v                     :  Verbose output.\n");
@@ -606,7 +776,7 @@ int main(int argc, char** argv)
     // Setup the magnetometer.
     setup_mag(&p);
     setMagSampleRate(&p, p.mSampleRate);
-    //setTMRCReg(&p);   
+    ////setTMRCReg(&p);   
     if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
     {
         readCycleCountRegs(&p);
@@ -747,56 +917,56 @@ int main(int argc, char** argv)
                 {
                     if(rcTemp < -100.0)
                     {
-                        fprintf(stdout, ", rt:\"ERROR\"");
+                        fprintf(stdout, ", \"rt\":0.0");
                     }
                     else
                     {
-                        fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
+                        fprintf(stdout, ", \"rt\":%.2f",  rcTemp);
                     }
                 }
                 else if(p.localTempOnly)
                 {
                     if(lcTemp < -100.0)
                     {
-                        fprintf(stdout, ", lt:\"ERROR\"");
+                        fprintf(stdout, ", \"lt\":0.0");
                     }
                     else
                     {
-                        fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
+                        fprintf(stdout, ", \"lt\":%.2f",  lcTemp);
                     }
                 }
                 else
                 {
                     if(rcTemp < -100.0)
                     {
-                        fprintf(stdout, ", rt:\"ERROR\"");
+                        fprintf(stdout, ", \"rt\":0.0");
                     }
                     else
                     {
-                        fprintf(stdout, ", rt:\"%.2f\"",  rcTemp);
+                        fprintf(stdout, ", \"rt\":%.2f",  rcTemp);
                     }
                     if(lcTemp <-100.0)
                     {
-                        fprintf(stdout, ", lt:\"ERROR\"");
+                        fprintf(stdout, ", \"lt\":0.0");
                     }
                     else
                     {
-                        fprintf(stdout, ", lt:\"%.2f\"",  lcTemp);
+                        fprintf(stdout, ", \"lt\":%.2f",  lcTemp);
                     }
                 }
             }
-            fprintf(stdout, ", x:\"%.3f\"", xyz[0]);
-            fprintf(stdout, ", y:\"%.3f\"", xyz[1]);
-            fprintf(stdout, ", z:\"%.3f\"", xyz[2]);
+            fprintf(stdout, ", \"x\":%.3f", xyz[0]);
+            fprintf(stdout, ", \"y\":%.3f", xyz[1]);
+            fprintf(stdout, ", \"z\":%.3f", xyz[2]);
             if(!p.hideRaw)
             {
-                fprintf(stdout, ", rx:\"%i\"", rXYZ[0]);
-                fprintf(stdout, ", ry:\"%i\"", rXYZ[1]);
-                fprintf(stdout, ", rz:\"%i\"", rXYZ[2]);
+                fprintf(stdout, ", \"rx\":%i", rXYZ[0]);
+                fprintf(stdout, ", \"ry\":%i", rXYZ[1]);
+                fprintf(stdout, ", \"rz\":%i", rXYZ[2]);
             }
             if(p.showTotal)
             {
-                fprintf(stdout, ", Tm: \"%.5f\"",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(stdout, ", \"Tm\": %.5f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
            fprintf(stdout, " }\n");
         }
