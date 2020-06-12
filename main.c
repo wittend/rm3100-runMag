@@ -903,13 +903,13 @@ int main(int argc, char** argv)
             fprintf(stdout, "{ ");
             if(p.tsMilliseconds)
             {
-                fprintf(stdout, "\"%ld\"",  currentTimeMillis());
+                fprintf(stdout, "\"ts\":\"%ld\"",  currentTimeMillis());
             }
             else
             {
                 utcTime = getUTC();
                 strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
-                fprintf(stdout, "ts:\"%s\"", utcStr);
+                fprintf(stdout, "\"ts\":\"%s\"", utcStr);
             }
             if(!p.magnetometerOnly)
             {
