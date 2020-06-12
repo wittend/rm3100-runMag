@@ -617,8 +617,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
                 fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
-                fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone.       [Not implemented].\n");
-                fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [Not implemented].\n");
+                //fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone.       [Not implemented].\n");
+                //fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [Not implemented].\n");
                 fprintf(stdout, "   -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
                 return 1;

@@ -4,6 +4,11 @@ This is a program intended to assist in testing the PNI RM3100 geomagnetic senso
 OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
 /dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
 
+Building this code requires only the presence of standaard Linux/Unix C build tools plus the presence of the GNU gperf utility.  This last may be installed using your distribution's equivalent of the commands:
+
+    apt-get update
+    apt-get install gperf
+    
 
 Just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
@@ -37,14 +42,14 @@ and now you should see some results!
 
 ## Example output using -h or -? option:
 
-    dave@odroid:~/$ sudo ./runMag -b 2 -h
-
+    dave@raspi-3:~/projects/rm3100-runMag $ ./runMag -h
+        
         ./runMag Version = 0.0.6
         
         Parameters:
         
         -a                     :  List known SBC I2C bus numbers (use with -b).
-        -A <reg value>         :  Set NOS (0x0A) register value.              [Don't use unless you know what you are doing]
+        -A                     :  Set NOS (0x0A) register value.              [Don't use unless you know what you are doing]
         -B <reg mask>          :  Do built in self test (BIST).               [Not implemented]
         -b <bus as integer>    :  I2C bus number as integer.
         -C                     :  Read back cycle count registers before sampling.
@@ -52,8 +57,8 @@ and now you should see some results!
         -D <rate>              :  Set magnetometer sample rate (TMRC reg 96 hex default).
         -d <count>             :  Set polling delay (default 1000000 uSec).
         -E                     :  Show cycle count/gain/sensitivity relationship.
-        -f <filename>          :  Read configuration from file (JSON).        [Not implemented]
-        -F <filename>          :  Write configuration to file  (JSON).        [Not implemented]
+        -f <filename>          :  Read configuration from file (JSON)         [Not implemented]
+        -F <filename>          :  Write configuration to file (JSON)          [Not implemented]
         -g <mode>              :  Device sampling mode.        [POLL=0 (default), CONTINUOUS=1]
         -H                     :  Hide raw measurments.
         -j                     :  Format output as JSON.
@@ -61,6 +66,8 @@ and now you should see some results!
         -l                     :  Read local temperature only.
         -M [addr as integer]   :  Magnetometer address (default 20 hex).
         -m                     :  Read magnetometer only.
+        -O <filename>          :  Output file.
+        -o [delay as ms]       :  Output dekay (1000 ms default).
         -P                     :  Show Parameters.
         -q                     :  Quiet mode.                                 [partial]
         -v                     :  Verbose output.
@@ -72,12 +79,10 @@ and now you should see some results!
         -V                     :  Display software version and exit.
         -X                     :  Read Simple Magnetometer Board (SMSB).
         -x                     :  Read board with extender (MSBx).
-        -Y                     :  Read Scotty's RPi Mag HAT standalone.       [Not implemented].
-        -y                     :  Read Scotty's RPi Mag HAT in extended mode. [Not implemented].
         -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))
         -h or -?               :  Display this help.
 
-
+        
 ## Example output using the -E option:
 
     dave@odroid:~/projects/rm3100-runMag$ sudo ./runMag -E
@@ -98,47 +103,42 @@ and now you should see some results!
 
 ## Example output using the -P option:
     
-    dave@odroid:~/projects/rm3100-runMag$ sudo ./runMag -b 2 -l -P
+    dave@raspi-3:~/projects/rm3100-runMag $ ./runMag -Psl
     
     Version = 0.0.6
     
     Current Parameters:
     
-        Magnetometer revision ID detected:          34 (dec)
-        I2C bus number as integer:                  2 (dec)
-        I2C bus path as string:                     /dev/i2c-2
-        Built in self test (BIST) value:            00 (hex)
-        NOS Register value:                         00 (hex)
-        Cycle counts by vector:                     X: 200 (dec), Y: 200 (dec), Z: 200 (dec)
-        Gain by vector:                             X:  75 (dec), Y:  75 (dec), Z:  75 (dec)
-        Read back CC Regs after set:                FALSE
-        Polling Loop Delay (uSec):                  1000000 (dec)
-        Magnetometer sample rate:                   200 (dec)
-        CMM magnetometer sample rate (TMRC reg):    150 (dec)
-        Format output as JSON:                      FALSE
-        Read local temperature only:                TRUE
-        Read remote temperature only:               FALSE
-        Read magnetometer only:                     FALSE
-        Local temperature address:                  18 (hex)
-        Remote temperature address:                 19 (hex)
-        Magnetometer address:                       20 {hex)
-        Show parameters:                            TRUE
-        Quiet mode:                                 TRUE
-        Hide raw measurements:                      FALSE
-        Return single magnetometer reading:         FALSE
-        Read Simple Magnetometer Board (SMSB):      TRUE
-        Read Board with Extender (MSBx):            FALSE
-        Read Scotty's RPi Mag HAT standalone:       FALSE
-        Read Scotty's RPi Mag HAT in extended mode: FALSE
-        Magnetometer configuation:                  Local standalone
-        Timestamp format:                           UTCSTRING
-        Verbose output:                             FALSE
-        Show total field:                           FALSE
+       Magnetometer revision ID detected:          34 (dec)
+       Output file path:                           ./
+       I2C bus number as integer:                  1 (dec)
+       I2C bus path as string:                     /dev/i2c-1
+       Built in self test (BIST) value:            00 (hex)
+       NOS Register value:                         00 (hex)
+       Device sampling mode:                       POLL
+       Cycle counts by vector:                     X: 200 (dec), Y: 200 (dec), Z: 200 (dec)
+       Gain by vector:                             X:  75 (dec), Y:  75 (dec), Z:  75 (dec)
+       Read back CC Regs after set:                FALSE
+       Software Loop Delay (uSec):                 1000000 (dec)
+       Magnetometer sample rate:                   200 (dec)
+       CMM magnetometer sample rate (TMRC reg):    150 (dec)
+       Format output as JSON:                      FALSE
+       Read local temperature only:                TRUE
+       Read remote temperature only:               FALSE
+       Read magnetometer only:                     FALSE
+       Local temperature address:                  18 (hex)
+       Remote temperature address:                 19 (hex)
+       Magnetometer address:                       20 {hex)
+       Show parameters:                            TRUE
+       Quiet mode:                                 TRUE
+       Hide raw measurements:                      FALSE
+       Return single magnetometer reading:         TRUE
+       Read Simple Magnetometer Board (SMSB):      TRUE
+       Read Board with Extender (MSBx):            FALSE
+       Magnetometer configuation:                  Local standalone
+       Timestamp format:                           UTCSTRING
+       Verbose output:                             FALSE
+       Show total field:                           FALSE
     
     
-     Time: 25 May 2020 14:36:36, lTemp: 24.44, x: 14.293, y: -16.453, z: 49.000, rx: 1072, ry: -1234, rz: 3675
-     Time: 25 May 2020 14:36:37, lTemp: 24.44, x: 14.227, y: -16.427, z: 49.080, rx: 1067, ry: -1232, rz: 3681
-     Time: 25 May 2020 14:36:38, lTemp: 24.44, x: 14.267, y: -16.480, z: 49.013, rx: 1070, ry: -1236, rz: 3676
-     Time: 25 May 2020 14:36:39, lTemp: 24.44, x: 14.213, y: -16.493, z: 49.013, rx: 1066, ry: -1237, rz: 3676
-     Time: 25 May 2020 14:36:40, lTemp: 24.44, x: 14.093, y: -16.453, z: 49.000, rx: 1057, ry: -1234, rz: 3675
-    ^C
+     Time: 12 Jun 2020 04:29:12, lTemp: 23.88, x: -8.160, y: 6.573, z: 54.813, rx: -612, ry: 493, rz: 4111
