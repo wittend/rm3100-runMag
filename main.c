@@ -18,6 +18,7 @@
 #include "MCP9808.h"
 #include "runMag.h"
 #include "jsmn.h"
+#include "uthash/uthash.h"
 #include "main.h"
 
 #define _DEBUG 0
