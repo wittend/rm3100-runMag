@@ -32,6 +32,7 @@
 //------------------------------------------
 char version[] = RUNMAG_VERSION;
 char outFilePath[MAXPATHBUFLEN] = "./";
+char rollOverTime[UTCBUFLEN] = "00:00";
 
 static char  mSamples[9];
 
@@ -343,6 +344,18 @@ int saveConfigToFile(pList *p, char *cfgFile)
 //------------------------------------------
 // setOutputFilePath()
 //------------------------------------------
+int setLogRollOver(pList *p, char *rollTime)
+{
+    int rv = 0;
+    
+    strncpy(rollOverTime, rollTime, strlen(rollTime));
+    p->logOutputTime = rollOverTime;
+    return rv;
+}
+
+//------------------------------------------
+// setOutputFilePath()
+//------------------------------------------
 int setOutputFilePath(pList *p, char *outPath)
 {
     int rv = 0;
@@ -375,6 +388,8 @@ void showSettings(pList *p)
         getMagRev(p);
     }
     fprintf(stdout, "   Magnetometer revision ID detected:          %i (dec)\n",    p->magRevId);
+    fprintf(stdout, "   Log output:                                 %s\n",          p->logOutput ? "TRUE" : "FALSE" );;
+    fprintf(stdout, "   Log Rollover time:                          %s\n",          p->logOutputTime);
     fprintf(stdout, "   Output file path:                           %s\n",          p->outputFilePath);
     fprintf(stdout, "   I2C bus number as integer:                  %i (dec)\n",    p->i2cBusNumber);
     fprintf(stdout, "   I2C bus path as string:                     %s\n",          pathStr);
@@ -459,9 +474,11 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->verboseFlag      = FALSE;
     p->showTotal        = FALSE;
     p->outputFilePath   = outFilePath;
+    p->logOutputTime    = rollOverTime;
+    p->logOutput        = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjlL:mM:o:O:PqrR:sTt:XxYyvVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjkK:lL:mM:o:O:PqrR:sTt:XxYyvVZ")) != -1)
     {
         int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -516,6 +533,12 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'j':
                 p->jsonFlag = TRUE;
+                break;
+            case 'k':
+                p->logOutput = TRUE;
+                break;
+            case 'K':
+                setLogRollOver(p, optarg);
                 break;
             case 'l':
                 p->localTempOnly = TRUE;
@@ -587,40 +610,42 @@ int getCommandLine(int argc, char** argv, pList *p)
             case '?':
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
-                fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers (use with -b).\n");
-                fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.              [Don't use unless you know what you are doing]\n");
-                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).               [Not implemented]\n");
+                fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers.       [use with -b]\n");
+                fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.        [Don't use unless you know what you are doing]\n");
+                fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).         [Not implemented]\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
-                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer  (default 200).\n");
-                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate (TMRC reg 96 hex default).\n");
-                fprintf(stdout, "   -d <count>             :  Set polling delay (default 1000000 uSec).\n");
+                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer.          [default 200]\n");
+                fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate.         [TMRC reg 96 hex default].\n");
+                fprintf(stdout, "   -d <count>             :  Set polling delay.                    [default 1000000 uSec]\n");
                 fprintf(stdout, "   -E                     :  Show cycle count/gain/sensitivity relationship.\n");
-                fprintf(stdout, "   -f <filename>          :  Read configuration from file (JSON)         [Not implemented]\n");
-                fprintf(stdout, "   -F <filename>          :  Write configuration to file (JSON)          [Not implemented]\n");
-                fprintf(stdout, "   -g <mode>              :  Device sampling mode.        [POLL=0 (default), CONTINUOUS=1]\n");
+                fprintf(stdout, "   -f <filename>          :  Read configuration from file (JSON).  [Not implemented]\n");
+                fprintf(stdout, "   -F <filename>          :  Write configuration to file (JSON).   [Not implemented]\n");
+                fprintf(stdout, "   -g <mode>              :  Device sampling mode.                 [POLL=0 (default), CONTINUOUS=1]\n");
                 fprintf(stdout, "   -H                     :  Hide raw measurments.\n");
                 fprintf(stdout, "   -j                     :  Format output as JSON.\n");
-                fprintf(stdout, "   -L [addr as integer]   :  Local temperature address (default 19 hex).\n");
+                fprintf(stdout, "   -k                     :  Automatically roll log files.         [00:00 UTC default]\n");
+                fprintf(stdout, "   -K <time string>       :  Rotate log time.                      [if non-default - UTC]\n");
+                fprintf(stdout, "   -L <addr as integer>   :  Local temperature address.            [default 19 hex]\n");
                 fprintf(stdout, "   -l                     :  Read local temperature only.\n");
-                fprintf(stdout, "   -M [addr as integer]   :  Magnetometer address (default 20 hex).\n");
+                fprintf(stdout, "   -M <addr as integer>   :  Magnetometer address.                 [default 20 hex]\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
-                fprintf(stdout, "   -O <filename>          :  Output file.\n");
-                fprintf(stdout, "   -o [delay as ms]       :  Output dekay (1000 ms default).\n");
+                fprintf(stdout, "   -O <filename>          :  Output file path.\n");
+                fprintf(stdout, "   -o <delay as ms>       :  Output delay.                         [1000 ms default]\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
-                fprintf(stdout, "   -q                     :  Quiet mode.                                 [partial]\n");
+                fprintf(stdout, "   -q                     :  Quiet mode.                           [partial]\n");
                 fprintf(stdout, "   -v                     :  Verbose output.\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
-                fprintf(stdout, "   -R [addr as integer]   :  Remote temperature address (default 18 hex)\n");
+                fprintf(stdout, "   -R <addr as integer>   :  Remote temperature address.           [default 18 hex]\n");
                 fprintf(stdout, "   -s                     :  Return single reading.\n");
-                fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds (default: UTC string)\n");
-                fprintf(stdout, "   -t                     :  Set Continuous Measurement Mode Data Rate (96 hex default).\n");
+                fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds.        [default: UTC string]\n");
+                fprintf(stdout, "   -t                     :  Set CMM Data Rate.                    [96 hex default]\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
                 fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
                 //fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone.       [Not implemented].\n");
                 //fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [Not implemented].\n");
-                fprintf(stdout, "   -Z                     :  Show total field. sqrt((x*x) + (y*y) + (z*z))\n");
+                fprintf(stdout, "   -Z                     :  Show total field.                     [sqrt((x*x) + (y*y) + (z*z))]\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
                 return 1;
                 break;
@@ -750,11 +775,21 @@ int main(int argc, char** argv)
     float rcTemp = 0.0;
     int rv = 0;
     struct tm *utcTime = getUTC();
+    FILE *outfp = NULL;
     // short cmmMode = (CMMMODE_ALL);   // 71 d
 
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
         return rv;
+    }
+    if(p.logOutput)
+    {
+        strcat(p.outputFilePath, "/"); 
+        strcat(p.outputFilePath, "_log.log"); 
+        if((outfp = fopen(p.outputFilePath, "a+"))!= NULL)
+        {
+            printf("Log File: %s/n", p.outputFilePath);
+        }
     }
     // BIST - Built In Self Test
     if(p.doBistMask)
