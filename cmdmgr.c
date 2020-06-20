@@ -566,7 +566,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->TMRCRate = atoi(optarg);
                 break;
             case 'V':
-                return 1;
+                fprintf(stdout, "\nVersion: %s\n", p->Version);
+                exit(0);
                 break;
             case 'v':
                 p->verboseFlag = TRUE;

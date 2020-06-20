@@ -166,7 +166,8 @@ int main(int argc, char** argv)
     // if Verbose == TRUE
     if(p.verboseFlag)
     {
-        fprintf(outfp,"\nUTC time: %s", asctime(utcTime));
+        // always stdout!
+        fprintf(stdout,"\nUTC time: %s", asctime(utcTime));
     }
     // Open I2C bus (only one at a time for now)    
     openI2CBus(&p);
