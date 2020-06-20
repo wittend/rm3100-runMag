@@ -29,8 +29,14 @@
 #include "device_defs.h"
 #include "i2c.h"
 #include "MCP9808.h"
+#include "uthash/uthash.h"
 
-#define RUNMAG_VERSION "0.0.6"
+#define RUNMAG_VERSION "0.0.7"
+#define _DEBUG 0
+#define UTCBUFLEN 64
+#define MAXPATHBUFLEN 1025
+#define JSONBUFLEN 1025
+#define JSONBUFTOKENCOUNT 1024
 
 //------------------------------------------
 // Parameter List struct
@@ -180,14 +186,15 @@ static struct busDev busDevs[] =
 //------------------------------------------
 // Prototypes
 //------------------------------------------
-long currentTimeMillis();
-struct tm *getUTC();
-void listSBCs();
-void showCountGainRelationship();
-int readConfigFromFile(pList *p, char *cfgFile);
-int saveConfigToFile(pList *p, char *cfgFile);
-void showSettings(pList *p);
-int getCommandLine(int argc, char** argv, pList *p);
+//long currentTimeMillis();
+//struct tm *getUTC();
+//void listSBCs();
+//void showCountGainRelationship();
+//int readConfigFromFile(pList *p, char *cfgFile);
+//int saveConfigToFile(pList *p, char *cfgFile);
+//void showSettings(pList *p);
+//int getCommandLine(int argc, char** argv, pList *p);
+
 int readTemp(pList *p, int devAddr);
 int readMagCMM(pList *p, int devAddr, int32_t *XYZ);
 int readMagPOLL(pList *p, int devAddr, int32_t *XYZ);

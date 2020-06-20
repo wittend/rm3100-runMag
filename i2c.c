@@ -19,43 +19,6 @@
 #include "i2c.h"
 #include "main.h"
 
-////------------------------------------------
-//// i2cInit()
-////------------------------------------------
-//int i2c_open(pList *p)
-//{
-//    p->i2c_fd = -1;
-//    
-//    char pathStr[64] = "";
-//    snprintf(pathStr, sizeof(pathStr), "/dev/i2c-%i", p->i2cBusNumber);
-//    
-//    if((p->i2c_fd = open(pathStr, O_RDWR)) < 0)
-//    {
-//        perror("Bus open failed\n");
-//        return -1;
-//    }
-//    else
-//    {
-//        if(p->verboseFlag)
-//        {
-//            fprintf(stdout, "Device handle p->i2c_fd:  %d\n", p->i2c_fd);
-//            fprintf(stdout, "i2c_init OK!\n");
-//            fflush(stdout);
-//        }
-//    }
-//    return p->i2c_fd;
-//}
-
-////--------------------------------------------------------------------
-//// i2c_close()
-////
-//// Close I2C bus
-////--------------------------------------------------------------------
-//void i2c_close(int i2c_fd)
-//{
-//    close(i2c_fd);
-//}
-
 //------------------------------------------
 // i2c_setAddress()
 //

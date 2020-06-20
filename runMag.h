@@ -10,10 +10,6 @@
 #ifndef SWX3100RUNMag_h
 #define SWX3100RUNMag_h
 
-#include "device_defs.h"
-#include "i2c.h"
-#include "MCP9808.h"
-#include "runMag.h"
 #include "main.h"
 
 //------------------------------------------
