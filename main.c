@@ -21,9 +21,12 @@
 //------------------------------------------
 char version[] = RUNMAG_VERSION;
 char outFilePath[MAXPATHBUFLEN] = "./logs/";
+char workFilePath[MAXPATHBUFLEN] = "";
 char rollOverTime[UTCBUFLEN] = "00:00";
-
+char sitePrefixString[SITEPREFIXLEN] = "SITEPREFIX";
 static char  mSamples[9];
+
+
 
 //------------------------------------------
 // readTemp()
@@ -118,7 +121,6 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     return bytes_read;
 }
 
-
 //------------------------------------------
 //  main()
 //------------------------------------------
@@ -126,27 +128,27 @@ int main(int argc, char** argv)
 {
     pList p;
     char utcStr[UTCBUFLEN] = "";
+    //long runTime = 0;
+    int currentDay = 0;
+    struct tm *utcTime = getUTC();
     int32_t rXYZ[3];
     double xyz[3];
     int temp = 0;
     float lcTemp = 0.0;
     float rcTemp = 0.0;
     int rv = 0;
-    struct tm *utcTime = getUTC();
     FILE *outfp = stdout;
+    
+    currentDay = utcTime->tm_mday;
 
     if((rv = getCommandLine(argc, argv, &p)) != 0)
     {
         return rv;
     }
-    if(p.logOutput)
+    // Open log file.
+    if(p.buildLogPath)
     {
-        utcTime = getUTC();
-        strftime(utcStr, UTCBUFLEN, "%Y%m%d-runmag.log", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
-    
-        //strcat(p.outputFilePath, "/"); 
-        strcat(p.outputFilePath, utcStr); 
-        //strcat(p.outputFilePath, ".log"); 
+        buildLogFilePath(&p);
         if((outfp = fopen(p.outputFilePath, "a+"))!= NULL)
         {
             printf("\nLog File: %s\n", p.outputFilePath);
@@ -167,7 +169,7 @@ int main(int argc, char** argv)
     if(p.verboseFlag)
     {
         // always stdout!
-        fprintf(stdout,"\nUTC time: %s", asctime(utcTime));
+        fprintf(stdout,"\nStartup UTC time: %s", asctime(utcTime));
     }
     // Open I2C bus (only one at a time for now)    
     openI2CBus(&p);
@@ -179,7 +181,6 @@ int main(int argc, char** argv)
     // Setup the magnetometer.
     setup_mag(&p);
     setMagSampleRate(&p, p.mSampleRate);
-    ////setTMRCReg(&p);   
     if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
     {
         readCycleCountRegs(&p);
@@ -379,9 +380,27 @@ int main(int argc, char** argv)
         }
         // wait p.outDelay (1000 ms default) for next poll.
         usleep(p.outDelay);
+        utcTime = getUTC();
+        //if(utcTime->tm_min != currentDay)
+        if(utcTime->tm_mday != currentDay)
+        {
+            currentDay = utcTime->tm_mday;
+            // currentDay = utcTime->tm_min;
+            fclose(outfp);
+            buildLogFilePath(&p);
+            if((outfp = fopen(p.outputFilePath, "a+"))!= NULL)
+            {
+                fprintf(stdout,"\nNew Log File: %s\n", p.outputFilePath);
+            }
+            else
+            {
+                fprintf(stdout,"\nNew Log File: %s\n", p.outputFilePath);
+                perror("\nLog File: ");
+                exit(1);
+            }
+        }
     }
     closeI2CBus(p.i2c_fd);
-    fclose(outfp);
     return 0;
 }
 

@@ -19,6 +19,7 @@
 long currentTimeMillis();
 struct tm *getUTC();
 void listSBCs();
+int buildLogFilePath(pList *p);
 void showCountGainRelationship();
 int readConfigFromFile(pList *p, char *cfgFile);
 int saveConfigToFile(pList *p, char *cfgFile);

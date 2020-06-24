@@ -13,6 +13,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
 #include <math.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -20,9 +22,6 @@
 #include <sys/ioctl.h>
 #include <time.h>
 #include <sys/time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <memory.h>
 #include <linux/i2c-dev.h>
@@ -31,12 +30,14 @@
 #include "MCP9808.h"
 #include "uthash/uthash.h"
 
-#define RUNMAG_VERSION "0.0.7"
 #define _DEBUG 0
+
+#define RUNMAG_VERSION "0.0.7"
 #define UTCBUFLEN 64
 #define MAXPATHBUFLEN 1025
 #define JSONBUFLEN 1025
 #define JSONBUFTOKENCOUNT 1024
+#define SITEPREFIXLEN 32
 
 //------------------------------------------
 // Parameter List struct
@@ -47,7 +48,8 @@ typedef struct tag_pList
     int boardType;
     int boardMode;
     int doBistMask; 
-
+    int buildLogPath;
+    
     int cc_x;
     int cc_y;
     int cc_z;
@@ -88,6 +90,7 @@ typedef struct tag_pList
     int verboseFlag;
     int showTotal;
     char *outputFilePath;
+    char *sitePrefix;
     char *logOutputTime;
     int  logOutput;
     char *Version;
@@ -186,15 +189,6 @@ static struct busDev busDevs[] =
 //------------------------------------------
 // Prototypes
 //------------------------------------------
-//long currentTimeMillis();
-//struct tm *getUTC();
-//void listSBCs();
-//void showCountGainRelationship();
-//int readConfigFromFile(pList *p, char *cfgFile);
-//int saveConfigToFile(pList *p, char *cfgFile);
-//void showSettings(pList *p);
-//int getCommandLine(int argc, char** argv, pList *p);
-
 int readTemp(pList *p, int devAddr);
 int readMagCMM(pList *p, int devAddr, int32_t *XYZ);
 int readMagPOLL(pList *p, int devAddr, int32_t *XYZ);
