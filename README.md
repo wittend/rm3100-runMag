@@ -30,8 +30,8 @@ and now you should see some results!
 
 ## Example on Raspberry Pi 3, using logging:
 
-This creates a logfile in the directory ./logs with the format kd0eag-20200624-runmag.log.
-Here 'kd0eag' is used as a site ID and '20200624' is the UTC  YYYYMMDD format of date.
+This creates a logfile in the directory ./logs with the format 'kd0eag-20200624-runmag.log'.
+Here 'kd0eag' is used as a site ID and '20200624' is the UTC 'YYYYMMDD' format of date.
 This file will be closed at the end of the current UTC day and a new one opened named with the new day number.
 Logging will continue to the new file uninterrupted.
     
