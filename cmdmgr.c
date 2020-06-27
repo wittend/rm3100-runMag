@@ -98,7 +98,6 @@ int buildLogFilePath(pList *p)
     strcpy(p->outputFilePath, outFilePath);
 
     const char ch = '/';
-    char *ret;
 
     if(p->outputFilePath[strlen(p->outputFilePath) - 1] != ch)
     {
@@ -450,7 +449,7 @@ void showSettings(pList *p)
 int getCommandLine(int argc, char** argv, pList *p)
 {
     int c;
-    int digit_optind = 0;
+    //int digit_optind = 0;
     
     if(p != NULL)
     {
@@ -501,7 +500,7 @@ int getCommandLine(int argc, char** argv, pList *p)
    
     while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:XxYyvVZ")) != -1)
     {
-        int this_option_optind = optind ? optind : 1;
+        //int this_option_optind = optind ? optind : 1;
         switch (c)
         {
             case 'a':
@@ -684,7 +683,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -R <addr as integer>   :  Remote temperature address.           [ default 18 hex ]\n");
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
                 fprintf(stdout, "   -s                     :  Return single reading.                [ Do one measurement loop only ]\n");
-                fprintf(stdout, "   -S                     :  Site prefix string for log files.     [ < 32 char. Do not use /\'\"*%<> etc. Try callsign! ]\n");
+                fprintf(stdout, "   -S                     :  Site prefix string for log files.     [ 32 char max. Do not use /\'\"* etc. Try callsign! ]\n");
                 fprintf(stdout, "   -t                     :  Set CMM Data Rate.                    [ 96 hex default ]\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
