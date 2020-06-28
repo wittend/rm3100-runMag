@@ -4,11 +4,12 @@ This is a program intended to assist in testing the PNI RM3100 geomagnetic senso
 OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
 /dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
 
+<!--
 Building this code requires only the presence of standaard Linux/Unix C build tools plus the presence of the GNU gperf utility.  This last may be installed using your distribution's equivalent of the commands:
 
     apt-get update
     apt-get install gperf
-    
+-->    
 
 Just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
