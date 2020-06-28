@@ -71,7 +71,6 @@ int setNOSReg(pList *p)
 unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
 {
     int i;
-    static char i2cbuffer[1];
     const unsigned short int supported_rates[][2] = 
     {
         /* [Hz], register value */
@@ -93,7 +92,6 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
         }
     }
     p->mSampleRate = supported_rates[i][0];
-    //printf("\nIn setMagSampleRate(():: Setting TMRC sample rate to value: %i\n", p->mSampleRate);
     i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->mSampleRate);
     return p->mSampleRate;
 }
@@ -140,7 +138,6 @@ int getMagRev(pList *p)
 //------------------------------------------
 int setup_mag(pList *p)
 {
-    uint8_t ver = 0;
     int rv = SensorOK;
 
     // Set address of the RM3100
@@ -278,7 +275,6 @@ void setCycleCountRegs(pList *p)
 //------------------------------------------
 void readCycleCountRegs(pList *p)
 {
-    int i = 0;
     uint8_t regCC[7]= { 0, 0, 0, 0, 0, 0, 0 };
 
     i2c_setAddress(p->i2c_fd, p->magnetometerAddr);

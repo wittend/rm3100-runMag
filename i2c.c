@@ -61,11 +61,11 @@ int i2c_writebuf(int fd, uint8_t reg, char *buffer, short int length)
     data[0] = reg;
     int rv = 0;
 
-    if(rv = write(fd, data, 2) != 2)
+    if((rv = write(fd, data, 2)) != 2)
     {
         perror("i2c_writebuf(): write()");
     }
-    if(rv = write(fd, buffer, length) != length)
+    if((rv = write(fd, buffer, length)) != length)
     {
         perror("i2c_writebuf(): write(data)");
         exit(1);
@@ -82,7 +82,7 @@ uint8_t i2c_read(int fd, uint8_t reg)
     data[0] = reg;
     int rv = 0;
 
-    if(rv = write(fd, data, 1) != 1)
+    if((rv = write(fd, data, 1)) != 1)
     {
         perror("i2c_writebuf(): write()");
     }
@@ -97,14 +97,14 @@ uint8_t i2c_read(int fd, uint8_t reg)
 // i2c_readbuf()
 // write a buffer to the device
 //------------------------------------------
-int i2c_readbuf(int fd, uint8_t reg, char* buf, short int length)
+int i2c_readbuf(int fd, uint8_t reg, uint8_t* buf, short int length)
 {
     int bytes_read;
     static uint8_t data[2];
     data[0] = reg;
     int rv = 0;
 
-    if(rv = write(fd, data, 1) != 1)
+    if((rv = write(fd, data, 1)) != 1)
     {
         perror("i2c_readbuf(): write()");
     }

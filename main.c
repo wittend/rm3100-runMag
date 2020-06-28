@@ -62,11 +62,12 @@ int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
 {
     int rv = 0;
     int bytes_read = 0;
-    short cmmMode = (CMMMODE_ALL);   // 71 d
+    //short cmmMode = (CMMMODE_ALL);   // 71 d
 
     i2c_setAddress(p->i2c_fd, devAddr);
     // Check if DRDY went high and wait unit high before reading results
-    while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
+//    while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
+    while((rv = (i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
     }
     // Read the XYZ registers
@@ -100,7 +101,8 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     // Write command to  use Continuous measurement Mode.
     i2c_write(p->i2c_fd, RM3100_MAG_POLL, pmMode);
     // Check if DRDY went high and wait unit high before reading results
-    while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
+//    while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
+    while((rv = (i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
     }
     // Read the XYZ registers

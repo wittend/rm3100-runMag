@@ -21,6 +21,6 @@ void i2c_setAddress(int fd, int devAddr);
 int i2c_write(int fd, uint8_t reg, uint8_t value);
 uint8_t i2c_read(int fd, uint8_t reg);
 int i2c_writebuf(int fd, uint8_t reg, char* buffer, short int length);
-int i2c_readbuf(int fd, uint8_t reg, char* buf, short int length);
+int i2c_readbuf(int fd, uint8_t reg, uint8_t* buf, short int length);
 
 #endif //PNIRM3100_I2C_H

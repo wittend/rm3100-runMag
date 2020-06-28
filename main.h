@@ -163,29 +163,6 @@ struct busDev
     int         busNumber;
 };
 
-//-------------------------------------------
-//  Informative list of known SBC defaults, 
-//-------------------------------------------
-static struct busDev busDevs[] =
-{
-    /* Device Path,     SBCString,          enum Value          Bus Number*/
-//    {OTHER_BUS,         sOTHER_BUS,          eOTHER_BUS,         -1},
-    {KHADAS_EDGE_I2C3,  sKHADAS_EDGE_BUS3,   eKHADAS_EDGE_I2C3,  3},
-    {KHADAS_VIM3_I2C3,  sVIM3_I2C_BUS3,      eVIM3_I2C_BUS3,     3},
-    {KHADAS_VIM3_I2C4,  sVIM3_I2C_BUS4,      eVIM3_I2C_BUS4,     4},
-    {NV_XAVIER_I2C_BUS, sNV_XAVIER_I2C_BUS,  eNV_XAVIER_I2C_BUS, 8},
-    {NV_NANO_I2C_BUS,   sNV_NANO_I2C_BUS,    eNV_NANO_I2C_BUS,   1},
-    {ODROIDC0_I2C_BUS,  sODROIDC0_I2C_BUS,   eODROIDC0_I2C_BUS,  1},
-    {ODROIDC1_I2C_BUS,  sODROIDC1_I2C_BUS,   eODROIDC1_I2C_BUS,  1},
-    {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDC2_I2C_BUS,  1},
-    {ODROIDC4_I2C_BUS,  sODROIDC4_I2C_BUS,   eODROIDC4_I2C_BUS,  2},
-    {ODROIDC4_I2C_BUS3, sODROIDC4_I2C_BUS3,  eODROIDC4_I2C_BUS3, 3},
-    {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDN2_I2C_BUS,  2},
-    {ODROIDN2_I2C_BUS3, sODROIDN2_I2C_BUS3,  eODROIDN2_I2C_BUS3, 3},
-    {RASPI_I2C_BUS,     sRASPI_I2C_BUS,      eRASPI_I2C_BUS,     1},
-    {0,                 0,                  -1,                 -1}
-};
-
 //------------------------------------------
 // Prototypes
 //------------------------------------------
