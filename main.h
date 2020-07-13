@@ -32,7 +32,7 @@
 
 #define _DEBUG 0
 
-#define RUNMAG_VERSION "0.0.7"
+#define RUNMAG_VERSION "0.0.8"
 #define UTCBUFLEN 64
 #define MAXPATHBUFLEN 1025
 #define JSONBUFLEN 1025
