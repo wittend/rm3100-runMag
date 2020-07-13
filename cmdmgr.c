@@ -432,6 +432,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   I2C bus path as string:                     %s\n",          pathStr);
     fprintf(stdout, "   Built in self test (BIST) value:            %02X (hex)\n",  p->doBistMask);
     fprintf(stdout, "   NOS Register value:                         %02X (hex)\n",  p->NOSRegValue);
+    fprintf(stdout, "   Post DRDY delay:                            %i (dec)\n",    p->DRDYdelay);
     fprintf(stdout, "   Device sampling mode:                       %s\n",          p->samplingMode     ? "CONTINUOUS" : "POLL");
     fprintf(stdout, "   Cycle counts by vector:                     X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->cc_x, p->cc_y, p->cc_z);
     fprintf(stdout, "   Gain by vector:                             X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
@@ -479,6 +480,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->boardMode        = LOCAL;
     p->doBistMask       = FALSE;
     p->NOSRegValue      = 0;
+    p->DRDYdelay        = 0;
     p->buildLogPath     = FALSE;
     
     p->cc_x             = CC_200;
@@ -516,7 +518,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->logOutput        = FALSE;
     p->Version          = version;
    
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:XxYyvVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:U:XxYyvVZ")) != -1)
     {
         //int this_option_optind = optind ? optind : 1;
         switch (c)
@@ -642,6 +644,9 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 't':
                 p->TMRCRate = atoi(optarg);
                 break;
+            case 'U':
+                p->DRDYdelay = atoi(optarg);
+                break;
             case 'V':
                 fprintf(stdout, "\nVersion: %s\n", p->Version);
                 exit(0);
@@ -704,6 +709,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -S                     :  Site prefix string for log files.     [ 32 char max. Do not use /\'\"* etc. Try callsign! ]\n");
                 fprintf(stdout, "   -t                     :  Set CMM Data Rate.                    [ 96 hex default ]\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]\n");
+                fprintf(stdout, "   -U <delay as us>       :  Delay in uSec after DRDY.             [ default: 0 ]\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
                 fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");

@@ -90,6 +90,7 @@ Logging will continue to the new file uninterrupted.
         -S                     :  Site prefix string for log files.     [ < 32 char. Do not use /'"*%<> etc. Try callsign! ]
         -t                     :  Set CMM Data Rate.                    [ 96 hex default ]
         -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]
+        -U <delay as us>       :  Delay in uSec after DRDY.             [ default: 0 ]
         -V                     :  Display software version and exit.
         -X                     :  Read Simple Magnetometer Board (SMSB).
         -x                     :  Read board with extender (MSBx).

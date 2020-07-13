@@ -66,9 +66,13 @@ int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
 
     i2c_setAddress(p->i2c_fd, devAddr);
     // Check if DRDY went high and wait unit high before reading results
-//    while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     while((rv = (i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
+    }
+    // if a delay is specified after DRDY goes high, sleep it off.
+    if(p->DRDYdelay)
+    {
+        usleep(p->DRDYdelay);
     }
     // Read the XYZ registers
     if((bytes_read = i2c_readbuf(p->i2c_fd, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))
@@ -101,9 +105,13 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     // Write command to  use Continuous measurement Mode.
     i2c_write(p->i2c_fd, RM3100_MAG_POLL, pmMode);
     // Check if DRDY went high and wait unit high before reading results
-//    while((rv = (p->i2c_fd, i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     while((rv = (i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
+    }
+    // if a delay is specified after DRDY goes high, sleep it off.
+    if(p->DRDYdelay)
+    {
+        usleep(p->DRDYdelay);
     }
     // Read the XYZ registers
     if((bytes_read = i2c_readbuf(p->i2c_fd, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))

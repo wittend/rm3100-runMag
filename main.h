@@ -64,6 +64,8 @@ typedef struct tag_pList
     int samplingMode;
 
     int NOSRegValue;
+    
+    int DRDYdelay;
 
     int readBackCCRegs;
     int magRevId;
