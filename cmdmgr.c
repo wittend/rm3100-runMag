@@ -679,7 +679,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers.       [ use with -b ]\n");
-                fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.        [ Don't use unless you know what you are doing ]\n");
+                //fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.        [ Don't use unless you know what you are doing ]\n");
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).         [ Not implemented ]\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
@@ -707,9 +707,9 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -r                     :  Read remote temperature only.\n");
                 fprintf(stdout, "   -s                     :  Return single reading.                [ Do one measurement loop only ]\n");
                 fprintf(stdout, "   -S                     :  Site prefix string for log files.     [ 32 char max. Do not use /\'\"* etc. Try callsign! ]\n");
-                fprintf(stdout, "   -t                     :  Set CMM Data Rate.                    [ 96 hex default ]\n");
+                //fprintf(stdout, "   -t                     :  Set CMM Data Rate.                    [ 96 hex default ]\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]\n");
-                fprintf(stdout, "   -U <delay as us>       :  Delay in uSec after DRDY.             [ default: 0 ]\n");
+                fprintf(stdout, "   -U <delay as ms>       :  Delay in mSec after DRDY.             [ default: 0 ]\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
                 fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
                 fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
