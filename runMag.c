@@ -92,7 +92,7 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
         }
     }
     p->mSampleRate = supported_rates[i][0];
-    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->mSampleRate);
+    // i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->mSampleRate);
     return p->mSampleRate;
 }
 
@@ -180,46 +180,46 @@ int startCMM(pList *p)
     return rv;
 }
 
-//------------------------------------------
-// getTMRSReg()
-// Sets Continuous Measurement Mode Data Rate
-//------------------------------------------
-int getCMMReg(pList *p)
-{
-    return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
-}
-
-//------------------------------------------
-// setTMRSReg()
-// Sets Continuous Measurement Mode Data Rate
-//------------------------------------------
-void setCMMReg(pList *p)
-{
-    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
-}
-
-//------------------------------------------
-// getTMRSReg()
-// Sets Continuous Measurement Mode Data Rate
-//------------------------------------------
-int getTMRCReg(pList *p)
-{
-    //To set the TMRC register, send the register address, 0x0B, followed by the desired
-    //TMRC register value. To read the TMRC register, send 0x8B.
-    return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
-}
-
-//------------------------------------------
-// setTMRSReg()
-// Sets Continuous Measurement Mode Data Rate
-//------------------------------------------
-void setTMRCReg(pList *p)
-{
-    //To set the TMRC register, send the register address, 0x0B, followed by the desired
-    //TMRC register value. To read the TMRC register, send 0x8B.
-    // printf("\nIn setTMRCReg(():: Setting TMRC sample rate to value: %i\n", p->TMRCRate);
-    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
-}
+////------------------------------------------
+//// setCMMReg()
+//// Sets Continuous Measurement Mode Data Rate
+////------------------------------------------
+//int getCMMReg(pList *p)
+//{
+//    return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
+//}
+//
+////------------------------------------------
+//// setCMMReg()
+//// Sets Continuous Measurement Mode Data Rate
+////------------------------------------------
+//void setCMMReg(pList *p)
+//{
+//    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
+//}
+//
+////------------------------------------------
+//// getTMRCReg()
+//// Sets Continuous Measurement Mode Data Rate
+////------------------------------------------
+//int getTMRCReg(pList *p)
+//{
+//    //To set the TMRC register, send the register address, 0x0B, followed by the desired
+//    //TMRC register value. To read the TMRC register, send 0x8B.
+//    return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
+//}
+//
+////------------------------------------------
+//// setTMRCReg()
+//// Sets Continuous Measurement Mode Data Rate
+////------------------------------------------
+//void setTMRCReg(pList *p)
+//{
+//    //To set the TMRC register, send the register address, 0x0B, followed by the desired
+//    //TMRC register value. To read the TMRC register, send 0x8B.
+//    // printf("\nIn setTMRCReg(():: Setting TMRC sample rate to value: %i\n", p->TMRCRate);
+//    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
+//}
 
 //------------------------------------------
 // setMagSampleRate()
