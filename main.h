@@ -32,7 +32,7 @@
 
 #define _DEBUG 0
 
-#define RUNMAG_VERSION "0.0.8"
+#define RUNMAG_VERSION "0.0.9"
 #define UTCBUFLEN 64
 #define MAXPATHBUFLEN 1025
 #define JSONBUFLEN 1025
@@ -101,38 +101,42 @@ typedef struct tag_pList
 //-------------------------------------------
 // Device paths for different platforms
 //-------------------------------------------
-#define OTHER_BUS           ""
-#define KHADAS_EDGE_I2C3    "/dev/i2c-3"
-#define KHADAS_VIM3_I2C3    "/dev/i2c-3"
-#define KHADAS_VIM3_I2C4    "/dev/i2c-4"
-#define ODROIDC0_I2C_BUS    "/dev/i2c-1"
-#define ODROIDC1_I2C_BUS    "/dev/i2c-1"
-#define ODROIDC2_I2C_BUS    "/dev/i2c-1"
-#define ODROIDC4_I2C_BUS    "/dev/i2c-2"
-#define ODROIDC4_I2C_BUS3   "/dev/i2c-3"
-#define ODROIDN2_I2C_BUS    "/dev/i2c-2"
-#define ODROIDN2_I2C_BUS3   "/dev/i2c-3"
-#define NV_XAVIER_I2C_BUS   "/dev/i2c-8"
-#define NV_NANO_I2C_BUS     "/dev/i2c-1"
-#define RASPI_I2C_BUS       "/dev/i2c-1"
+#define OTHER_BUS               ""
+#define KHADAS_EDGE_I2C3        "/dev/i2c-3"
+#define KHADAS_VIM3_I2C3        "/dev/i2c-3"
+#define KHADAS_VIM3_I2C4        "/dev/i2c-4"
+#define ODROIDC0_I2C_BUS        "/dev/i2c-1"
+#define ODROIDC1_I2C_BUS        "/dev/i2c-1"
+#define ODROIDC2_I2C_BUS        "/dev/i2c-1"
+#define ODROIDC4_I2C_BUS        "/dev/i2c-2"
+#define ODROIDC4_I2C_BUS3       "/dev/i2c-3"
+#define ODROIDN2_I2C_BUS        "/dev/i2c-2"
+#define ODROIDN2_I2C_BUS3       "/dev/i2c-3"
+#define ODROIDN2PLUS_I2C_BUS0   "/dev/i2c-0"
+#define ODROIDN2PLUS_I2C_BUS1   "/dev/i2c-1"
+#define NV_XAVIER_I2C_BUS       "/dev/i2c-8"
+#define NV_NANO_I2C_BUS         "/dev/i2c-1"
+#define RASPI_I2C_BUS           "/dev/i2c-1"
 
 //-------------------------------------------
 // Known SBC device platforms 
 //-------------------------------------------
-#define sOTHER_BUS           "Other             "
-#define sKHADAS_EDGE_BUS3    "KHADAS EDGE bus 3 "
-#define sVIM3_I2C_BUS3       "KHADAS VIM3 bus 3 "
-#define sVIM3_I2C_BUS4       "KHADAS VIM3 bus 4 "
-#define sNV_XAVIER_I2C_BUS   "NV Xavier   bus 8 "
-#define sNV_NANO_I2C_BUS     "NV Nano     bus 1 "
-#define sODROIDC0_I2C_BUS    "Odroid CO   bus 1 "
-#define sODROIDC1_I2C_BUS    "Odroid C1   bus 1 "
-#define sODROIDC2_I2C_BUS    "Odroid C2   bus 1 "
-#define sODROIDC4_I2C_BUS    "Odroid C4   bus 1 "
-#define sODROIDC4_I2C_BUS3   "Odroid C4   bus 3 "
-#define sODROIDN2_I2C_BUS    "Odroid N2   bus 2 "
-#define sODROIDN2_I2C_BUS3   "Odroid N2   bus 3 "
-#define sRASPI_I2C_BUS       "Raspberry Pi 3/4  "
+#define sOTHER_BUS              "Other             "
+#define sKHADAS_EDGE_BUS3       "KHADAS EDGE bus 3 "
+#define sVIM3_I2C_BUS3          "KHADAS VIM3 bus 3 "
+#define sVIM3_I2C_BUS4          "KHADAS VIM3 bus 4 "
+#define sNV_XAVIER_I2C_BUS      "NV Xavier   bus 8 "
+#define sNV_NANO_I2C_BUS        "NV Nano     bus 1 "
+#define sODROIDC0_I2C_BUS       "Odroid CO   bus 1 "
+#define sODROIDC1_I2C_BUS       "Odroid C1   bus 1 "
+#define sODROIDC2_I2C_BUS       "Odroid C2   bus 1 "
+#define sODROIDC4_I2C_BUS       "Odroid C4   bus 1 "
+#define sODROIDC4_I2C_BUS3      "Odroid C4   bus 3 "
+#define sODROIDN2_I2C_BUS       "Odroid N2   bus 2 "
+#define sODROIDN2_I2C_BUS3      "Odroid N2   bus 3 "
+#define sODROIDN2PLUS_I2C_BUS0  "Odroid N2+  bus 0 "
+#define sODROIDN2PLUS_I2C_BUS1  "Odroid N2+  bus 1 "
+#define sRASPI_I2C_BUS          "Raspberry Pi 3/4  "
 
 //-------------------------------------------
 // Device paths for different platforms
@@ -151,7 +155,9 @@ typedef enum
     eODROIDC4_I2C_BUS3,
     eODROIDN2_I2C_BUS,
     eODROIDN2_I2C_BUS3,
-    eRASPI_I2C_BUS ,
+    eODROIDN2PLUS_I2C_BUS0,
+    eODROIDN2PLUS_I2C_BUS1,
+    eRASPI_I2C_BUS,
 } i2cBusEnum;
 
 //-------------------------------------------

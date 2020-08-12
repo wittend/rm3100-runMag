@@ -37,6 +37,8 @@ static struct busDev busDevs[] =
     {ODROIDC4_I2C_BUS3, sODROIDC4_I2C_BUS3,  eODROIDC4_I2C_BUS3, 3},
     {ODROIDN2_I2C_BUS,  sODROIDN2_I2C_BUS,   eODROIDN2_I2C_BUS,  2},
     {ODROIDN2_I2C_BUS3, sODROIDN2_I2C_BUS3,  eODROIDN2_I2C_BUS3, 3},
+    {ODROIDN2PLUS_I2C_BUS0, sODROIDN2PLUS_I2C_BUS0,  eODROIDN2PLUS_I2C_BUS0,  0},
+    {ODROIDN2PLUS_I2C_BUS1, sODROIDN2PLUS_I2C_BUS1,  eODROIDN2PLUS_I2C_BUS1, 1},
     {RASPI_I2C_BUS,     sRASPI_I2C_BUS,      eRASPI_I2C_BUS,     1},
     {0,                 0,                  -1,                 -1}
 };
@@ -683,7 +685,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).         [ Not implemented ]\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
-                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer.          [ default 200 ]\n");
+                fprintf(stdout, "   -c <count>             :  Set cycle counts as integer.          [ default 200 decimal]\n");
                 fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate.         [ TMRC reg 96 hex default ].\n");
                 fprintf(stdout, "   -d <count>             :  Set polling delay.                    [ default 1000000 uSec ]\n");
                 fprintf(stdout, "   -E                     :  Show cycle count/gain/sensitivity relationship.\n");

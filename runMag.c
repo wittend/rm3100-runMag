@@ -263,7 +263,7 @@ void setCycleCountRegs(pList *p)
     i2c_write(p->i2c_fd, RM3100I2C_CCY_1, (p->cc_y >> 8));
     i2c_write(p->i2c_fd, RM3100I2C_CCY_0, (p->cc_y & 0xff));
     p->y_gain = getCCGainEquiv(p->cc_y);
-    i2c_write(p->i2c_fd, RM3100I2C_CCZ_1, (p->cc_x >> 8));
+    i2c_write(p->i2c_fd, RM3100I2C_CCZ_1, (p->cc_y >> 8));
     i2c_write(p->i2c_fd, RM3100I2C_CCZ_0, (p->cc_y & 0xff));
     p->z_gain = getCCGainEquiv(p->cc_z);
     // printf("Gains - X: %u, Y: %u, Z: %u.\n", p->x_gain, p->y_gain, p->z_gain);
