@@ -29,10 +29,27 @@ void i2c_setAddress(int fd, int devAddr)
 {
     if (ioctl(fd, I2C_SLAVE, devAddr) < 0)
     {
-        perror("i2cSetAddress");
+        perror("i2c_SetAddress");
         exit(1);
     }
 }
+
+//
+//No obvious API call available
+////------------------------------------------
+//// i2c_setBitRate()
+////
+//// set the I2C bus address for all
+//// subsequent I2C device transfers.
+////------------------------------------------
+//void i2c_setBitRate(int fd, int devspeed)
+//{
+//    if(ioctl(fd, I2C_SET_SPEED, devspeed) < 0)
+//    {
+//        perror("i2c_setBitRate");
+//        exit(1);
+//    }
+//}
 
 //------------------------------------------
 // write an 8 bit value to a device register.

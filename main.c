@@ -389,22 +389,24 @@ int main(int argc, char** argv)
         // wait p.outDelay (1000 ms default) for next poll.
         usleep(p.outDelay);
         utcTime = getUTC();
-        //if(utcTime->tm_min != currentDay)
-        if(utcTime->tm_mday != currentDay)
+        if(p.buildLogPath)
         {
-            currentDay = utcTime->tm_mday;
-            // currentDay = utcTime->tm_min;
-            fclose(outfp);
-            buildLogFilePath(&p);
-            if((outfp = fopen(p.outputFilePath, "a+"))!= NULL)
+            if(utcTime->tm_mday != currentDay)
             {
-                fprintf(stdout,"\nNew Log File: %s\n", p.outputFilePath);
-            }
-            else
-            {
-                fprintf(stdout,"\nNew Log File: %s\n", p.outputFilePath);
-                perror("\nLog File: ");
-                exit(1);
+                currentDay = utcTime->tm_mday;
+                // currentDay = utcTime->tm_min;
+                fclose(outfp);
+                buildLogFilePath(&p);
+                if((outfp = fopen(p.outputFilePath, "a+"))!= NULL)
+                {
+                    fprintf(stdout,"\nNew Log File: %s\n", p.outputFilePath);
+                }
+                else
+                {
+                    fprintf(stdout,"\nNew Log File: %s\n", p.outputFilePath);
+                    perror("\nLog File: ");
+                    exit(1);
+                }
             }
         }
     }
