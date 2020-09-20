@@ -1,0 +1,7 @@
+# CHANGES.txt
+===========================================================
+# I should have started this  a long time ago
+
+# Date: 2020-09-20 git tag 0.0.9
+Added function i2c_setBitRate() to i2c.c - allow code to specify the I2C Bus speed at runtime.
+Attempting to fix abend due to closing log file when none is in use.
