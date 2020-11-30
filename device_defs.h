@@ -87,7 +87,7 @@ typedef enum
 //-------------------------------------------
 // I2C bus speed options available
 //-------------------------------------------
-#define I2C_LOWSPEED            10000
+// #define I2C_LOWSPEED            10000
 #define I2C_STANDARD            100000
 #define I2C_FASTMODE            1000000
 #define I2C_HIGHSPEED           3400000
