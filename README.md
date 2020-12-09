@@ -56,46 +56,45 @@ Logging will continue to the new file uninterrupted.
 
     dave@raspi-3:~/projects/rm3100-runMag $ ./runMag -h
     
-    ./runMag Version = 0.0.7
+    ./runMag Version = 0.0.10
 
     Parameters:
-        
-        -a                     :  List known SBC I2C bus numbers.       [ use with -b ]
-        -A                     :  Set NOS (0x0A) register value.        [ Don't use unless you know what you are doing ]
-        -B <reg mask>          :  Do built in self test (BIST).         [ Not implemented ]
-        -b <bus as integer>    :  I2C bus number as integer.
-        -C                     :  Read back cycle count registers before sampling.
-        -c <count>             :  Set cycle counts as integer.          [ default 200 ]
-        -D <rate>              :  Set magnetometer sample rate.         [ TMRC reg 96 hex default ].
-        -d <count>             :  Set polling delay.                    [ default 1000000 uSec ]
-        -E                     :  Show cycle count/gain/sensitivity relationship.
-        -f <filename>          :  Read configuration from file (JSON).  [ Not implemented ]
-        -F <filename>          :  Write configuration to file (JSON).   [ Not implemented ]
-        -g <mode>              :  Device sampling mode.                 [ POLL=0 (default), CONTINUOUS=1 ]
-        -H                     :  Hide raw measurments.
-        -j                     :  Format output as JSON.
-        -k                     :  Create and roll log files.            [ 00:00 UTC default ]
-        -L <addr as integer>   :  Local temperature address.            [ default 19 hex ]
-        -l                     :  Read local temperature only.
-        -M <addr as integer>   :  Magnetometer address.                 [ default 20 hex ]
-        -m                     :  Read magnetometer only.
-        -O <filename>          :  Output file path.                     [ Must be valid path with write permissions ]
-        -o <delay as ms>       :  Output delay.                         [ 1000 ms default ]
-        -P                     :  Show Parameters.
-        -q                     :  Quiet mode.                           [ partial ]
-        -v                     :  Verbose output.
-        -R <addr as integer>   :  Remote temperature address.           [ default 18 hex ]
-        -r                     :  Read remote temperature only.
-        -s                     :  Return single reading.                [ Do one measurement loop only ]
-        -S                     :  Site prefix string for log files.     [ < 32 char. Do not use /'"*%<> etc. Try callsign! ]
-        -t                     :  Set CMM Data Rate.                    [ 96 hex default ]
-        -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]
-        -U <delay as us>       :  Delay in uSec after DRDY.             [ default: 0 ]
-        -V                     :  Display software version and exit.
-        -X                     :  Read Simple Magnetometer Board (SMSB).
-        -x                     :  Read board with extender (MSBx).
-        -Z                     :  Show total field.                     [ sqrt((x*x) + (y*y) + (z*z)) ]
-        -h or -?               :  Display this help.
+    
+       -a                     :  List known SBC I2C bus numbers.       [ use with -b ]
+       -A                     :  Set NOS (0x0A) register value.        [ Don't use unless you know what you are doing ]
+       -B <reg mask>          :  Do built in self test (BIST).         [ Not implemented ]
+       -b <bus as integer>    :  I2C bus number as integer.
+       -C                     :  Read back cycle count registers before sampling.
+       -c <count>             :  Set cycle counts as integer.          [ default 200 decimal]
+       -D <rate>              :  Set magnetometer sample rate.         [ TMRC reg 96 hex default ].
+       -d <count>             :  Set polling delay.                    [ default 1000000 uSec ]
+       -E                     :  Show cycle count/gain/sensitivity relationship.
+       -f <filename>          :  Read configuration from file (JSON).  [ Not implemented ]
+       -F <filename>          :  Write configuration to file (JSON).   [ Not implemented ]
+       -g <mode>              :  Device sampling mode.                 [ POLL=0 (default), CONTINUOUS=1 ]
+       -H                     :  Hide raw measurments.
+       -j                     :  Format output as JSON.
+       -k                     :  Create and roll log files.            [ 00:00 UTC default ]
+       -L <addr as integer>   :  Local temperature address.            [ default 19 hex ]
+       -l                     :  Read local temperature only.
+       -M <addr as integer>   :  Magnetometer address.                 [ default 20 hex ]
+       -m                     :  Read magnetometer only.
+       -O <filename>          :  Output file path.                     [ Must be valid path with write permissions ]
+       -o <delay as ms>       :  Output delay.                         [ 1000 ms default ]
+       -P                     :  Show Parameters.
+       -q                     :  Quiet mode.                           [ partial ]
+       -v                     :  Verbose output.
+       -R <addr as integer>   :  Remote temperature address.           [ default 18 hex ]
+       -r                     :  Read remote temperature only.
+       -s                     :  Return single reading.                [ Do one measurement loop only ]
+       -S                     :  Site prefix string for log files.     [ 32 char max. Do not use /'"* etc. Try callsign! ]
+       -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]
+       -U <delay as ms>       :  Delay in mSec before DRDY.            [ default: 0 ]
+       -V                     :  Display software version and exit.
+       -X                     :  Read Simple Magnetometer Board (SMSB).
+       -x                     :  Read board with extender (MSBx).
+       -Z                     :  Show total field.                     [ sqrt((x*x) + (y*y) + (z*z)) ]
+       -h or -?               :  Display this help.
         
     
 ## Example output using the -E option:
