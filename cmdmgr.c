@@ -595,8 +595,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 sscanf(optarg, "%x", &lTmpAddr);
                 p->localTempAddr = lTmpAddr;
                 break;
-                break;
-            case 'm':NOSRegValue
+            case 'm':
                 p->magnetometerOnly = TRUE;
                 break;
             case 'M':
