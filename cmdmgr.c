@@ -470,7 +470,10 @@ void showSettings(pList *p)
 int getCommandLine(int argc, char** argv, pList *p)
 {
     int c;
-    //int digit_optind = 0;
+    int NOSval = 0;
+    int magAddr = 0;
+    int lTmpAddr = 0;
+    int rTmpAddr = 0;
     
     if(p != NULL)
     {
@@ -530,7 +533,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'A':
                 fprintf(stdout, "\nThe -A option is intended to allow setting a value in the NOS register.\n\n");
-                p->NOSRegValue = atoi(optarg);
+                sscanf(optarg, "%x", &NOSval);
+                p->NOSRegValue = NOSval;
                 setNOSReg(p);
                 break;
             case 'b':
@@ -588,13 +592,17 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->localTempOnly = TRUE;
                 break;
             case 'L':
-                p->localTempAddr = atoi(optarg);
+                sscanf(optarg, "%x", &lTmpAddr);
+                p->localTempAddr = lTmpAddr;
                 break;
-            case 'm':
+                break;
+            case 'm':NOSRegValue
                 p->magnetometerOnly = TRUE;
                 break;
             case 'M':
-                p->magnetometerAddr = atoi(optarg);
+                //p->magnetometerAddr = atoi(optarg);
+                sscanf(optarg, "%x", &magAddr);
+                p->magnetometerAddr = magAddr;
                 break;
             case 'o':
                 p->outDelay = atoi(optarg) * 1000;
@@ -623,6 +631,8 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'R':
                 p->remoteTempAddr = atoi(optarg);
+                sscanf(optarg, "%x", &rTmpAddr);
+                p->remoteTempAddr = rTmpAddr;
                 break;
             case 's':
                 p->singleRead = TRUE;
@@ -681,7 +691,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\n%s Version = %s\n", argv[0], version);
                 fprintf(stdout, "\nParameters:\n\n");
                 fprintf(stdout, "   -a                     :  List known SBC I2C bus numbers.       [ use with -b ]\n");
-                //fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.        [ Don't use unless you know what you are doing ]\n");
+                fprintf(stdout, "   -A                     :  Set NOS (0x0A) register value.        [ Don't use unless you know what you are doing ]\n");
                 fprintf(stdout, "   -B <reg mask>          :  Do built in self test (BIST).         [ Not implemented ]\n");
                 fprintf(stdout, "   -b <bus as integer>    :  I2C bus number as integer.\n");
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
