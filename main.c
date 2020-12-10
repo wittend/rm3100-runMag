@@ -242,7 +242,7 @@ int main(int argc, char** argv)
         {
             if(p.tsMilliseconds)
             {
-                fprintf(outfp, "Time Stamp: %ld, ", currentTimeMillis());
+                fprintf(outfp, "Time_Stamp: %ld ", currentTimeMillis());
             }
             else
             {
@@ -309,7 +309,7 @@ int main(int argc, char** argv)
             }
             fprintf(outfp, "\n");
         }
-        else
+        else    // JSON output
         {
             fprintf(outfp, "{ ");
             if(p.tsMilliseconds)
