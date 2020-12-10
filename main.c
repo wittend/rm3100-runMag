@@ -182,13 +182,13 @@ int main(int argc, char** argv)
     // Open I2C bus (only one at a time for now)    
     openI2CBus(&p);
     // Show initial (command line) parameters
+    // Setup the magnetometer.
+    //setMagSampleRate(&p, p.mSampleRate);
+    setup_mag(&p);
     if(p.showParameters)
     {
         showSettings(&p);
     }
-    // Setup the magnetometer.
-    //setMagSampleRate(&p, p.mSampleRate);
-    setup_mag(&p);
     if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
     {
         readCycleCountRegs(&p);
