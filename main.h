@@ -32,7 +32,7 @@
 
 #define _DEBUG 0
 
-#define RUNMAG_VERSION "0.0.11"
+#define RUNMAG_VERSION "0.0.12"
 #define UTCBUFLEN 64
 #define MAXPATHBUFLEN 1025
 #define JSONBUFLEN 1025
@@ -59,7 +59,7 @@ typedef struct tag_pList
     int z_gain;
     
     int TMRCRate;
-    int mSampleRate;
+    int CMMSampleRate;
 
     int samplingMode;
 

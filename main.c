@@ -181,18 +181,20 @@ int main(int argc, char** argv)
     }
     // Open I2C bus (only one at a time for now)    
     openI2CBus(&p);
-    // Show initial (command line) parameters
     // Setup the magnetometer.
-    //setMagSampleRate(&p, p.mSampleRate);
     setup_mag(&p);
+    // Show initial (command line) parameters
     if(p.showParameters)
     {
         showSettings(&p);
     }
-    if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
+//printf("before readCycleCountRegs()\n");
+    //if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
+    if(p.readBackCCRegs)
     {
         readCycleCountRegs(&p);
     }
+//printf("After readCycleCountRegs()\n");
     // Start CMM on X, Y, Z
     if(p.samplingMode == CONTINUOUS)
     {
@@ -201,6 +203,7 @@ int main(int argc, char** argv)
     // loop   
     while(1)
     {
+//printf("Top of main loop\n");
         //  Read temp sensor.
         if(!p.magnetometerOnly)
         {

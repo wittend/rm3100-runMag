@@ -440,8 +440,8 @@ void showSettings(pList *p)
     fprintf(stdout, "   Gain by vector:                             X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
     fprintf(stdout, "   Read back CC Regs after set:                %s\n",          p->readBackCCRegs   ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Software Loop Delay (uSec):                 %i (dec)\n",    p->outDelay);
-    fprintf(stdout, "   Magnetometer sample rate:                   %3i (dec)\n",   p->mSampleRate);
-    fprintf(stdout, "   CMM magnetometer sample rate (TMRC reg):    %3i (dec)\n",   p->TMRCRate);
+    fprintf(stdout, "   CMM sample rate:                            %2X (hex)\n",   p->CMMSampleRate);
+    fprintf(stdout, "   TMRC reg value:                             %2X (hex)\n",   p->TMRCRate);
     fprintf(stdout, "   Format output as JSON:                      %s\n",          p->jsonFlag         ? "TRUE" : "FALSE" );
     fprintf(stdout, "   Read local temperature only:                %s\n",          p->localTempOnly    ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read remote temperature only:               %s\n",          p->remoteTempOnly   ? "TRUE" : "FALSE");
@@ -497,7 +497,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     
     p->samplingMode     = POLL;
     p->readBackCCRegs   = FALSE;
-    p->mSampleRate      = 200;
+    p->CMMSampleRate      = 200;
     p->hideRaw          = FALSE;
     //p->i2cBusNumber     = 1;
     p->i2cBusNumber     = busDevs[eRASPI_I2C_BUS].busNumber;
@@ -560,7 +560,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->outDelay = atoi(optarg);
                 break;
             case 'D':
-                p->mSampleRate = atoi(optarg);
+                p->CMMSampleRate = atoi(optarg);
                 break;
             case 'E':
                 showCountGainRelationship();

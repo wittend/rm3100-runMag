@@ -83,17 +83,19 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
         { 125,  0x04},   // up to 125Hz
         { 220,  0x03}    // up to 250Hz
     };
-        
+printf("before for loop. I = %i\n", sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1);
     for(i = 0; i < sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1; i++)
     {
         if(sample_rate <= supported_rates[i][0])
         {
+printf("bbreaking from for loop\n");
             break;
         }
     }
-    p->mSampleRate = supported_rates[i][0];
-    // i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->mSampleRate);
-    return p->mSampleRate;
+printf("after for loop\n");
+    p->CMMSampleRate = supported_rates[i][0];
+    // i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->CMMSampleRate);
+    return p->CMMSampleRate;
 }
 
 //------------------------------------------
@@ -102,7 +104,7 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
 //------------------------------------------
 unsigned short getMagSampleRate(pList *p)
 {
-    return p->mSampleRate;
+    return p->CMMSampleRate;
 }
 
 //------------------------------------------
@@ -147,12 +149,16 @@ int setup_mag(pList *p)
     {
         exit (1);
     }
-    setMagSampleRate(p, p->mSampleRate);
+//printf("before setMagSampleRate()\n");
+    //setMagSampleRate(p, p->mSampleRate);
+    //setCycleCountRegs(p);
+//printf("after setMagSampleRate()\n");
     // Clear out these registers
     i2c_write(p->i2c_fd, RM3100_MAG_POLL, 0);
     i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);
     // Initialize CC settings
     setCycleCountRegs(p);
+//printf("after setCycleCountRegs(()\n");
     // Sleep for 1 second
     usleep(100000);                           // delay to help monitor DRDY pin on eval board
     return rv;
