@@ -187,8 +187,8 @@ int main(int argc, char** argv)
         showSettings(&p);
     }
     // Setup the magnetometer.
+    //setMagSampleRate(&p, p.mSampleRate);
     setup_mag(&p);
-    setMagSampleRate(&p, p.mSampleRate);
     if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
     {
         readCycleCountRegs(&p);
