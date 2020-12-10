@@ -105,6 +105,7 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     // if a delay is specified after DRDY goes high, sleep it off.
     if(p->DRDYdelay)
     {
+//printf("usleep p->DRDYdelay: %i\n", p->DRDYdelay);
         usleep(p->DRDYdelay);
     }
     // Check if DRDY went high and wait unit high before reading results
@@ -188,13 +189,10 @@ int main(int argc, char** argv)
     {
         showSettings(&p);
     }
-//printf("before readCycleCountRegs()\n");
-    //if(p.readBackCCRegs && (p.samplingMode == CONTINUOUS))
     if(p.readBackCCRegs)
     {
         readCycleCountRegs(&p);
     }
-//printf("After readCycleCountRegs()\n");
     // Start CMM on X, Y, Z
     if(p.samplingMode == CONTINUOUS)
     {
@@ -203,7 +201,6 @@ int main(int argc, char** argv)
     // loop   
     while(1)
     {
-//printf("Top of main loop\n");
         //  Read temp sensor.
         if(!p.magnetometerOnly)
         {

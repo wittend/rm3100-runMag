@@ -60,7 +60,7 @@ void closeI2CBus(int i2c_fd)
 int setNOSReg(pList *p)
 {
     int rv;
-    printf("\nIn setNOSReg():: Setting undocumented NOS register to value: %i\n", p->NOSRegValue);
+    printf("\nIn setNOSReg():: Setting undocumented NOS register to value: %2X\n", p->NOSRegValue);
     rv = i2c_write(p->i2c_fd, RM3100I2C_NOS, p->NOSRegValue);
     return rv;
 }
@@ -149,10 +149,8 @@ int setup_mag(pList *p)
     {
         exit (1);
     }
-//printf("before setMagSampleRate()\n");
     //setMagSampleRate(p, p->mSampleRate);
-    //setCycleCountRegs(p);
-//printf("after setMagSampleRate()\n");
+    setNOSReg(p);
     // Clear out these registers
     i2c_write(p->i2c_fd, RM3100_MAG_POLL, 0);
     i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);

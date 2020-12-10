@@ -535,7 +535,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "\nThe -A option is intended to allow setting a value in the NOS register.\n\n");
                 sscanf(optarg, "%x", &NOSval);
                 p->NOSRegValue = NOSval;
-                setNOSReg(p);
+                // setNOSReg(p);
                 break;
             case 'b':
                 p->i2cBusNumber = atoi(optarg);
@@ -656,7 +656,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->TMRCRate = atoi(optarg);
                 break;
             case 'U':
-                p->DRDYdelay = atoi(optarg);
+                p->DRDYdelay = atoi(optarg) * 1000;
                 break;
             case 'V':
                 fprintf(stdout, "\nVersion: %s\n", p->Version);
