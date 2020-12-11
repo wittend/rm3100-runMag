@@ -83,16 +83,16 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
         { 125,  0x04},   // up to 125Hz
         { 220,  0x03}    // up to 250Hz
     };
-printf("before for loop. I = %i\n", sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1);
+//printf("before for loop. I = %i\n", sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1);
     for(i = 0; i < sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1; i++)
     {
         if(sample_rate <= supported_rates[i][0])
         {
-printf("bbreaking from for loop\n");
+//printf("bbreaking from for loop\n");
             break;
         }
     }
-printf("after for loop\n");
+//printf("after for loop\n");
     p->CMMSampleRate = supported_rates[i][0];
     // i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->CMMSampleRate);
     return p->CMMSampleRate;
