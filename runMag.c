@@ -149,14 +149,13 @@ int setup_mag(pList *p)
     {
         exit (1);
     }
-    //setMagSampleRate(p, p->mSampleRate);
-    setNOSReg(p);
+    // Setup the NOS register
+    // setNOSReg(p);
     // Clear out these registers
     i2c_write(p->i2c_fd, RM3100_MAG_POLL, 0);
     i2c_write(p->i2c_fd, RM3100I2C_CMM,  0);
     // Initialize CC settings
     setCycleCountRegs(p);
-//printf("after setCycleCountRegs(()\n");
     // Sleep for 1 second
     usleep(100000);                           // delay to help monitor DRDY pin on eval board
     return rv;
@@ -230,8 +229,15 @@ void setCycleCountRegs(pList *p)
     i2c_write(p->i2c_fd, RM3100I2C_CCZ_1, (p->cc_y >> 8));
     i2c_write(p->i2c_fd, RM3100I2C_CCZ_0, (p->cc_y & 0xff));
     p->z_gain = getCCGainEquiv(p->cc_z);
-    // printf("Gains - X: %u, Y: %u, Z: %u.\n", p->x_gain, p->y_gain, p->z_gain);
-    // i2c_write(p->i2c_fd, RM3100I2C_NOS,   NOS);
+    // Write NOSRegValue to  register 0A
+    i2c_write(p->i2c_fd, RM3100I2C_NOS,   (uint8_t)(p->NOSRegValue));
+    if(p->verboseFlag)
+    {
+        fprintf(stderr, "\nIn setCycleCountRegs():: Setting NOS register to value: %2X\n", p->NOSRegValue);
+        fprintf(stderr, "CycleCounts  - X: %u, Y: %u, Z: %u.\n", p->cc_x, p->cc_y, p->cc_x);
+        fprintf(stderr, "Gains        - X: %u, Y: %u, Z: %u.\n", p->x_gain, p->y_gain, p->z_gain);
+        fprintf(stderr, "NOS Register - %2X.\n", p->NOSRegValue);
+    }
 }
 
 //------------------------------------------

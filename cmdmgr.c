@@ -484,7 +484,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->boardType        = 0;
     p->boardMode        = LOCAL;
     p->doBistMask       = FALSE;
-    p->NOSRegValue      = 0;
+    p->NOSRegValue      = 1;
     p->DRDYdelay        = 0;
     p->buildLogPath     = FALSE;
     
@@ -532,9 +532,24 @@ int getCommandLine(int argc, char** argv, pList *p)
                 listSBCs();
                 break;
             case 'A':
-                fprintf(stdout, "\nThe -A option is intended to allow setting a value in the NOS register.\n\n");
-                sscanf(optarg, "%x", &NOSval);
-                p->NOSRegValue = NOSval;
+                // fprintf(stdout, "\nThe -A option is intended to allow setting a value in the NOS register.\n\n");
+                sscanf(optarg, "%u", &NOSval);
+                if(NOSval <= 1)
+                {
+                    if(p->verboseFlag)
+                    {
+                        fprintf(stderr, "Error: %u :: NOS input value must be >= 1. Forcing -A input to 1 \n", NOSval);
+                    }    
+                    (p->NOSRegValue = 1);
+                }
+                else
+                {
+                    (p->NOSRegValue = NOSval);
+                }
+                if(p->verboseFlag)
+                {
+                    fprintf(stderr, "p->NOSRegValue:: %u\n", p->NOSRegValue);
+                }    
                 // setNOSReg(p);
                 break;
             case 'b':

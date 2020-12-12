@@ -67,11 +67,6 @@ int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
     while((rv = (i2c_read(p->i2c_fd, RM3100I2C_STATUS)) & RM3100I2C_READMASK) != RM3100I2C_READMASK)
     {
     }
-    //// if a delay is specified after DRDY goes high, sleep it off.
-    //if(p->DRDYdelay)
-    //{
-    //    usleep(p->DRDYdelay);
-    //}
     // Read the XYZ registers
     if((bytes_read = i2c_readbuf(p->i2c_fd, RM3100I2C_XYZ, (unsigned char*) &mSamples, sizeof(mSamples)/sizeof(char))) != sizeof(mSamples)/sizeof(char))
     {
@@ -105,7 +100,6 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     // if a delay is specified after DRDY goes high, sleep it off.
     if(p->DRDYdelay)
     {
-//printf("usleep p->DRDYdelay: %i\n", p->DRDYdelay);
         usleep(p->DRDYdelay);
     }
     // Check if DRDY went high and wait unit high before reading results
@@ -120,12 +114,15 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
     XYZ[0] |= mSamples[2];
+    XYZ[0] /= p->NOSRegValue;
     XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
     XYZ[1] |= mSamples[4] * 256;
     XYZ[1] |= mSamples[5];
+    XYZ[1] /= p->NOSRegValue;
     XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
     XYZ[2] |= mSamples[7] * 256;
     XYZ[2] |= mSamples[8];
+    XYZ[2] /= p->NOSRegValue;
 
     return bytes_read;
 }
@@ -166,13 +163,6 @@ int main(int argc, char** argv)
         {
             perror("\nLog File: ");
         }
-    }
-    // BIST - Built In Self Test
-    if(p.doBistMask)
-    {
-        fprintf(outfp, "\nBIST using mask: %2X returns: %2X\n", p.doBistMask, runBIST(&p));
-        fclose(outfp);
-        exit(0);
     }
     // if Verbose == TRUE
     if(p.verboseFlag)
