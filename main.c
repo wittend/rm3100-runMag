@@ -75,12 +75,15 @@ int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
     XYZ[0] |= mSamples[2];
+    XYZ[0] /= p->NOSRegValue;
     XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
     XYZ[1] |= mSamples[4] * 256;
     XYZ[1] |= mSamples[5];
+    XYZ[1] /= p->NOSRegValue;
     XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
     XYZ[2] |= mSamples[7] * 256;
     XYZ[2] |= mSamples[8];
+    XYZ[2] /= p->NOSRegValue;
 
     return bytes_read;
 }
@@ -188,6 +191,19 @@ int main(int argc, char** argv)
     {
         startCMM(&p);
     }
+    
+    // DRL put meta data here
+    // DRL should be printed only at the top of the log file
+    // DMW respect -H switch (but not other rtemp, ltemp, etc. options yet.)
+    if(p.hideRaw)
+    {
+        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"total\"\n" );
+    }
+    else
+    {
+        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"rx\", \"ry\", \"rz\", \"total\"\n" );
+    }
+
     // loop   
     while(1)
     {
@@ -232,13 +248,15 @@ int main(int argc, char** argv)
         {
             if(p.tsMilliseconds)
             {
-                fprintf(outfp, "Time_Stamp: %ld ", currentTimeMillis());
+                fprintf(outfp, "%ld ", currentTimeMillis());
+                // fprintf(outfp, "Time_Stamp: %ld ", currentTimeMillis());
             }
             else
             {
                 utcTime = getUTC();
                 strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);                
-                fprintf(outfp, " Time: %s", utcStr);
+                fprintf(outfp, "\"%s\"", utcStr);
+                // fprintf(outfp, " Time: %s", utcStr);
             }
             if(!p.magnetometerOnly)
             {
@@ -246,56 +264,77 @@ int main(int argc, char** argv)
                 {
                     if(rcTemp < -100.0)
                     {
-                        fprintf(outfp, ", rTemp: ERROR");
+                        fprintf(outfp, ", \"ERROR\"");
+                        // fprintf(outfp, ", rTemp: ERROR");
                     }
                     else
                     {
-                        fprintf(outfp, ", rTemp: %.2f", rcTemp);
+                        fprintf(outfp, ", %.2f", rcTemp);
+                        // fprintf(outfp, ", rTemp: %.2f", rcTemp);
                     }
                 }
                 else if(p.localTempOnly)
                 {
                     if(lcTemp < -100.0)
                     {
-                        fprintf(outfp, ", lTemp: ERROR");
+                        fprintf(outfp, ", \"ERROR\"");
+                        // fprintf(outfp, ", lTemp: ERROR");
                     }
                     else
                     {
-                        fprintf(outfp, ", lTemp: %.2f", lcTemp);
+                        fprintf(outfp, ", %.2f", lcTemp);
+                        // fprintf(outfp, ", lTemp: %.2f", lcTemp);
                     }
                 }
                 else
                 {
                     if(rcTemp < -100.0)
                     {
-                        fprintf(outfp, ", rTemp: ERROR");
+                        fprintf(outfp, ", \"ERROR\"");
+                        // fprintf(outfp, ", rTemp: ERROR");
                     }
                     else
                     {
-                        fprintf(outfp, ", rTemp: %.2f", rcTemp);
+                        fprintf(outfp, ", %.2f", rcTemp);
+                        // fprintf(outfp, ", rTemp: %.2f", rcTemp);
                     }
                     if(lcTemp < -100.0)
                     {
-                        fprintf(outfp, ", lTemp: ERROR");
+                        fprintf(outfp, ", \"ERROR\"");
+                        // fprintf(outfp, ", lTemp: ERROR");
                     }
                     else
                     {
-                        fprintf(outfp, ", lTemp: %.2f", lcTemp);
+                        fprintf(outfp, ", %.2f", lcTemp);
+                        // fprintf(outfp, ", %.2f", lcTemp);
                     }
                 }
             }
-            fprintf(outfp, ", x: %.3f", xyz[0]);
-            fprintf(outfp, ", y: %.3f", xyz[1]);
-            fprintf(outfp, ", z: %.3f", xyz[2]);
+            double x = xyz[0] * 100.0;
+            double y = xyz[1] * 100.0;
+            double z = xyz[2] * 100.0;
+            fprintf(outfp, ", %.1f", x);
+            fprintf(outfp, ", %.1f", y);
+            fprintf(outfp, ", %.1f", z);
+            // fprintf(outfp, ", x: %.3f", xyz[0]*100.0);
+            // fprintf(outfp, ", y: %.3f", xyz[1]*100.0);
+            // fprintf(outfp, ", z: %.3f", xyz[2]*100.0);
             if(!p.hideRaw)
             {
-                fprintf(outfp, ", rx: %i", rXYZ[0]);
-                fprintf(outfp, ", ry: %i", rXYZ[1]);
-                fprintf(outfp, ", rz: %i", rXYZ[2]);
+                fprintf(outfp, ", %i", rXYZ[0]);
+                fprintf(outfp, ", %i", rXYZ[1]);
+                fprintf(outfp, ", %i", rXYZ[2]);
+                // fprintf(outfp, ", rx: %i", rXYZ[0]);
+                // fprintf(outfp, ", ry: %i", rXYZ[1]);
+                // fprintf(outfp, ", rz: %i", rXYZ[2]);
             }
             if(p.showTotal)
             {
-                fprintf(outfp, ", Tm: %.5f", sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                double x = xyz[0] * 100.0;
+                double y = xyz[1] * 100.0;
+                double z = xyz[2] * 100.0;
+                fprintf(outfp, ", %.5f", sqrt((x * x) + (y * y) + (z * z)));
+                //fprintf(outfp, ", Tm: %.5f", sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
             fprintf(outfp, "\n");
         }
