@@ -53,6 +53,16 @@ long currentTimeMillis()
     return time.tv_sec * 1000 + time.tv_usec / 1000;
 }
 
+// Perhaps more correct
+//#include<sys/time.h>
+//long long timeInMilliseconds(void)
+//{
+//    struct timeval tv;
+//
+//    gettimeofday(&tv,NULL);
+//    return (((long long)tv.tv_sec)*1000)+(tv.tv_usec/1000);
+//}
+
 //------------------------------------------
 // getUTC()
 //------------------------------------------

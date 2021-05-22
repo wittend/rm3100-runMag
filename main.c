@@ -249,14 +249,12 @@ int main(int argc, char** argv)
             if(p.tsMilliseconds)
             {
                 fprintf(outfp, "%ld ", currentTimeMillis());
-                // fprintf(outfp, "Time_Stamp: %ld ", currentTimeMillis());
             }
             else
             {
                 utcTime = getUTC();
                 strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);                
                 fprintf(outfp, "\"%s\"", utcStr);
-                // fprintf(outfp, " Time: %s", utcStr);
             }
             if(!p.magnetometerOnly)
             {
@@ -265,12 +263,10 @@ int main(int argc, char** argv)
                     if(rcTemp < -100.0)
                     {
                         fprintf(outfp, ", \"ERROR\"");
-                        // fprintf(outfp, ", rTemp: ERROR");
                     }
                     else
                     {
                         fprintf(outfp, ", %.2f", rcTemp);
-                        // fprintf(outfp, ", rTemp: %.2f", rcTemp);
                     }
                 }
                 else if(p.localTempOnly)
@@ -278,12 +274,10 @@ int main(int argc, char** argv)
                     if(lcTemp < -100.0)
                     {
                         fprintf(outfp, ", \"ERROR\"");
-                        // fprintf(outfp, ", lTemp: ERROR");
                     }
                     else
                     {
                         fprintf(outfp, ", %.2f", lcTemp);
-                        // fprintf(outfp, ", lTemp: %.2f", lcTemp);
                     }
                 }
                 else
@@ -291,22 +285,18 @@ int main(int argc, char** argv)
                     if(rcTemp < -100.0)
                     {
                         fprintf(outfp, ", \"ERROR\"");
-                        // fprintf(outfp, ", rTemp: ERROR");
                     }
                     else
                     {
                         fprintf(outfp, ", %.2f", rcTemp);
-                        // fprintf(outfp, ", rTemp: %.2f", rcTemp);
                     }
                     if(lcTemp < -100.0)
                     {
                         fprintf(outfp, ", \"ERROR\"");
-                        // fprintf(outfp, ", lTemp: ERROR");
                     }
                     else
                     {
                         fprintf(outfp, ", %.2f", lcTemp);
-                        // fprintf(outfp, ", %.2f", lcTemp);
                     }
                 }
             }
@@ -338,7 +328,7 @@ int main(int argc, char** argv)
             }
             fprintf(outfp, "\n");
         }
-        else    // JSON output
+        else    // JSON output ------------------------------------------------
         {
             fprintf(outfp, "{ ");
             if(p.tsMilliseconds)
@@ -395,6 +385,9 @@ int main(int argc, char** argv)
                     }
                 }
             }
+            double x = xyz[0] * 100.0;
+            double y = xyz[1] * 100.0;
+            double z = xyz[2] * 100.0;
             fprintf(outfp, ", \"x\":%.3f", xyz[0]);
             fprintf(outfp, ", \"y\":%.3f", xyz[1]);
             fprintf(outfp, ", \"z\":%.3f", xyz[2]);
@@ -406,6 +399,9 @@ int main(int argc, char** argv)
             }
             if(p.showTotal)
             {
+                double x = xyz[0] * 100.0;
+                double y = xyz[1] * 100.0;
+                double z = xyz[2] * 100.0;
                 fprintf(outfp, ", \"Tm\": %.5f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
            fprintf(outfp, " }\n");
