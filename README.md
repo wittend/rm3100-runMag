@@ -4,12 +4,7 @@ This is a program intended to assist in testing the PNI RM3100 geomagnetic senso
 OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
 /dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
 
-<!--
-Building this code requires only the presence of standaard Linux/Unix C build tools plus the presence of the GNU gperf utility.  This last may be installed using your distribution's equivalent of the commands:
-
-    apt-get update
-    apt-get install gperf
--->    
+The current pre-release code is 0.0.16
 
 Just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
@@ -29,7 +24,7 @@ and if all goes well type:
 
 and now you should see some results!
 
-## Example on Raspberry Pi 3, using logging:
+## Example on Raspberry Pi 3/4, using logging:
 
 This creates a logfile in the directory ./logs with the format 'kd0eag-20200624-runmag.log'.
 Here 'kd0eag' is used as a site ID and '20200624' is the UTC 'YYYYMMDD' format of date.
@@ -54,10 +49,10 @@ Logging will continue to the new file uninterrupted.
 
 ## Example output using -h or -? option:
 
-    dave@raspi-3:~/projects/rm3100-runMag $ ./runMag -h
-    
-    ./runMag Version = 0.0.10
+    dave@raspi-3:~/projects/rm3100-runMag $/rm3100-runMag$ ./runMag -h
 
+    ./runMag Version = 0.0.16
+    
     Parameters:
     
        -a                     :  List known SBC I2C bus numbers.       [ use with -b ]
@@ -95,7 +90,8 @@ Logging will continue to the new file uninterrupted.
        -x                     :  Read board with extender (MSBx).
        -Z                     :  Show total field.                     [ sqrt((x*x) + (y*y) + (z*z)) ]
        -h or -?               :  Display this help.
-        
+
+
     
 ## Example output using the -E option:
 
