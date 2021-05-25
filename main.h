@@ -28,7 +28,6 @@
 #include "device_defs.h"
 #include "i2c.h"
 #include "MCP9808.h"
-#include "uthash/uthash.h"
 
 #define _DEBUG 0
 
