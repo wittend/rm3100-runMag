@@ -1,0 +1,983 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.0.7.3 (Linux)"/>
+	<meta name="created" content="2020-04-01T09:59:27.983935440"/>
+	<meta name="changed" content="2021-06-02T14:48:45.043527007"/>
+	<style type="text/css">
+		@page { margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 115% }
+		p.western { font-family: "Arial", sans-serif; font-size: 11pt }
+		p.cjk { font-size: 10pt }
+		h1 { margin-bottom: 0.08in }
+		h1.western { font-family: "Liberation Sans", sans-serif; font-size: 18pt }
+		h1.cjk { font-family: "Noto Sans CJK SC"; font-size: 18pt }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 18pt }
+		h2.western { font-family: "Liberation Sans", sans-serif; font-size: 16pt }
+		h2.cjk { font-family: "Noto Sans CJK SC"; font-size: 16pt }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 16pt }
+		td p { margin-bottom: 0in }
+		td p.western { font-family: "Arial", sans-serif; font-size: 11pt }
+		td p.cjk { font-size: 10pt }
+		blockquote { margin-left: 0.49in; margin-right: 0.39in; margin-bottom: 0in; border: none; padding: 0in }
+		blockquote.western { font-family: "Arial", sans-serif; font-size: 8pt }
+		blockquote.cjk { font-size: 10pt }
+		blockquote.ctl { font-size: 10pt }
+		a:link { so-language: zxx }
+	</style>
+</head>
+<body lang="en-US" dir="ltr">
+<div title="header">
+	<p style="margin-bottom: 0.2in; line-height: 100%"><br/>
+
+	</p>
+</div>
+<table width="663" cellpadding="4" cellspacing="0">
+	<col width="321">
+	<col width="324">
+	<tr valign="top">
+		<td width="321" style="background: transparent" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">Date:</span></font></font></font></p>
+		</td>
+		<td width="324" style="background: transparent" style="border: 1px solid #000000; padding: 0.04in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">02
+			June 2021</span></font></font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="321" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">Revision:</span></font></font></font></p>
+		</td>
+		<td width="324" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">0.0.1</span></font></font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="321" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">Author:</span></font></font></font></p>
+		</td>
+		<td width="324" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">David
+			Witten</span></font></font></font></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="321" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">Pages:</span></font></font></font></p>
+		</td>
+		<td width="324" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
+			<font color="#000000"><span style="text-decoration: none"><sdfield type=DOCSTAT subtype=PAGE format=PAGE>13</sdfield></span></font></p>
+		</td>
+	</tr>
+</table>
+<h1 class="western" align="center">Configuring the Raspberry Pi 3 or
+4 for use with the runMag utility and the TangerineSDR ‘Pear’
+boards</h1>
+<h2 class="western"></h2>
+<h2 class="western">Contents:</h2>
+<ol>
+	<li/>
+<p class="western">Introduction</p>
+	<li/>
+<p class="western">Setting I2C up to work on Raspberry Pi 3 or
+	4</p>
+	<li/>
+<p class="western">Testing I2C</p>
+	<li/>
+<p class="western">Local board with I2C Extender 
+	</p>
+	<li/>
+<p class="western">Install the runMag Utility</p>
+	<li/>
+<p class="western">Install the Linux ‘rsync’ Tools</p>
+	<li/>
+<p class="western">Set Up the ‘cron’ Facility</p>
+	<li/>
+<p class="western">Setting up ‘start-on-reboot’ for runMag</p>
+	<li/>
+<p class="western">Testing and Operation</p>
+</ol>
+<h2 class="western"><br/>
+<br/>
+
+</h2>
+<h2 class="western" style="page-break-before: always">Introduction</h2>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">This
+document concerns the software setup for the Magnetometer Support
+Boards (MSB’s) designed as prototypes to test the PNI rm3100
+magnetometer modules and the ‘Pear’ boards created for the
+TangerineSDR project.  The primary software described here is a
+utility called ‘runMag’ that is available as source code.  It is
+covered by the GPL 3 open source license,  It may be downloaded from
+GitHub at <a href="https://github.com/wittend/rm3100-runMag">https://github.com/wittend/rm3100-runMag</a>.</font></font></font></p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">It
+must be emphasized that while this software has so far proven useful
+and reliable, it was intended for testing and evaluation of these
+boards.  <i><b>Its author does not consider it production-grade code.</b></i></font></font></font></p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Comments
+and suggestions are appreciated.  But new work is focused on other
+tools and it is expected that this code will be superceded.</font></font></font></p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">The
+‘runMag’ utility was written for portability and does not invoke
+Raspberry Pi specific libraries.</font></font></font></p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Setting
+I2C up on Raspberry Pi 3 or 4 single board computer (SBC) is usually
+fairly simple.  Use with other similar boards is possible  (Odroid
+N2(+),  Nvidia Nano, etc.), that will not be addressed here.</font></font></font></p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Installation
+of all software required to monitor, log, and archive data from
+either the Magnetometer Support Board prototypes or the HamSCI ‘Pear’
+boards will be the focus of this document.</font></font></font></p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">The
+PNI RM3100 Magnetometer module used here is NOT 5.5v tolerant on the
+I2C bus. </font></font></font>
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<font color="#202124"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt"><font color="#ce181e"><i><b><span style="background: transparent">Warning:
+</span></b></i></font><font color="#ce181e"><i><b><span style="background: transparent">Applying
+5v (or higher) to any other pins will damage the magnetometer.</span></b></i></font></font></font></font></p>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in; line-height: 100%"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt"><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">I</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">also
+assume that you have the following incidental items:</span></span></span></font></span></font></font></p>
+<p class="western" style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<ul>
+	<li/>
+<p class="western" style="margin-bottom: 0in; line-height: 100%">
+	<font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">For
+	</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">remote
+	use</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">
+	- </font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">100</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">
+	foot </font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">shielded</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">
+	</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">t</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">wisted
+	</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">p</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">air
+	CAT-6a </font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">c</font></font><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">able:
+	<a href="https://www.amazon.com/gp/product/B00HEM653S/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&amp;psc=1">https://www.amazon.com/gp/product/B00HEM653S/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&amp;psc=1</a></font></font></p>
+	<p class="western" style="margin-bottom: 0in; line-height: 100%"></p>
+	<li/>
+<p class="western" style="margin-bottom: 0in; line-height: 100%">
+	<font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Other
+	items required for in-ground installation of the remote sensor. (See
+	other documents detailing proper installation).</font></font></p>
+	<p class="western" style="margin-bottom: 0in; line-height: 100%"></p>
+</ul>
+<h2 class="western"><br/>
+<br/>
+
+</h2>
+<h2 class="western" style="page-break-before: always">Setting I2C up
+to work on Raspberry Pi 3 or 4</h2>
+<p class="western" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p class="western">For the purposes of this document I will assume
+that use the current desktop version of Raspbian OS (32 bit, armhf). 
+The Raspberry Pi uses the same image both model 3B and model 4b.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 11pt">We suggest:</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 11pt"><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">Ras</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">pberry
+Pi OS</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">current
+</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">with
+desktop:</span></span></span></font></span></font></p>
+<p class="western" style="margin-left: 0.49in"><a href="https://www.raspberrypi.org/software/operating-systems/"><font size="2" style="font-size: 11pt">https://www.raspberrypi.org/software/operating-systems/</font></a></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 11pt">Current
+version:</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 11pt">Release
+date: 	May 7th 2021</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 11pt">Kernel
+version:	5.10</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 11pt">Size:	1,180</font></p>
+<p class="western"><font size="2" style="font-size: 11pt"><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">The
+other versions </span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">may</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+work as well, but contain unwanted software or require different
+installation steps.</span></span></span></font></span></font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Please see installation instructions at: 
+</p>
+<p class="western"><a href="https://www.raspberrypi.org/software/">https://www.raspberrypi.org/software/</a></p>
+<p class="western">Now you need to plug in monitor, keyboard, and
+mouse.  I prefer a wireless keyboard/mouse combo. If possible,
+connect a wired network connection at first, but a reliable WiFi
+environment should work.</p>
+<p class="western">Then power up the Pi and let it guide you through
+the setup.  
+</p>
+<p class="western"><span style="background: #fff200">Then </span><span style="background: #fff200">restart
+</span><span style="background: #fff200">the P</span>i.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">In recent versions, you can select Menu &gt;
+Preferences &gt; Raspberry Pi Configuration and then you get an
+applet thing.  If you select the tab &quot;Interfaces&quot; you can
+turn I2C and also select SSH.  These are important to the proper
+operation of your sensor.</p>
+<p class="western">Alternatively, from a terminal window/command
+prompt, you can type 
+</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+sudo raspi-config </font>
+</p>
+<p class="western">and make these same changes.</p>
+<p class="western">Again, <span style="background: #fff200">you
+should reboot the Pi.</span></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Next, you should make sure that your Raspberry Pi
+is connected to the network.  Then you need to open a terminal window
+and execute the command:</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+sudo apt-get update</font></p>
+<p class="western">Once this has completed without errors, you need
+to execute:</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+sudo apt-get upgrade</font></p>
+<p class="western">This command may take a while and generate quite a
+bit of activity, but it assures that your software is up to date and
+that current security patches are installed.</p>
+<p class="western">Yet again, <span style="background: #fff200">you
+should reboot the Pi</span>.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><b>Change the default Password!</b></p>
+<p class="western" style="font-weight: normal">From a terminal
+prompt, you can type:</p>
+<p class="western" style="margin-left: 0.49in; font-weight: normal"><font size="2" style="font-size: 10pt">$
+passwd</font></p>
+<p class="western">It is very important that you change the default
+password for the ‘pi’ account.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">You should create an account other than the
+default pi account for your use when operating your device.  It
+should have a strong password that you can remember. The command for
+this is:</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+adduser [<b>USER ID]</b></font></p>
+<p class="western"><font size="2" style="font-size: 11pt"><b>NOTE:</b><span style="font-weight: normal">
+Only the ‘password’ and ‘repeat password’ fields actually
+matter.  You can hit enter for the others, but enter ‘y’ to
+accept.</span></font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Your working account should have the same group
+privileges as the pi account, especially the ‘adm’, ‘sudo’,
+‘ssh’, ‘dialout’, ‘i2c’, ’input’, ’netdev and
+‘plugdev’ memberships.  While still in the ‘Pi’ account you
+should add these memberships using:</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+sudo usermod -a -G adm,sudo,ssh,dialout,i2c,plugdev,input,netdev 
+[<b>USER ID]</b></font></p>
+<p class="western">I prefer to disable the pi account altogether.</p>
+<p class="western">Yet again, <span style="background: #fff200">you
+should reboot the Pi</span>.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<h2 class="western" style="page-break-before: always"><font face="Arial, sans-serif">Testing
+I2C</font></h2>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Assuming that you have completed the appropriate
+configuration above, the next step is to make sure the appropriate
+devices are now available.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Open a terminal window and type:</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+</font><font size="2" style="font-size: 10pt">ls /dev/i2c*</font><font size="2" style="font-size: 10pt">’
+</font> 
+</p>
+<p class="western">The Raspberry Pi boards should show: &quot;/dev/i2c-1&quot;.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Here we use the command ‘i2cdetect’.  If you
+enter this command and you get an error, you may have to install the
+package ‘i2c-tools’ using the command:</p>
+<p class="western">	<font size="2" style="font-size: 10pt">$ sudo
+apt-get install i2c-tools</font></p>
+<p class="western">Now you want to type the command 
+</p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt"><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">$
+</span></span></span></font></span><span style="font-variant: normal"><font color="#202124"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">i2cdetect
+-y 1</span></span></span></font></span></font></font></p>
+<p class="western">You should see something like this:</p>
+<p class="western" style="margin-left: 0.49in">     <font size="2" style="font-size: 10pt">0
+ 1  2  3  4  5  6  7  8  9  a  b  c  d  e  f</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">00:
+         -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">10:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">20:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">30:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">40:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">50:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">60:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">70:
+-- -- -- -- -- -- -- --                         </font>
+</p>
+<p class="western">The dashes are unoccupied addresses (hexadecimal)
+on I2C bus 1.  As a general rule, on a newly configured Raspberry Pi,
+all addresses on bus I2c-1 will be empty.</p>
+<p class="western">The numbers or dashes indicate the presence (or
+absence) of devices at those addresses, for example at 0x37 (in C
+syntax)  
+</p>
+<p class="western">Now shut down the Raspberry Pi and connect the
+local end magnetometer extension board (with the 40 pin Raspberry Pi
+extension header) onto the Pi expansion bus.</p>
+<p class="western" style="page-break-before: always"><font size="4" style="font-size: 16pt"><b>Local
+board </b></font><font size="4" style="font-size: 16pt"><b>with I2C
+Extender</b></font><font size="4" style="font-size: 16pt"> </font>
+</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Initially you may see only one device.  It is on
+the local board.  The device should be at 0x19 and is the MCP9808
+precision temperature sensor on the local module.  
+</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western" style="margin-left: 0.49in">     <font size="2" style="font-size: 10pt">0
+ 1  2  3  4  5  6  7  8  9  a  b  c  d  e  f</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">00:
+         -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">10:
+-- -- -- -- -- -- -- -- -- 19 -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">20:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">30:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">40:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">50:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">60:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">70:
+-- -- -- -- -- -- -- --     </font>
+</p>
+<p class="western" style="margin-left: 0.49in">                    
+</p>
+<p class="western">When the shielded twisted pair Cat 6a cable is
+attached and 5v is applied to the local module the sensors on the
+remote board should appear as well. The one at address 0x18 is the
+remote MCP9808 precision temperature sensor.  The one at address 0x20
+is the remote magnetometer module.  
+</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western" style="margin-left: 0.49in">     <font size="2" style="font-size: 10pt">0
+ 1  2  3  4  5  6  7  8  9  a  b  c  d  e  f</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">00:
+         -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">10:
+-- -- -- -- -- -- -- -- 18 19 -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">20:
+20 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">30:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">40:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">50:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">60:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">70:
+-- -- -- -- -- -- -- --    </font>
+</p>
+<p class="western" style="margin-left: 0.49in">                     
+</p>
+<p class="western">It is the job of the software to request register
+values from these addresses and to format them into something we can
+read. 
+</p>
+<p class="western"><b>Note:</b></p>
+<p class="western">The TangerineSDR ‘Pear’ boards default to the
+the non-standard address address for the magnetometer module: ‘0x23’.
+ A properly working pair of ‘Pear’ boards appears like this:</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western" style="margin-left: 0.49in">     <font size="2" style="font-size: 10pt">0
+ 1  2  3  4  5  6  7  8  9  a  b  c  d  e  f</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">00:
+         -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">10:
+-- -- -- -- -- -- -- -- 18 19 -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">20:
+-- -- -- 23 -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">30:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">40:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">50:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">60:
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">70:
+-- -- -- -- -- -- -- --</font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 10pt"><b>Note:</b></font></p>
+<p class="western" style="font-weight: normal"><font size="2" style="font-size: 10pt">The
+‘Pear’ boards require the use of the additional command line
+parameter ‘-M 23’ to read this address.</font></p>
+<p class="western"><font size="2" style="font-size: 10pt"><b>Note:</b></font></p>
+<p class="western" style="font-weight: normal"><font size="2" style="font-size: 10pt">If
+you assemble  your complete magnetometer kit with both boards but
+only see one address responding, this means that something about the
+remote board, PNI module, or Cat 6a cable is not correct.  See the
+troubleshooting notes at the end, if necessary, contact me
+(<a href="mailto:wittend@wwrinc.com">wittend@wwrinc.com</a>).</font></p>
+<p class="western"><font size="2" style="font-size: 10pt"><b>Note:</b></font></p>
+<p class="western" style="font-weight: normal"><font size="2" style="font-size: 10pt">If
+you get NO response using i2cdetect, check the attachment of the
+LOCAL board to the Raspberry Pi.  Make certain that both the board
+orientation and the pin alignment in the 40-pin connector are
+correct.</font></p>
+<h2 class="western" style="page-break-before: always">Install the
+runMag Utility</h2>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">To install the actual data collection utility,
+follow these steps:</p>
+<ol>
+	<li/>
+<p class="western">Make sure that you are logged into the
+	Raspberry Pi under the account that will actually run the data
+	collection.  
+	</p>
+	<li/>
+<p class="western">Be certain that you are in your home
+	directory by entering:  
+	</p>
+	<p class="western"><font size="2" style="font-size: 10pt">$ cd ~/ </font>
+	</p>
+	<li/>
+<p class="western">Enter the command:  
+	</p>
+	<p class="western"><font size="2" style="font-size: 10pt">$ git
+	clone <a href="https://github.com/wittend/rm3100-runMag.git">https://github.com/wittend/rm3100-runMag.git</a>
+	 </font>
+	</p>
+	<li/>
+<p class="western">Now enter:</p>
+	<p class="western"><font size="2" style="font-size: 10pt">$ cd 
+	rm3100-runMag/</font></p>
+	<li/>
+<p class="western">now enter the command:</p>
+	<p class="western"><font size="2" style="font-size: 10pt">$ make</font></p>
+	<li/>
+<p class="western">If there are no errors (there should not
+	be) enter:</p>
+	<li/>
+<p class="western"><font size="2" style="font-size: 10pt">$
+	chmod a+x  runMag</font></p>
+	<li/>
+<p class="western">Then you can test the result by entering:</p>
+	<p class="western"> <font size="2" style="font-size: 10pt">./runMag
+	-h</font></p>
+	<p class="western"></p>
+</ol>
+<p class="western">If all has gone well you should now see the list
+of command line options that runMag understands.  Most of these were
+only used for testing, and of no concern to most users.</p>
+<p class="western"><b>Note: </b>The install process should have
+created a sub-directory called ‘logs/’.  This is where the
+captured log data will go.</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">To see if your runmag setup works, enter the
+following command:</p>
+<p class="western" style="margin-left: 0.49in">./runMag -b 1 -j -A 40
+-c 100 -U 140 -Z 
+</p>
+<p class="western"><b>Or </b><span style="font-weight: normal">(if
+you are using the </span><span style="font-weight: normal">G</span><span style="font-weight: normal">rape
+boards)</span><b>:</b></p>
+<p class="western" style="margin-left: 0.49in; font-weight: normal"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">./runMag
+-b 1 -M 23 -j -A 40 -c 100 -U 140 -Z </font></font>
+</p>
+<h2 class="western" style="page-break-before: always"><font face="Arial, sans-serif"><font size="4" style="font-size: 16pt">Setup</font></font><font face="Arial, sans-serif"><font size="4" style="font-size: 16pt">
+the Linux ‘rsync’ Tools</font></font></h2>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">‘<font size="2" style="font-size: 11pt">rsync’
+is normally present in Raspberry Pi OS.  It allows efficient transfer
+of files using secure keys.</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">This is the
+procedure that we are using (so far) to regularly backup the output
+logs to an accessible place on the cloud server.</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">P</font><font size="2" style="font-size: 11pt">lease
+contact me by email </font><font size="2" style="font-size: 11pt">(<a href="mailto:wittend@wwrinc.com">wittend@wwrinc.com</a>)
+</font><font size="2" style="font-size: 11pt">and I will create an
+account.</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">Once the
+account is set up, all that is needed is for you to log in once at
+45.33.26.82 (via ssh) to change your password. </font>
+</p>
+<p class="western"><font size="2" style="font-size: 11pt">Then you
+log out of the cloud server and follow these instructions from your
+Pi 3/4.</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">The process
+to set up rsync on your Raspberry Pi so that it does not require
+manual entry of a password is:</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$</font><font size="2" style="font-size: 10pt">
+ssh-keygen</font></p>
+<p class="western"><font face="Arial, sans-serif"><b>Note:</b></font><font face="Arial, sans-serif">
+When </font><font face="Arial, sans-serif">this</font><font face="Arial, sans-serif">
+asks you to enter the passphrase, just press the </font><font face="Arial, sans-serif"><b>enter</b></font><font face="Arial, sans-serif">
+key.  </font><font face="Arial, sans-serif"><b>D</b></font><font face="Arial, sans-serif"><b>o
+not give any password here!</b></font><font face="Arial, sans-serif">
+ <br/>
+<br/>
+</font><font face="Arial, sans-serif">N</font><font face="Arial, sans-serif">ow
+enter:</font></p>
+<blockquote class="western" style="border: none; padding: 0in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">$
+ssh-copy-id -i /home/<b>&lt;</b><b>user id</b><b>&gt;</b>/.ssh/id_rsa.pub
+45.33.26.82</font></font></blockquote>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font face="Arial, sans-serif"><b>Note:</b> The
+above will ask the password for your account on the remote host.  It
+will copy the public key automatically to the appropriate
+location.<br/>
+<br/>
+Then I put this in a script file (rsync.sh) and
+run it:</font></p>
+<blockquote class="western" style="border: none; padding: 0in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">$
+rsync -avz /home/<b>dave</b>/rm3100-runMag/logs/
+<b>dave</b>@45.33.26.82:/home/dave/data/<b>KD0EAG</b></font></font></blockquote>
+<p class="western"><font face="Arial, sans-serif"><br/>
+This is
+essentially:</font></p>
+<blockquote class="western"><font size="2" style="font-size: 9pt">$
+rsync -avz /home/<b>&lt;</b><b>pi </b><b>user </b><b>id</b><b>&gt;</b>/rm3100-runMag/logs/
+ <b>&lt;</b><b>remote </b><b>user </b><b>id</b><b>&gt;</b>@45.33.26.82:/home/<b>&lt;</b><b>remote
+user id</b><b>&gt;</b>/data/<b>&lt;station </b><b>id</b><b>&gt;</b></font></blockquote>
+<p class="western" style="margin-bottom: 0in"><br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in"><font face="Arial, sans-serif">Replace
+the <b>&lt;pi user id&gt;</b> placeholder with your user id on the
+Pi. </font>
+</p>
+<p class="western" style="margin-bottom: 0in"><font face="Arial, sans-serif">Replace
+the <b>&lt;remote user id&gt;</b> placeholders with your user id on
+the on the cloud server. </font>
+</p>
+<p class="western" style="margin-bottom: 0in"><font face="Arial, sans-serif">Replace
+the <b>&lt;</b><b>station</b><b> id&gt;</b> placeholder with your
+prefix you are using for your station (may be call sign, call sign +
+digit, Grape station ID). </font>
+</p>
+<p class="western" style="margin-bottom: 0in"><font face="Arial, sans-serif">I
+put this script file in my 'rm3100-runMag/' folder and make it
+executable using chmod a+x.</font></p>
+<p class="western" style="margin-bottom: 0in"><font face="Arial, sans-serif">You
+can test it from the command line by entering:</font></p>
+<p class="western" style="margin-left: 0.49in; margin-bottom: 0in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">$
+./rsync.sh</font></font></p>
+<p class="western" style="margin-left: 0.49in; margin-bottom: 0in"><br/>
+
+</p>
+<p class="western" style="margin-bottom: 0in"><font face="Liberation Sans, sans-serif">Once
+this works reliably, we can look at making it run automatically with
+the system scheduler ‘cron’.</font></p>
+<h2 class="western"><font face="Arial, sans-serif"><font size="4" style="font-size: 16pt">Set
+Up the ‘cron’ Facility</font></font></h2>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Virtually all Unix-like operating systems provide
+a facility for executing tasks at scheduled times.  On my system the
+most familiar of these,’cron’, was not installed by default. 
+Sometimes it is.</p>
+<p class="western">While systemd has all the functionality needed to
+schedule task execution, it is less familiar and more cumbersome than
+the older ‘cron’ system.  Therefore, ‘cron’ and its
+associated ‘crontab’ command is implemented on top of the systemd
+tools, and may need to be installed using:</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+sudo apt-get install cron</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+sudo systemctl enable --now cron</font></p>
+<blockquote class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2">
+<br/>
+
+</blockquote>
+<p class="western" style="margin-right: 0.39in; margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2">
+<font color="#222222">‘<font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 11pt">cron’
+historically writes messages to the user’s email, but we will
+including some redirection in these commands to echo errors to a
+file.</font></font></font></p>
+<blockquote class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2">
+<br/>
+
+</blockquote>
+<p class="western">Now create a directory in your home directory
+called cronlogs to receive the results from the rsync jobs.</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+mkdir cronlogs</font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">To set up scheduled tasks you enter (don’t use
+sudo):</p>
+<p class="western" style="margin-left: 0.49in">$ crontab -e</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">The first time that the ‘crontab’ command is
+invoked in an account it requests that you select a text editor to
+use.  Nano is a common choice for Raspberry Pi users.  Note that
+‘crontab’ files generally require fully qualified path names.</p>
+<p class="western">You are then presented with the current user’s
+personal ‘crontab’ file.  All lines in the file are initially
+comments.  In the editor you should add (at the end) the line:</p>
+<p class="western"><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">10
+*/2 * * * /home/</span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><b>[USER
+ID]</b></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">/rm3100-runMag/rsync.sh
+&gt;</span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">&gt;</span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+/home/</span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><b>[USER
+ID]/</b></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">cronlogs/cronlog.txt
+2&gt;&amp;1</span></span></span></font></font></font></span></p>
+<blockquote class="western" style="margin-left: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2">
+<br/>
+
+</blockquote>
+<p class="western">Be sure to replace both occurrences of <b>[USER
+ID] </b>with YOUR login id.</p>
+<p class="western">This entry will run the rsync.sh script with your
+credentials and synchronize the log files to the cloud server every
+couple of hours.  Now exit with save.</p>
+<p class="western">Next enter: 
+</p>
+<blockquote class="western" style="margin-right: 0.79in; border: none; padding: 0in; orphans: 2; widows: 2">
+<font size="2" style="font-size: 10pt"><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">$
+</span></span></span></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">sudo
+crontab -l</span></span></span></font></font></span></font></blockquote>
+<blockquote class="western" style="margin-right: 0.79in; border: none; padding: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2">
+<font color="#222222">  </font>
+</blockquote>
+<p class="western"><font size="2" style="font-size: 11pt">(This
+should list jobs in the queue).</font></p>
+<h2 class="western">Setting up ‘start-on-reboot’ for runMag</h2>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 10pt">If you want
+to set up your Pi to auto start the logging process after each
+reboot, follow these steps: </font>
+</p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 9pt"><font size="2" style="font-size: 10pt">$
+cronlog -e</font> </font>
+</p>
+<p class="western" style="margin-left: 0.49in"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 10pt">to edit
+your user crontab file and add the equivalent of these lines:</font></p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt"><span style="background: transparent">#
+</span><span style="background: transparent">Start  magnetometer
+logging at reboot.</span></font></font></p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">@reboot
+/home/<span style="font-variant: normal"><font color="#222222"><span style="letter-spacing: normal"><span style="font-style: normal"><b>[USER
+ID]</b></span></span></font></span>/run-mag.sh &gt;&gt; /home/<span style="font-variant: normal"><font color="#222222"><span style="letter-spacing: normal"><span style="font-style: normal"><b>[USER
+ID]</b></span></span></font></span>/projects/cronlogs/run.txt 2&gt;&amp;1</font></font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 10pt">Use your
+favorite text editor (nano, vi, whatever…) to create a file in your
+home directory named run-mag.sh.  Put the following line in this
+file:</font></p>
+<p class="western" style="margin-left: 0.49in; margin-bottom: 0.06in">
+<font size="2" style="font-size: 9pt">~/rm3100-runMag/runMag -b 1 -j
+-k -A 40 -c 100 -U 140 -Z -S <b>[USER ID]</b> -O ~/rm3100-runMag/logs
+&amp;</font></p>
+<p class="western" style="margin-bottom: 0.06in"><font size="2" style="font-size: 11pt"><b>Or
+</b><span style="font-weight: normal">(if you are using the </span><span style="font-weight: normal">G</span><span style="font-weight: normal">rape
+boards)</span><b>:</b></font></p>
+<p class="western" style="margin-left: 0.49in; margin-bottom: 0.06in">
+<font size="2" style="font-size: 9pt">~/rm3100-runMag/runMag -b 1 -M
+23 -j -k -A 40 -c 100 -U 140 -Z -S <b>[USER ID]</b> -O
+~/rm3100-runMag/logs &amp;</font></p>
+<p class="western" style="margin-left: 0.49in; margin-bottom: 0.06in">
+<br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 11pt">Save this
+file, and then use the command to make the file executable:</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+chmod a+x run-mag.sh</font></p>
+<p class="western" style="margin-left: 0.49in"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 11pt">It is
+important that this file’s name matches the one used in the cronlog
+file above.</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">Test this
+file by typing ./run-mag.sh at the command prompt.  This should
+return the name of the log file being created.</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">If you just
+hit enter you should be returned to the command prompt.  </font>
+</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 11pt">You can
+view the output (if things go well) by entering:</font></p>
+<p class="western" style="margin-left: 0.49in"><font size="2" style="font-size: 10pt">$
+tail -f  ~/rm3100-runMag/logs/<b>[CURRENT Log File Name]</b><span style="font-weight: normal">.</span><span style="font-weight: normal">log</span></font></p>
+<p class="western" style="margin-left: 0.49in"><br/>
+<br/>
+
+</p>
+<p class="western"><font size="2" style="font-size: 11pt">This will
+show the output until 00:00 UTC when the runMag program switches to a
+new output file.</font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<h2 class="western">Testing and Operation 
+</h2>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Some useful commands for debugging problems:</p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western">Using this command from the rm3100-runMag
+directory allows output to go directly to the terminal window for use
+while testing and aligning:</p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">./runMag
+-b 1 -j -A 40 -c 100 -U 140 -Z </font></font>
+</p>
+<p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">This
+version of the runMag command runs the program as it is normally
+used, sending output to a log file:</font></font></p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">./runMag
+-b 1 -j -k -A 40 -c 100 -U 140 -Z -S <b>&lt;user id&gt;</b></font></font></p>
+<p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Starting
+runMag runs the program in the background :</font></font></p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">./runMag
+-b 1 -j -k -A 40 -c 100 -U 140 -Z -S <b>&lt;user id&gt;</b> &amp;</font></font></p>
+<p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">If
+you  want to pull the task into the foreground (say to kill it with
+(control-C) just type:</font></font></p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">$
+fg</font></font></p>
+<p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Use
+this command to see if the runMag program is running in the
+background:</font></font></p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">ps
+-aux | grep runmag </font></font>
+</p>
+<p class="western"><b>Note:</b> only one copy of the program can run
+at a time because the I2C devices can only be used by one process at
+a time.</p>
+<p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Use
+this command to view the output of the program when it is running in
+the background:</font></font></p>
+<p class="western" style="margin-left: 0.49in"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">tail
+-f logs/<b>[CURRENT Log File Name]</b>.log</font></font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt"><b>Note:</b><span style="font-weight: normal">
+If testing at around 00:00 UTC </span><span style="font-weight: normal">this
+command may appear to suddenly stop.  This is because the program has
+rolled over to the next day’s log file, and no new data is being
+written to the one that you are looking at.  Just type &lt;^C&gt;
+(control C) to end the current command, and restart using the new log
+file’s name.</span></font></font></p>
+<p class="western"><br/>
+<br/>
+
+</p>
+<p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt"><span style="font-variant: normal"><font color="#222222"><span style="letter-spacing: normal"><span style="font-style: normal"><b>Note:</b></span></span></font></span><span style="font-variant: normal"><font color="#222222"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+</span></span></span></font></span><span style="font-variant: normal"><font color="#222222"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">If
+while testing your setup, the program repeatedly reports an error and
+exits, be sure to completely power down you Raspberry Pi and then
+restart it.  Repeated</span></span></span></font></span><span style="font-variant: normal"><font color="#222222"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">ly
+restarting the program without a proper reboot can leave the I2C
+drivers in an indeterminate state.</span></span></span></font></span></font></font></p>
+<p class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal">
+<br/>
+<br/>
+
+</p>
+<p class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; page-break-before: always">
+<font color="#222222"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt"><b>Note:</b>
+If you see the following error message:</font></font></font></p>
+<p class="western" style="margin-left: 0.49in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal">
+<font color="#222222"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">i2c_writebuf():
+write(): Remote I/O error</font></font></font></p>
+<p class="western" style="margin-left: 0.49in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal">
+<font color="#222222"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">i2c_read
+read value.: Remote I/O error</font></font></font></p>
+<p class="western" style="margin-left: 0.49in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal">
+<font color="#222222"><font face="Arial, sans-serif"><font size="2" style="font-size: 10pt">RM3100
+REVID NOT CORRECT: RM3100 REVID: 0x0 &lt;&gt; EXPECTED: 0x22.</font></font></font></p>
+<p class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal">
+<font color="#222222"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">This
+means that you are not communicating with the magnetometer module. 
+This could be because:</font></font></font></p>
+<ol>
+	<li/>
+<p class="western">The PNI module is not (correctly) plugged
+	in to Remote board. 
+	</p>
+	<p class="western"><i>&gt; Check the orientation.</i></p>
+	<p class="western"></p>
+	<li/>
+<p class="western">The Remote  board is not connected through
+	using the CAT 6a cable. 
+	</p>
+	<p class="western"><i>&gt; Check the cables</i>.</p>
+	<p class="western"></p>
+	<li/>
+<p class="western">You are using a remote ‘Grape’ module
+	and you have not included the ‘-M 23’ command in your runMag
+	command line. 
+	</p>
+	<p class="western"><i>&gt;Check your command line.</i></p>
+	<p class="western"></p>
+	<li/>
+<p class="western">(least likely, but possible) Your PNI
+	rm3100 module is defective and needs to be returned.</p>
+	<p class="western"><i>&gt; return the module for replacement.</i></p>
+</ol>
+<p class="western"><br/>
+
+</p>
+<div title="footer">
+	<p style="margin-top: 0.2in; margin-bottom: 0in; line-height: 100%">Date
+	: 06/02/2021	Revision: 0.0.1	Page: <sdfield type=PAGE subtype=RANDOM format=PAGE>13</sdfield>/<sdfield type=DOCSTAT subtype=PAGE format=PAGE>13</sdfield></p>
+</div>
+</body>
+</html>
