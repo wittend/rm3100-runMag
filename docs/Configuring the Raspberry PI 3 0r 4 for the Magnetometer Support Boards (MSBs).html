@@ -5,7 +5,7 @@
 	<title></title>
 	<meta name="generator" content="LibreOffice 6.0.7.3 (Linux)"/>
 	<meta name="created" content="2020-04-01T09:59:27.983935440"/>
-	<meta name="changed" content="2021-06-12T11:04:25.767989375"/>
+	<meta name="changed" content="2021-07-20T10:35:46.809909393"/>
 	<style type="text/css">
 		@page { margin: 0.79in }
 		p { margin-bottom: 0.1in; line-height: 115% }
@@ -44,8 +44,8 @@
 		</td>
 		<td width="324" style="background: transparent" style="border: 1px solid #000000; padding: 0.04in">
 			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
-			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">12
-			June 2021</span></font></font></font></p>
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">20
+			July 2021</span></font></font></font></p>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -55,7 +55,7 @@
 		</td>
 		<td width="324" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
 			<p class="western" align="left" style="font-style: normal; font-weight: normal; text-decoration: none">
-			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">0.0.4</span></font></font></font></p>
+			<font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><span style="text-decoration: none">0.0.5</span></font></font></font></p>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -646,13 +646,13 @@ captured log data will go.</p>
 <p class="western">To see if your runmag setup works, enter the
 following command:</p>
 <p class="western" style="margin-left: 0.49in"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt">$
-./runMag -b 1 -j -A 40 -c 100 -U 140 -Z </font></font>
+./runMag -b 1 -j -A 10 -c 400 -U 140 -Z </font></font>
 </p>
 <p class="western"><b>Or </b><span style="font-weight: normal">(if
 you are using the ‘</span><span style="font-weight: normal">Pear’</span><span style="font-weight: normal">
 boards)</span><b>:</b></p>
 <p class="western" style="margin-left: 0.49in; font-weight: normal"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt">$
-./runMag -b 1 <b>-M 23</b> -j -A 40 -c 100 -U 140 -Z </font></font>
+./runMag -b 1 <b>-M 23</b> -j -A 10 -c 400 -U 140 -Z </font></font>
 </p>
 <h2 class="western" style="page-break-before: always"><font face="Arial, sans-serif"><font size="4" style="font-size: 16pt">Setup</font></font><font face="Arial, sans-serif"><font size="4" style="font-size: 16pt">
 the Linux ‘rsync’ Tools</font></font></h2>
@@ -859,7 +859,7 @@ home directory named run-mag.sh.  Put the following line in this
 file:</font></p>
 <p class="western" style="margin-left: 0.49in; margin-bottom: 0.06in">
 <font face="Courier New, monospace"><font size="2" style="font-size: 9pt">~/rm3100-runMag/runMag
--b 1 -j -k -A 40 -c 100 -U 140 -Z -S <b>[USER ID]</b> -O
+-b 1 -j -k -A 10 -c 400 -U 140 -Z -S <b>[USER ID]</b> -O
 ~/rm3100-runMag/logs &amp;</font></font></p>
 <p class="western" style="margin-bottom: 0.06in"><font size="2" style="font-size: 11pt"><b>Or
 </b><span style="font-weight: normal">(if you are using the </span><span style="font-weight: normal">G</span><span style="font-weight: normal">rape
@@ -867,9 +867,10 @@ boards)</span><b>:</b></font></p>
 <p class="western" style="margin-left: 0.49in; margin-bottom: 0.06in">
 <font size="2" style="font-size: 9pt"><font face="Courier New, monospace">~/rm3100-runMag/runMag
 -b 1 -</font><font face="Courier New, monospace">M 23 </font><font face="Courier New, monospace">-j
--k -A 40 -c 100 -U 140 -Z -S </font><font face="Courier New, monospace"><b>[USER
-ID]</b></font><font face="Courier New, monospace"> -O
-~/rm3100-runMag/logs &amp;</font></font></p>
+-k -A </font><font face="Courier New, monospace">1</font><font face="Courier New, monospace">0
+-c </font><font face="Courier New, monospace">4</font><font face="Courier New, monospace">00
+-U 140 -Z -S </font><font face="Courier New, monospace"><b>[USER ID]</b></font><font face="Courier New, monospace">
+-O ~/rm3100-runMag/logs &amp;</font></font></p>
 <p class="western"><font size="2" style="font-size: 11pt">Save this
 file, and then use the command to make the file executable:</font></p>
 <p class="western" style="margin-left: 0.49in"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt">$
@@ -934,17 +935,17 @@ date -u</font></font></p>
 directory allows output to go directly to the terminal window for use
 while testing and aligning:</p>
 <p class="western" style="margin-left: 0.49in"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt">$
-./runMag -b 1 -j -A 40 -c 100 -U 140 -Z </font></font>
+./runMag -b 1 -j -A 10 -c 400 -U 140 -Z </font></font>
 </p>
 <p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">This
 version of the runMag command runs the program as it is normally
 used, sending output to a log file:</font></font></p>
 <p class="western" style="margin-left: 0.49in"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt">$
-./runMag -b 1 -j -k -A 40 -c 100 -U 140 -Z -S <b>&lt;user id&gt;</b></font></font></p>
+./runMag -b 1 -j -k -A 10 -c 400 -U 140 -Z -S <b>&lt;user id&gt;</b></font></font></p>
 <p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">Starting
 runMag runs the program in the background :</font></font></p>
 <p class="western" style="margin-left: 0.49in"><font face="Courier New, monospace"><font size="2" style="font-size: 10pt">$./runMag
--b 1 -j -k -A 40 -c 100 -U 140 -Z -S <b>&lt;user id&gt;</b> &amp;</font></font></p>
+-b 1 -j -k -A 10 -c 400 -U 140 -Z -S <b>&lt;user id&gt;</b> &amp;</font></font></p>
 <p class="western"><font face="Arial, sans-serif"><font size="2" style="font-size: 11pt">If
 you  want to pull the task into the foreground (say to kill it with
 (control-C) just type:</font></font></p>
@@ -1034,7 +1035,7 @@ This could be because:</font></font></font></p>
 </p>
 <div title="footer">
 	<p style="margin-top: 0.2in; margin-bottom: 0in; line-height: 100%">Date
-	: 06/12/2021	Revision: 0.0.4	Page: <sdfield type=PAGE subtype=RANDOM format=PAGE>14</sdfield>/<sdfield type=DOCSTAT subtype=PAGE format=PAGE>14</sdfield></p>
+	: 07/20/2021	Revision: 0.0.5	Page: <sdfield type=PAGE subtype=RANDOM format=PAGE>14</sdfield>/<sdfield type=DOCSTAT subtype=PAGE format=PAGE>14</sdfield></p>
 </div>
 </body>
 </html>
