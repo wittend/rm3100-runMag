@@ -1,8 +1,8 @@
 //=========================================================================
 // main.h
-// 
+//
 // An interface for the RM3100 3-axis magnetometer from PNI Sensor Corp.
-// 
+//
 // Author:      David Witten, KD0EAG
 // Date:        April 21, 2020
 // License:     GPL 3.0
@@ -31,7 +31,9 @@
 
 #define _DEBUG 0
 
-#define RUNMAG_VERSION "0.0.16"
+#define USE_PIPES   FALSE
+
+#define RUNMAG_VERSION "0.0.17 (alpha)"
 #define UTCBUFLEN 64
 #define MAXPATHBUFLEN 1025
 #define JSONBUFLEN 1025
@@ -46,29 +48,29 @@ typedef struct tag_pList
     int SBCType;
     int boardType;
     int boardMode;
-    int doBistMask; 
+    int doBistMask;
     int buildLogPath;
-    
+
     int cc_x;
     int cc_y;
     int cc_z;
- 
+
     int x_gain;
     int y_gain;
     int z_gain;
-    
+
     int TMRCRate;
     int CMMSampleRate;
 
     int samplingMode;
 
     int NOSRegValue;
-    
+
     int DRDYdelay;
 
     int readBackCCRegs;
     int magRevId;
-    
+
     int hideRaw;
     int i2cBusNumber;
     int i2c_fd;
@@ -95,6 +97,9 @@ typedef struct tag_pList
     char *logOutputTime;
     int  logOutput;
     char *Version;
+    int  useOutputPipe;
+    char *pipeInPath;
+    char *pipeOutPath;
 } pList;
 
 //-------------------------------------------
@@ -118,7 +123,7 @@ typedef struct tag_pList
 #define RASPI_I2C_BUS           "/dev/i2c-1"
 
 //-------------------------------------------
-// Known SBC device platforms 
+// Known SBC device platforms
 //-------------------------------------------
 #define sOTHER_BUS              "Other             "
 #define sKHADAS_EDGE_BUS3       "KHADAS EDGE bus 3 "

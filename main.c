@@ -1,6 +1,6 @@
 //=========================================================================
 // main.c
-// 
+//
 // A command line interface for the RM3100 3-axis magnetometer from PNI Sensor Corp.
 // Derived in part from several sources:
 //      HTTPS://github.com/miguelrasteiro/RM3100.X
@@ -8,7 +8,7 @@
 //      HTTPS://github.com/shannon-jia/rm3100
 //      Song Qiang <songqiang1304521@gmail.com (Linux driver):
 //          Linux kernel driver: HTTPS://github.com/torvalds/linux/tree/v5.3/drivers/iio/magnetometer
-// 
+//
 // Author:      David Witten, KD0EAG
 // Date:        May 12, 2020
 // License:     GPL 3.0
@@ -17,13 +17,17 @@
 #include "main.h"
 
 //------------------------------------------
-// Static variables 
+// Static variables
 //------------------------------------------
 char version[] = RUNMAG_VERSION;
 char outFilePath[MAXPATHBUFLEN] = "./logs/";
 char workFilePath[MAXPATHBUFLEN] = "";
 char rollOverTime[UTCBUFLEN] = "00:00";
 char sitePrefixString[SITEPREFIXLEN] = "SITEPREFIX";
+#if (USE_PIPES)
+char outputPipeName[MAXPATHBUFLEN] = "/home/web/wsroot/pipein.fifo";
+char inputPipeName[MAXPATHBUFLEN] = "/home/web/wsroot/pipeout.fifo";
+#endif
 static char  mSamples[9];
 
 //------------------------------------------
@@ -147,7 +151,9 @@ int main(int argc, char** argv)
     float rcTemp = 0.0;
     int rv = 0;
     FILE *outfp = stdout;
-    
+//    int  fdPipeIn;
+//    int  fdPipeOut;
+
     currentDay = utcTime->tm_mday;
 
     if((rv = getCommandLine(argc, argv, &p)) != 0)
@@ -160,7 +166,7 @@ int main(int argc, char** argv)
         buildLogFilePath(&p);
         if((outfp = fopen(p.outputFilePath, "a+"))!= NULL)
         {
-            printf("\nLog File: %s\n", p.outputFilePath);
+            printf("\nLog File: \n", p.outputFilePath);
         }
         else
         {
@@ -173,7 +179,7 @@ int main(int argc, char** argv)
         // always stdout!
         fprintf(stdout,"\nStartup UTC time: %s", asctime(utcTime));
     }
-    // Open I2C bus (only one at a time for now)    
+    // Open I2C bus (only one at a time for now)
     openI2CBus(&p);
     // Setup the magnetometer.
     setup_mag(&p);
@@ -191,20 +197,41 @@ int main(int argc, char** argv)
     {
         startCMM(&p);
     }
-    
+
     // DRL put meta data here
     // DRL should be printed only at the top of the log file
     // DMW respect -H switch (but not other rtemp, ltemp, etc. options yet.)
     if(p.hideRaw)
     {
-        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"total\"\n" );
+        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"total\"\n");
     }
     else
     {
-        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"rx\", \"ry\", \"rz\", \"total\"\n" );
+        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"rx\", \"ry\", \"rz\", \"total\"\n");
     }
 
-    // loop   
+#if (USE_PIPES)
+
+    if(p.useOutputPipe = TRUE)
+    {
+        // Notide that fdPipeOut and fdPipeIn are intentionally reversed.
+        if(!(fdPipeOut = open(p.pipeInPath, O_WRONLY | O_CREAT)))
+        {
+            perror("Open PIPE Out failed: ");
+            fprintf(stderr, p.pipeInPath);
+            exit(1);
+        }
+        if(!(fdPipeIn = open(p.pipeOutPath, O_RDONLY | O_CREAT)))
+        {
+            perror("Open PIPE In failed: ");
+            fprintf(stderr, p.pipeInPath);
+            exit(1);
+        }
+    }
+
+#endif //USE_PIPES
+
+    // loop
     while(1)
     {
         //  Read temp sensor.
@@ -215,18 +242,19 @@ int main(int argc, char** argv)
                 temp = readTemp(&p, p.remoteTempAddr);
                 rcTemp = temp * 0.0625;
             }
-            else if(p.localTempOnly)
-            {
-                temp = readTemp(&p, p.localTempAddr);
-                lcTemp = temp * 0.0625;
-            }
             else
-            {
-                temp = readTemp(&p, p.remoteTempAddr);
-                rcTemp = temp * 0.0625;
-                temp = readTemp(&p, p.localTempAddr);
-                lcTemp = temp * 0.0625;
-            }
+                if(p.localTempOnly)
+                {
+                    temp = readTemp(&p, p.localTempAddr);
+                    lcTemp = temp * 0.0625;
+                }
+                else
+                {
+                    temp = readTemp(&p, p.remoteTempAddr);
+                    rcTemp = temp * 0.0625;
+                    temp = readTemp(&p, p.localTempAddr);
+                    lcTemp = temp * 0.0625;
+                }
         }
         // Read Magnetometer.
         if((!p.localTempOnly) || (!p.remoteTempOnly))
@@ -235,7 +263,7 @@ int main(int argc, char** argv)
             {
                 readMagPOLL(&p, p.magnetometerAddr, rXYZ);
             }
-            else                                            // (p->samplingMode == CONTINUOUS)   
+            else                                            // (p->samplingMode == CONTINUOUS)
             {
                 readMagCMM(&p, p.magnetometerAddr, rXYZ);
             }
@@ -253,7 +281,7 @@ int main(int argc, char** argv)
             else
             {
                 utcTime = getUTC();
-                strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);                
+                strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);
                 fprintf(outfp, "\"%s\"", utcStr);
             }
             if(!p.magnetometerOnly)
@@ -269,46 +297,44 @@ int main(int argc, char** argv)
                         fprintf(outfp, ", %.2f", rcTemp);
                     }
                 }
-                else if(p.localTempOnly)
-                {
-                    if(lcTemp < -100.0)
-                    {
-                        fprintf(outfp, ", \"ERROR\"");
-                    }
-                    else
-                    {
-                        fprintf(outfp, ", %.2f", lcTemp);
-                    }
-                }
                 else
-                {
-                    if(rcTemp < -100.0)
+                    if(p.localTempOnly)
                     {
-                        fprintf(outfp, ", \"ERROR\"");
+                        if(lcTemp < -100.0)
+                        {
+                            fprintf(outfp, ", \"ERROR\"");
+                        }
+                        else
+                        {
+                            fprintf(outfp, ", %.2f", lcTemp);
+                        }
                     }
                     else
                     {
-                        fprintf(outfp, ", %.2f", rcTemp);
+                        if(rcTemp < -100.0)
+                        {
+                            fprintf(outfp, ", \"ERROR\"");
+                        }
+                        else
+                        {
+                            fprintf(outfp, ", %.2f", rcTemp);
+                        }
+                        if(lcTemp < -100.0)
+                        {
+                            fprintf(outfp, ", \"ERROR\"");
+                        }
+                        else
+                        {
+                            fprintf(outfp, ", %.2f", lcTemp);
+                        }
                     }
-                    if(lcTemp < -100.0)
-                    {
-                        fprintf(outfp, ", \"ERROR\"");
-                    }
-                    else
-                    {
-                        fprintf(outfp, ", %.2f", lcTemp);
-                    }
-                }
             }
             double x = xyz[0] * 100.0;
             double y = xyz[1] * 100.0;
             double z = xyz[2] * 100.0;
-            fprintf(outfp, ", %.1f", x);
-            fprintf(outfp, ", %.1f", y);
-            fprintf(outfp, ", %.1f", z);
-            // fprintf(outfp, ", x: %.3f", xyz[0]*100.0);
-            // fprintf(outfp, ", y: %.3f", xyz[1]*100.0);
-            // fprintf(outfp, ", z: %.3f", xyz[2]*100.0);
+            fprintf(outfp, ", %.3f", x);
+            fprintf(outfp, ", %.3f", y);
+            fprintf(outfp, ", %.3f", z);
             if(!p.hideRaw)
             {
                 fprintf(outfp, ", %i", rXYZ[0]);
@@ -323,8 +349,7 @@ int main(int argc, char** argv)
                 double x = xyz[0] * 100.0;
                 double y = xyz[1] * 100.0;
                 double z = xyz[2] * 100.0;
-                fprintf(outfp, ", %.5f", sqrt((x * x) + (y * y) + (z * z)));
-                //fprintf(outfp, ", Tm: %.5f", sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(outfp, ", %.7f", sqrt((x * x) + (y * y) + (z * z)));
             }
             fprintf(outfp, "\n");
         }
@@ -338,7 +363,7 @@ int main(int argc, char** argv)
             else
             {
                 utcTime = getUTC();
-                strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
+                strftime(utcStr, UTCBUFLEN, "%d %b %Y %T", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"
                 fprintf(outfp, "\"ts\":\"%s\"", utcStr);
             }
             if(!p.magnetometerOnly)
@@ -354,43 +379,44 @@ int main(int argc, char** argv)
                         fprintf(outfp, ", \"rt\":%.2f",  rcTemp);
                     }
                 }
-                else if(p.localTempOnly)
-                {
-                    if(lcTemp < -100.0)
-                    {
-                        fprintf(outfp, ", \"lt\":0.0");
-                    }
-                    else
-                    {
-                        fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
-                    }
-                }
                 else
-                {
-                    if(rcTemp < -100.0)
+                    if(p.localTempOnly)
                     {
-                        fprintf(outfp, ", \"rt\":0.0");
+                        if(lcTemp < -100.0)
+                        {
+                            fprintf(outfp, ", \"lt\":0.0");
+                        }
+                        else
+                        {
+                            fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
+                        }
                     }
                     else
                     {
-                        fprintf(outfp, ", \"rt\":%.2f",  rcTemp);
+                        if(rcTemp < -100.0)
+                        {
+                            fprintf(outfp, ", \"rt\":0.0");
+                        }
+                        else
+                        {
+                            fprintf(outfp, ", \"rt\":%.2f",  rcTemp);
+                        }
+                        if(lcTemp <-100.0)
+                        {
+                            fprintf(outfp, ", \"lt\":0.0");
+                        }
+                        else
+                        {
+                            fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
+                        }
                     }
-                    if(lcTemp <-100.0)
-                    {
-                        fprintf(outfp, ", \"lt\":0.0");
-                    }
-                    else
-                    {
-                        fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
-                    }
-                }
             }
             double x = xyz[0] * 100.0;
             double y = xyz[1] * 100.0;
             double z = xyz[2] * 100.0;
-            fprintf(outfp, ", \"x\":%.3f", xyz[0]);
-            fprintf(outfp, ", \"y\":%.3f", xyz[1]);
-            fprintf(outfp, ", \"z\":%.3f", xyz[2]);
+            fprintf(outfp, ", \"x\":%.5f", xyz[0]);
+            fprintf(outfp, ", \"y\":%.5f", xyz[1]);
+            fprintf(outfp, ", \"z\":%.5f", xyz[2]);
             if(!p.hideRaw)
             {
                 fprintf(outfp, ", \"rx\":%i", rXYZ[0]);
@@ -402,9 +428,9 @@ int main(int argc, char** argv)
                 double x = xyz[0] * 100.0;
                 double y = xyz[1] * 100.0;
                 double z = xyz[2] * 100.0;
-                fprintf(outfp, ", \"Tm\": %.5f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(outfp, ", \"Tm\": %.7f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
-           fprintf(outfp, " }\n");
+            fprintf(outfp, " }\n");
         }
         fflush(outfp);
         if(p.singleRead)
@@ -438,4 +464,3 @@ int main(int argc, char** argv)
     closeI2CBus(p.i2c_fd);
     return 0;
 }
-

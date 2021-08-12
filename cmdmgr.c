@@ -1,8 +1,8 @@
 //=========================================================================
 // cmdmgr.c
-// 
+//
 // commandline / configuration management routines for runMag utility.
-// 
+//
 // Author:      David Witten, KD0EAG
 // Date:        June 19, 2020
 // License:     GPL 3.0
@@ -13,13 +13,15 @@
 #include "cmdmgr.h"
 
 extern char version[];
+//extern char outputPipeName[MAXPATHBUFLEN];
+//extern char inputPipeName[MAXPATHBUFLEN];
 extern char outFilePath[MAXPATHBUFLEN];
 extern char workFilePath[MAXPATHBUFLEN];
 extern char rollOverTime[UTCBUFLEN];
 extern char sitePrefixString[SITEPREFIXLEN];
 
 //-------------------------------------------
-//  Informative list of known SBC defaults, 
+//  Informative list of known SBC defaults,
 //-------------------------------------------
 static struct busDev busDevs[] =
 {
@@ -69,15 +71,15 @@ long currentTimeMillis()
 struct tm *getUTC()
 {
     time_t now = time(&now);
-    if (now == -1)
+    if(now == -1)
     {
         puts("The time() function failed");
     }
     struct tm *ptm = gmtime(&now);
-    if (ptm == NULL)
+    if(ptm == NULL)
     {
         puts("The gmtime() function failed");
-    }    
+    }
     return ptm;
 }
 
@@ -128,7 +130,7 @@ int buildLogFilePath(pList *p)
     int rv = 0;
     char utcStr[UTCBUFLEN] = "";
     struct tm *utcTime = getUTC();
-    
+
     p->outputFilePath = workFilePath;
     strcpy(p->outputFilePath, outFilePath);
 
@@ -140,26 +142,26 @@ int buildLogFilePath(pList *p)
         strcat(p->outputFilePath, "/");
     }
     strcat(p->outputFilePath, p->sitePrefix);
-    strcat(p->outputFilePath, utcStr); 
+    strcat(p->outputFilePath, utcStr);
     strcat(p->outputFilePath, "-");
     utcTime = getUTC();
-    strftime(utcStr, UTCBUFLEN, "%Y%m%d-runmag.log", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
-    //strftime(utcStr, UTCBUFLEN, "%Y%m%d-%H%M-runmag.log", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"  
+    strftime(utcStr, UTCBUFLEN, "%Y%m%d-runmag.log", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"
+    //strftime(utcStr, UTCBUFLEN, "%Y%m%d-%H%M-runmag.log", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"
     strcat(p->outputFilePath, utcStr);
     //printf("p->outputFilePath: %s\n", p->outputFilePath);
     return rv;
 }
 
-//------------------------------------------
-// readConfigFromFile()
-//------------------------------------------
-int readConfigFromFile(pList *p, char *cfgFile)
-{
-    int rv = 0;
+////------------------------------------------
+//// readConfigFromFile()
+////------------------------------------------
+//int readConfigFromFile(pList *p, char *cfgFile)
+//{
+//    int rv = 0;
 //    struct stat fs;
 //    FILE *fd = NULL;
 //    char jsonstr[JSONBUFLEN] = "";
-//    
+//
 //    if(lstat(cfgFile, &fs) == -1)
 //    {
 //        perror("lstat");
@@ -182,7 +184,7 @@ int readConfigFromFile(pList *p, char *cfgFile)
 //    }
 //    jsmn_parser parser;
 //    jsmntok_t t[JSONBUFTOKENCOUNT]; /* We expect no more than JSONBUFTOKENCOUNT JSON tokens */
-//    
+//
 //    jsmn_init(&parser);
 //    rv = jsmn_parse(&parser, jsonstr, strlen(jsonstr), t, JSONBUFTOKENCOUNT);
 //#if _DEBUG
@@ -204,7 +206,7 @@ int readConfigFromFile(pList *p, char *cfgFile)
 //            {
 //                char js[65] = "";
 //                int type = t[i].type;
-//                
+//
 //                printf("t[%i] type: ", i);
 //                switch(type)
 //                {
@@ -236,26 +238,26 @@ int readConfigFromFile(pList *p, char *cfgFile)
 //    }
 //    printf("\n");
 //#endif
-    return rv;
-}
+//    return rv;
+//}
 
-//------------------------------------------
-// saveConfigToFile()
-//------------------------------------------
-int saveConfigToFile(pList *p, char *cfgFile)
-{
-    int rv = 0;
+////------------------------------------------
+//// saveConfigToFile()
+////------------------------------------------
+//int saveConfigToFile(pList *p, char *cfgFile)
+//{
+//    int rv = 0;
 //    FILE *fd = NULL;
 //    char js[256] = "";
 //    char jsonstr[JSONBUFLEN] = "";
-//    
+//
 //    sprintf(js, "[\n  {");
 //    strcat(jsonstr, js);
-//    
+//
 //    //char *Version;
 //    sprintf(js, "\n    \"swVersion\": \"%s\",", version);
 //    strcat(jsonstr, js);
-//    
+//
 //    sprintf(js, "\n    \"SBCType\": %i,", p->SBCType);
 //    strcat(jsonstr, js);
 //    sprintf(js, "\n    \"boardType\": %i,", p->boardType);
@@ -284,7 +286,7 @@ int saveConfigToFile(pList *p, char *cfgFile)
 ////    int z_gain;
 //    sprintf(js, "\n    \"z_gain\": %i,", p->z_gain);
 //    strcat(jsonstr, js);
-//    
+//
 ////    int TMRCRate;
 //    sprintf(js, "\n    \"TMRCRate\": %i,", p->TMRCRate);
 //    strcat(jsonstr, js);
@@ -295,7 +297,7 @@ int saveConfigToFile(pList *p, char *cfgFile)
 ////    int samplingMode;
 //    sprintf(js, "\n    \"samplingMode\": %i,", p->samplingMode);
 //    strcat(jsonstr, js);
-//    
+//
 //    //int NOSRegValue;
 //    sprintf(js, "\n    \"NOSRegValue\": %i,", p->NOSRegValue);
 //    strcat(jsonstr, js);
@@ -303,22 +305,22 @@ int saveConfigToFile(pList *p, char *cfgFile)
 //    //int readBackCCRegs;
 //    sprintf(js, "\n    \"readBackCCRegs\": %i,", p->readBackCCRegs);
 //    strcat(jsonstr, js);
-//    
+//
 //    ////int magRevId;
 //    //sprintf(js, "\n  magRevId: %i,", p->magRevId);
 //    //strcat(jsonstr, js);
-//    
+//
 //    //int hideRaw;
 //    sprintf(js, "\n    \"hideRaw\": %i,", p->hideRaw);
 //    strcat(jsonstr, js);
 //    //int i2cBusNumber;
 //    sprintf(js, "\n    \"i2cBusNumber\": %i,", p->i2cBusNumber);
 //    strcat(jsonstr, js);
-//    
+//
 //    // int i2c_fd;
 //    //sprintf(js, "\n  samplingMode: %i,", p->samplingMode);
 //    //strcat(jsonstr, js);
-//    
+//
 //    // int jsonFlag;
 //    sprintf(js, "\n    \"jsonFlag\": %i,", p->jsonFlag);
 //    strcat(jsonstr, js);
@@ -385,8 +387,7 @@ int saveConfigToFile(pList *p, char *cfgFile)
 //        }
 //        fclose(fd);
 //    }
-    return rv;
-}
+
 
 //------------------------------------------
 // setOutputFilePath()
@@ -406,7 +407,7 @@ int setLogRollOver(pList *p, char *rollTime)
 int setOutputFilePath(pList *p, char *outPath)
 {
     int rv = 0;
-    
+
     if(strlen(outPath) > MAXPATHBUFLEN - 1)
     {
         fprintf(stderr, "\nOutput path length exceeds maximum allowed length (%i)\n", MAXPATHBUFLEN - 1);
@@ -427,7 +428,7 @@ void showSettings(pList *p)
 {
     char pathStr[128] = "";
     snprintf(pathStr, sizeof(pathStr), "/dev/i2c-%i", p->i2cBusNumber);
-    
+
     fprintf(stdout, "\nVersion = %s\n", version);
     fprintf(stdout, "\nCurrent Parameters:\n\n");
     if(!p->magRevId)
@@ -435,11 +436,16 @@ void showSettings(pList *p)
         getMagRev(p);
     }
     fprintf(stdout, "   Magnetometer revision ID detected:          %i (dec)\n",    p->magRevId);
-    fprintf(stdout, "   Log output path:                            %s\n",          p->buildLogPath ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Log output:                                 %s\n",          p->logOutput ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Log output path:                            %s\n",          p->buildLogPath ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Log output:                                 %s\n",          p->logOutput ? "TRUE" : "FALSE");
     //fprintf(stdout, "   Log Rollover time:                          %s\n",          p->logOutputTime);
     fprintf(stdout, "   Log site prefix string:                     %s\n",          p->sitePrefix);
     fprintf(stdout, "   Output file path:                           %s\n",          p->outputFilePath);
+#if (USE_PIPES)
+    fprintf(stdout, "   Log output to pipes:                        %s\n",          p->useOutputPipe ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Input file path:                            %s\n",          p->pipeInPath);
+    fprintf(stdout, "   Output file path:                           %s\n",          p->pipeOutPath);
+#endif
     fprintf(stdout, "   I2C bus number as integer:                  %i (dec)\n",    p->i2cBusNumber);
     fprintf(stdout, "   I2C bus path as string:                     %s\n",          pathStr);
     fprintf(stdout, "   Built in self test (BIST) value:            %02X (hex)\n",  p->doBistMask);
@@ -448,26 +454,22 @@ void showSettings(pList *p)
     fprintf(stdout, "   Device sampling mode:                       %s\n",          p->samplingMode     ? "CONTINUOUS" : "POLL");
     fprintf(stdout, "   Cycle counts by vector:                     X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->cc_x, p->cc_y, p->cc_z);
     fprintf(stdout, "   Gain by vector:                             X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
-    fprintf(stdout, "   Read back CC Regs after set:                %s\n",          p->readBackCCRegs   ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Read back CC Regs after set:                %s\n",          p->readBackCCRegs   ? "TRUE" : "FALSE");
     fprintf(stdout, "   Software Loop Delay (uSec):                 %i (dec)\n",    p->outDelay);
     fprintf(stdout, "   CMM sample rate:                            %2X (hex)\n",   p->CMMSampleRate);
     fprintf(stdout, "   TMRC reg value:                             %2X (hex)\n",   p->TMRCRate);
-    fprintf(stdout, "   Format output as JSON:                      %s\n",          p->jsonFlag         ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Format output as JSON:                      %s\n",          p->jsonFlag         ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read local temperature only:                %s\n",          p->localTempOnly    ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read remote temperature only:               %s\n",          p->remoteTempOnly   ? "TRUE" : "FALSE");
     fprintf(stdout, "   Read magnetometer only:                     %s\n",          p->magnetometerOnly ? "TRUE" : "FALSE");
     fprintf(stdout, "   Local temperature address:                  %02X (hex)\n",  p->localTempAddr);
     fprintf(stdout, "   Remote temperature address:                 %02X (hex)\n",  p->remoteTempAddr);
     fprintf(stdout, "   Magnetometer address:                       %02X {hex)\n",  p->magnetometerAddr);
-    fprintf(stdout, "   Show parameters:                            %s\n",          p->showParameters   ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Quiet mode:                                 %s\n",          p->quietFlag        ? "TRUE" : "FALSE" );
-    fprintf(stdout, "   Hide raw measurements:                      %s\n",          p->hideRaw          ? "TRUE" : "FALSE" );
+    fprintf(stdout, "   Show parameters:                            %s\n",          p->showParameters   ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Quiet mode:                                 %s\n",          p->quietFlag        ? "TRUE" : "FALSE");
+    fprintf(stdout, "   Hide raw measurements:                      %s\n",          p->hideRaw          ? "TRUE" : "FALSE");
     fprintf(stdout, "   Return single magnetometer reading:         %s\n",          p->singleRead       ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Simple Magnetometer Board (SMSB):      %s\n",          (p->boardType == 0) ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Read Board with Extender (MSBx):            %s\n",          (p->boardType == 1) ? "TRUE" : "FALSE");
-//    fprintf(stdout, "   Read Scotty's RPi Mag HAT standalone:       %s\n",          (p->boardType == 2) ? "TRUE" : "FALSE");
-//    fprintf(stdout, "   Read Scotty's RPi Mag HAT in extended mode: %s\n",          (p->boardType == 3) ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Magnetometer configuation:                  %s\n",          (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
+    fprintf(stdout, "   Magnetometer configuation:                  %s\n", (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
     fprintf(stdout, "   Timestamp format:                           %s\n",          p->tsMilliseconds   ? "RAW"  : "UTCSTRING");
     fprintf(stdout, "   Verbose output:                             %s\n",          p->verboseFlag      ? "TRUE" : "FALSE");
     fprintf(stdout, "   Show total field:                           %s\n",          p->showTotal        ? "TRUE" : "FALSE");
@@ -484,12 +486,12 @@ int getCommandLine(int argc, char** argv, pList *p)
     int magAddr = 0;
     int lTmpAddr = 0;
     int rTmpAddr = 0;
-    
+
     if(p != NULL)
     {
         memset(p, 0, sizeof(pList));
     }
-    
+
     p->SBCType          = eRASPI_I2C_BUS;
     p->boardType        = 0;
     p->boardMode        = LOCAL;
@@ -497,14 +499,14 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->NOSRegValue      = 1;
     p->DRDYdelay        = 0;
     p->buildLogPath     = FALSE;
-    
+
     p->cc_x             = CC_200;
     p->cc_y             = CC_200;
     p->cc_z             = CC_200;
     p->x_gain           = GAIN_75;
     p->y_gain           = GAIN_75;
     p->z_gain           = GAIN_75;
-    
+
     p->samplingMode     = POLL;
     p->readBackCCRegs   = FALSE;
     p->CMMSampleRate      = 200;
@@ -517,7 +519,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->localTempOnly    = FALSE;
     p->localTempAddr    = MCP9808_LCL_I2CADDR_DEFAULT;
     p->remoteTempOnly   = FALSE;
-    p->remoteTempAddr   = MCP9808_RMT_I2CADDR_DEFAULT;  
+    p->remoteTempAddr   = MCP9808_RMT_I2CADDR_DEFAULT;
     p->magnetometerOnly = FALSE;
     p->magnetometerAddr = RM3100_I2C_ADDRESS;
     p->outDelay         = 1000000;
@@ -529,14 +531,23 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->verboseFlag      = FALSE;
     p->showTotal        = FALSE;
     p->outputFilePath   = outFilePath;
+#if(USE_PIPES)
+    p->useOutputPipe    = FALSE;
+    p->pipeInPath       = inputPipeName;
+    p->pipeOutPath      = outputPipeName;
+#endif
     //p->logOutputTime    = rollOverTime;
     p->logOutput        = FALSE;
     p->Version          = version;
-   
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:U:XxYyvVZ")) != -1)
+
+#if (USE_PIPES)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:U:YvVZ")) != -1)
+#else
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:U:vVZ")) != -1)
+#endif
     {
         //int this_option_optind = optind ? optind : 1;
-        switch (c)
+        switch(c)
         {
             case 'a':
                 listSBCs();
@@ -549,7 +560,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                     if(p->verboseFlag)
                     {
                         fprintf(stderr, "Error: %u :: NOS input value must be >= 1. Forcing -A input to 1 \n", NOSval);
-                    }    
+                    }
                     (p->NOSRegValue = 1);
                 }
                 else
@@ -559,7 +570,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 if(p->verboseFlag)
                 {
                     fprintf(stderr, "p->NOSRegValue:: %u\n", p->NOSRegValue);
-                }    
+                }
                 // setNOSReg(p);
                 break;
             case 'b':
@@ -574,7 +585,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 if((p->cc_x > CC_400) || (p->cc_x <= 0))
                 {
                     fprintf(stderr, "\n ERROR Invalid: cycle count > 400 (dec) or cycle count  <= 0.\n\n");
-                    exit (1);
+                    exit(1);
                 }
                 p->x_gain = p->y_gain = p->z_gain = getCCGainEquiv(p->cc_x);
                 break;
@@ -591,10 +602,10 @@ int getCommandLine(int argc, char** argv, pList *p)
                 showCountGainRelationship();
                 break;
             case 'f':
-                readConfigFromFile(p, optarg);
+//                readConfigFromFile(p, optarg);
                 break;
             case 'F':
-                saveConfigToFile(p, optarg);
+//                saveConfigToFile(p, optarg);
                 break;
             case 'g':
                 p->samplingMode = atoi(optarg);
@@ -691,22 +702,19 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->verboseFlag = TRUE;
                 p->quietFlag = FALSE;
                 break;
-            case 'X':
-                p->boardType = 0;
-                p->boardMode = LOCAL;
-                break;
-            case 'x':
-                p->boardType = 1;
-                p->boardMode = REMOTE;
-                break;
+//            case 'X':
+//                p->boardType = 0;
+//                p->boardMode = LOCAL;
+//                break;
+//            case 'x':
+//                p->boardType = 1;
+//                p->boardMode = REMOTE;
+//                break;
+#if (USE_PIPES)
             case 'Y':
-                p->boardType = 2;
-                p->boardMode = LOCAL;
+                p->useOutputPipe = TRUE;
                 break;
-            case 'y':
-                p->boardType = 3;
-                p->boardMode = REMOTE;
-                break;
+#endif
             case 'Z':
                 p->showTotal = TRUE;
                 break;
@@ -747,10 +755,11 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]\n");
                 fprintf(stdout, "   -U <delay as ms>       :  Delay in mSec before DRDY.            [ default: 0 ]\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
-                fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
-                fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
-                //fprintf(stdout, "   -Y                     :  Read Scotty's RPi Mag HAT standalone.       [Not implemented].\n");
-                //fprintf(stdout, "   -y                     :  Read Scotty's RPi Mag HAT in extended mode. [Not implemented].\n");
+//                fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
+//                fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
+#if(USE_PIPES)
+                fprintf(stdout, "   -Y                     :  Use WebSockets.                       [ default False].\n");
+#endif
                 fprintf(stdout, "   -Z                     :  Show total field.                     [ sqrt((x*x) + (y*y) + (z*z)) ]\n");
                 fprintf(stdout, "   -h or -?               :  Display this help.\n\n");
                 return 1;
@@ -762,13 +771,12 @@ int getCommandLine(int argc, char** argv, pList *p)
     }
     if(optind < argc)
     {
-        printf ("non-option ARGV-elements: ");
-        while (optind < argc)
+        printf("non-option ARGV-elements: ");
+        while(optind < argc)
         {
-            printf ("%s ", argv[optind++]);
+            printf("%s ", argv[optind++]);
         }
-        printf ("\n");
+        printf("\n");
     }
     return 0;
 }
-
