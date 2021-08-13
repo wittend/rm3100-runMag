@@ -79,15 +79,15 @@ int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
     XYZ[0] |= mSamples[2];
-    XYZ[0] /= p->NOSRegValue;
+//    XYZ[0] /= p->NOSRegValue;
     XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
     XYZ[1] |= mSamples[4] * 256;
     XYZ[1] |= mSamples[5];
-    XYZ[1] /= p->NOSRegValue;
+//    XYZ[1] /= p->NOSRegValue;
     XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
     XYZ[2] |= mSamples[7] * 256;
     XYZ[2] |= mSamples[8];
-    XYZ[2] /= p->NOSRegValue;
+//    XYZ[2] /= p->NOSRegValue;
 
     return bytes_read;
 }
@@ -121,15 +121,15 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
     XYZ[0] |= mSamples[2];
-    XYZ[0] /= p->NOSRegValue;
+//    XYZ[0] /= p->NOSRegValue;
     XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
     XYZ[1] |= mSamples[4] * 256;
     XYZ[1] |= mSamples[5];
-    XYZ[1] /= p->NOSRegValue;
+//    XYZ[1] /= p->NOSRegValue;
     XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
     XYZ[2] |= mSamples[7] * 256;
     XYZ[2] |= mSamples[8];
-    XYZ[2] /= p->NOSRegValue;
+//    XYZ[2] /= p->NOSRegValue;
 
     return bytes_read;
 }
@@ -267,10 +267,11 @@ int main(int argc, char** argv)
             {
                 readMagCMM(&p, p.magnetometerAddr, rXYZ);
             }
-            xyz[0] = ((double)rXYZ[0] / p.x_gain);
-            xyz[1] = ((double)rXYZ[1] / p.y_gain);
-            xyz[2] = ((double)rXYZ[2] / p.z_gain);
+            xyz[0] = (((double)rXYZ[0] / p.NOSRegValue) / p.x_gain) * 1000;   // make microTeslas -> nanoTeslas
+            xyz[1] = (((double)rXYZ[1] / p.NOSRegValue) / p.y_gain) * 1000;   // make microTeslas -> nanoTeslas
+            xyz[2] = (((double)rXYZ[2] / p.NOSRegValue) / p.z_gain) * 1000;   // make microTeslas -> nanoTeslas
         }
+
         // Output the results.
         if(!(p.jsonFlag))
         {
@@ -332,9 +333,9 @@ int main(int argc, char** argv)
             double x = xyz[0] * 100.0;
             double y = xyz[1] * 100.0;
             double z = xyz[2] * 100.0;
-            fprintf(outfp, ", %.3f", x);
-            fprintf(outfp, ", %.3f", y);
-            fprintf(outfp, ", %.3f", z);
+            fprintf(outfp, ", %.5f", x);
+            fprintf(outfp, ", %.5f", y);
+            fprintf(outfp, ", %.5f", z);
             if(!p.hideRaw)
             {
                 fprintf(outfp, ", %i", rXYZ[0]);
@@ -414,9 +415,9 @@ int main(int argc, char** argv)
             double x = xyz[0] * 100.0;
             double y = xyz[1] * 100.0;
             double z = xyz[2] * 100.0;
-            fprintf(outfp, ", \"x\":%.5f", xyz[0]);
-            fprintf(outfp, ", \"y\":%.5f", xyz[1]);
-            fprintf(outfp, ", \"z\":%.5f", xyz[2]);
+            fprintf(outfp, ", \"x\":%.2f", xyz[0]);
+            fprintf(outfp, ", \"y\":%.2f", xyz[1]);
+            fprintf(outfp, ", \"z\":%.2f", xyz[2]);
             if(!p.hideRaw)
             {
                 fprintf(outfp, ", \"rx\":%i", rXYZ[0]);
@@ -428,7 +429,7 @@ int main(int argc, char** argv)
                 double x = xyz[0] * 100.0;
                 double y = xyz[1] * 100.0;
                 double z = xyz[2] * 100.0;
-                fprintf(outfp, ", \"Tm\": %.7f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                fprintf(outfp, ", \"Tm\": %.5f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
             fprintf(outfp, " }\n");
         }

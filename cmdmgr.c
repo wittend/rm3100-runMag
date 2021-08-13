@@ -496,16 +496,16 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->boardType        = 0;
     p->boardMode        = LOCAL;
     p->doBistMask       = FALSE;
-    p->NOSRegValue      = 1;
+    p->NOSRegValue      = 10;           // 1
     p->DRDYdelay        = 0;
     p->buildLogPath     = FALSE;
 
-    p->cc_x             = CC_200;
-    p->cc_y             = CC_200;
-    p->cc_z             = CC_200;
-    p->x_gain           = GAIN_75;
-    p->y_gain           = GAIN_75;
-    p->z_gain           = GAIN_75;
+    p->cc_x             = CC_400;       // CC_200;
+    p->cc_y             = CC_400;       // CC_200;
+    p->cc_z             = CC_400;       // CC_200;
+    p->x_gain           = GAIN_150;     // GAIN_75;
+    p->y_gain           = GAIN_150;     // GAIN_75;
+    p->z_gain           = GAIN_150;     // GAIN_75;
 
     p->samplingMode     = POLL;
     p->readBackCCRegs   = FALSE;
@@ -561,7 +561,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                     {
                         fprintf(stderr, "Error: %u :: NOS input value must be >= 1. Forcing -A input to 1 \n", NOSval);
                     }
-                    (p->NOSRegValue = 1);
+                    (p->NOSRegValue = 10);
                 }
                 else
                 {
