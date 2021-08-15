@@ -455,7 +455,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Cycle counts by vector:                     X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->cc_x, p->cc_y, p->cc_z);
     fprintf(stdout, "   Gain by vector:                             X: %3i (dec), Y: %3i (dec), Z: %3i (dec)\n", p->x_gain, p->y_gain, p->z_gain);
     fprintf(stdout, "   Read back CC Regs after set:                %s\n",          p->readBackCCRegs   ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Software Loop Delay (uSec):                 %i (dec)\n",    p->outDelay);
+    fprintf(stdout, "   Software Loop Delay (uSec):                 %i (dec uSec)\n",    p->outDelay);
     fprintf(stdout, "   CMM sample rate:                            %2X (hex)\n",   p->CMMSampleRate);
     fprintf(stdout, "   TMRC reg value:                             %2X (hex)\n",   p->TMRCRate);
     fprintf(stdout, "   Format output as JSON:                      %s\n",          p->jsonFlag         ? "TRUE" : "FALSE");
@@ -469,7 +469,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Quiet mode:                                 %s\n",          p->quietFlag        ? "TRUE" : "FALSE");
     fprintf(stdout, "   Hide raw measurements:                      %s\n",          p->hideRaw          ? "TRUE" : "FALSE");
     fprintf(stdout, "   Return single magnetometer reading:         %s\n",          p->singleRead       ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Magnetometer configuation:                  %s\n",          (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
+    fprintf(stdout, "   Magnetometer configuation:                  %s\n", (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
     fprintf(stdout, "   Timestamp format:                           %s\n",          p->tsMilliseconds   ? "RAW"  : "UTCSTRING");
     fprintf(stdout, "   Verbose output:                             %s\n",          p->verboseFlag      ? "TRUE" : "FALSE");
     fprintf(stdout, "   Show total field:                           %s\n",          p->showTotal        ? "TRUE" : "FALSE");
