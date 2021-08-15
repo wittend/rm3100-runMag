@@ -166,7 +166,7 @@ int main(int argc, char** argv)
         buildLogFilePath(&p);
         if((outfp = fopen(p.outputFilePath, "a+"))!= NULL)
         {
-            printf("\nLog File: \n", p.outputFilePath);
+            printf("\nLog File: %s\n", p.outputFilePath);
         }
         else
         {
@@ -198,18 +198,20 @@ int main(int argc, char** argv)
         startCMM(&p);
     }
 
-    // DRL put meta data here
-    // DRL should be printed only at the top of the log file
-    // DMW respect -H switch (but not other rtemp, ltemp, etc. options yet.)
-    if(p.hideRaw)
+    if(!(p.jsonFlag))
     {
-        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"total\"\n");
+        // DRL put meta data here
+        // DRL should be printed only at the top of the log file
+        // DMW respect -H switch (but not other rtemp, ltemp, etc. options yet.)
+        if(p.hideRaw)
+        {
+            fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"total\"\n");
+        }
+        else
+        {
+            fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"rx\", \"ry\", \"rz\", \"total\"\n");
+        }
     }
-    else
-    {
-        fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"rx\", \"ry\", \"rz\", \"total\"\n");
-    }
-
 #if (USE_PIPES)
 
     if(p.useOutputPipe = TRUE)

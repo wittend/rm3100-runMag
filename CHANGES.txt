@@ -2,6 +2,11 @@
 ===========================================================
 # I should have started this a long time ago
 
+# Date: 2021-08-13 git tag 0.0.17 (alpha, may become 0.1.0)
+#--------------------------------------------------------------------------
+Added required format string to line ~168 needed to print output file name.
+Re-instated the flag that keeps the CSV header from printing in JSON code.
+
 # Date: 2021-08-12 git tag 0.0.17 (alpha, may become 0.1.0)
 #--------------------------------------------------------------------------
 Changed default Cycle Count value to CC_400.  Changed default Gain value to
