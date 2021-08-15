@@ -245,6 +245,7 @@ int main(int argc, char** argv)
                 rcTemp = temp * 0.0625;
             }
             else
+            {
                 if(p.localTempOnly)
                 {
                     temp = readTemp(&p, p.localTempAddr);
@@ -257,6 +258,7 @@ int main(int argc, char** argv)
                     temp = readTemp(&p, p.localTempAddr);
                     lcTemp = temp * 0.0625;
                 }
+            }
         }
         // Read Magnetometer.
         if((!p.localTempOnly) || (!p.remoteTempOnly))
@@ -383,6 +385,7 @@ int main(int argc, char** argv)
                     }
                 }
                 else
+                {
                     if(p.localTempOnly)
                     {
                         if(lcTemp < -100.0)
@@ -413,6 +416,7 @@ int main(int argc, char** argv)
                             fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
                         }
                     }
+                }
             }
             double x = xyz[0] * 100.0;
             double y = xyz[1] * 100.0;

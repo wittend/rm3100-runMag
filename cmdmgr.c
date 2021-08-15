@@ -469,7 +469,7 @@ void showSettings(pList *p)
     fprintf(stdout, "   Quiet mode:                                 %s\n",          p->quietFlag        ? "TRUE" : "FALSE");
     fprintf(stdout, "   Hide raw measurements:                      %s\n",          p->hideRaw          ? "TRUE" : "FALSE");
     fprintf(stdout, "   Return single magnetometer reading:         %s\n",          p->singleRead       ? "TRUE" : "FALSE");
-    fprintf(stdout, "   Magnetometer configuation:                  %s\n", (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
+    fprintf(stdout, "   Magnetometer configuation:                  %s\n",          (p->boardMode == LOCAL) ? "Local standalone" : "Extended with remote");
     fprintf(stdout, "   Timestamp format:                           %s\n",          p->tsMilliseconds   ? "RAW"  : "UTCSTRING");
     fprintf(stdout, "   Verbose output:                             %s\n",          p->verboseFlag      ? "TRUE" : "FALSE");
     fprintf(stdout, "   Show total field:                           %s\n",          p->showTotal        ? "TRUE" : "FALSE");
@@ -509,7 +509,7 @@ int getCommandLine(int argc, char** argv, pList *p)
 
     p->samplingMode     = POLL;
     p->readBackCCRegs   = FALSE;
-    p->CMMSampleRate      = 200;
+    p->CMMSampleRate    = 200;
     p->hideRaw          = FALSE;
     //p->i2cBusNumber     = 1;
     p->i2cBusNumber     = busDevs[eRASPI_I2C_BUS].busNumber;
@@ -541,9 +541,9 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->Version          = version;
 
 #if (USE_PIPES)
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:U:YvVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:YvVZ")) != -1)
 #else
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:o:O:PqrR:sS:Tt:U:vVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:vVZ")) != -1)
 #endif
     {
         //int this_option_optind = optind ? optind : 1;
@@ -559,7 +559,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 {
                     if(p->verboseFlag)
                     {
-                        fprintf(stderr, "Error: %u :: NOS input value must be >= 1. Forcing -A input to 1 \n", NOSval);
+                        fprintf(stderr, "Error: %u :: NOS input value must be >= 1. Forcing -A input to 10 \n", NOSval);
                     }
                     (p->NOSRegValue = 10);
                 }
@@ -593,7 +593,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->readBackCCRegs = TRUE;
                 break;
             case 'd':
-                p->outDelay = atoi(optarg);
+                p->outDelay = atoi(optarg) * 1000;
                 break;
             case 'D':
                 p->CMMSampleRate = atoi(optarg);
@@ -638,9 +638,6 @@ int getCommandLine(int argc, char** argv, pList *p)
                 //p->magnetometerAddr = atoi(optarg);
                 sscanf(optarg, "%x", &magAddr);
                 p->magnetometerAddr = magAddr;
-                break;
-            case 'o':
-                p->outDelay = atoi(optarg) * 1000;
                 break;
             case 'O':
                 if(strlen(optarg) < MAXPATHBUFLEN)
@@ -729,7 +726,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
                 fprintf(stdout, "   -c <count>             :  Set cycle counts as integer.          [ default 200 decimal]\n");
                 fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate.         [ TMRC reg 96 hex default ].\n");
-                fprintf(stdout, "   -d <count>             :  Set polling delay.                    [ default 1000000 uSec ]\n");
+                fprintf(stdout, "   -d <delay as ms>       :  Output delay.                         [ 1000 ms default ]\n");
                 fprintf(stdout, "   -E                     :  Show cycle count/gain/sensitivity relationship.\n");
                 fprintf(stdout, "   -f <filename>          :  Read configuration from file (JSON).  [ Not implemented ]\n");
                 fprintf(stdout, "   -F <filename>          :  Write configuration to file (JSON).   [ Not implemented ]\n");
@@ -743,7 +740,6 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -M <addr as integer>   :  Magnetometer address.                 [ default 20 hex ]\n");
                 fprintf(stdout, "   -m                     :  Read magnetometer only.\n");
                 fprintf(stdout, "   -O <filename>          :  Output file path.                     [ Must be valid path with write permissions ]\n");
-                fprintf(stdout, "   -o <delay as ms>       :  Output delay.                         [ 1000 ms default ]\n");
                 fprintf(stdout, "   -P                     :  Show Parameters.\n");
                 fprintf(stdout, "   -q                     :  Quiet mode.                           [ partial ]\n");
                 fprintf(stdout, "   -v                     :  Verbose output.\n");
