@@ -111,43 +111,43 @@ Parameters:
 
     dave@raspi-3:~/projects/rm3100-runMag $ ./runMag -Psl
 
-    Version = 0.0.7
+        Version = 0.0.7
 
-    Current Parameters:
+        Current Parameters:
 
-        Magnetometer revision ID detected:          34 (dec)
-        Log output path:                            TRUE
-        Log output:                                 TRUE
-        Log site prefix string:                     kd0eag
-        Output file path:                           ./logs/kd0eag-20200624-runmag.log
-        I2C bus number as integer:                  1 (dec)
-        I2C bus path as string:                     /dev/i2c-1
-        Built in self test (BIST) value:            00 (hex)
-        NOS Register value:                         00 (hex)
-        Device sampling mode:                       POLL
-        Cycle counts by vector:                     X: 200 (dec), Y: 200 (dec), Z: 200 (dec)
-        Gain by vector:                             X:  75 (dec), Y:  75 (dec), Z:  75 (dec)
-        Read back CC Regs after set:                FALSE
-        Software Loop Delay (uSec):                 1000000 (dec)
-        Magnetometer sample rate:                   200 (dec)
-        CMM magnetometer sample rate (TMRC reg):    150 (dec)
-        Format output as JSON:                      TRUE
-        Read local temperature only:                TRUE
-        Read remote temperature only:               FALSE
-        Read magnetometer only:                     FALSE
-        Local temperature address:                  18 (hex)
-        Remote temperature address:                 19 (hex)
-        Magnetometer address:                       20 {hex)
-        Show parameters:                            TRUE
-        Quiet mode:                                 TRUE
-        Hide raw measurements:                      FALSE
-        Return single magnetometer reading:         FALSE
-        Read Simple Magnetometer Board (SMSB):      TRUE
-        Read Board with Extender (MSBx):            FALSE
-        Magnetometer configuation:                  Local standalone
-        Timestamp format:                           UTCSTRING
-        Verbose output:                             FALSE
-        Show total field:                           FALSE
+            Magnetometer revision ID detected:          34 (dec)
+            Log output path:                            TRUE
+            Log output:                                 TRUE
+            Log site prefix string:                     kd0eag
+            Output file path:                           ./logs/kd0eag-20200624-runmag.log
+            I2C bus number as integer:                  1 (dec)
+            I2C bus path as string:                     /dev/i2c-1
+            Built in self test (BIST) value:            00 (hex)
+            NOS Register value:                         00 (hex)
+            Device sampling mode:                       POLL
+            Cycle counts by vector:                     X: 200 (dec), Y: 200 (dec), Z: 200 (dec)
+            Gain by vector:                             X:  75 (dec), Y:  75 (dec), Z:  75 (dec)
+            Read back CC Regs after set:                FALSE
+            Software Loop Delay (uSec):                 1000000 (dec)
+            Magnetometer sample rate:                   200 (dec)
+            CMM magnetometer sample rate (TMRC reg):    150 (dec)
+            Format output as JSON:                      TRUE
+            Read local temperature only:                TRUE
+            Read remote temperature only:               FALSE
+            Read magnetometer only:                     FALSE
+            Local temperature address:                  18 (hex)
+            Remote temperature address:                 19 (hex)
+            Magnetometer address:                       20 {hex)
+            Show parameters:                            TRUE
+            Quiet mode:                                 TRUE
+            Hide raw measurements:                      FALSE
+            Return single magnetometer reading:         FALSE
+            Read Simple Magnetometer Board (SMSB):      TRUE
+            Read Board with Extender (MSBx):            FALSE
+            Magnetometer configuation:                  Local standalone
+            Timestamp format:                           UTCSTRING
+            Verbose output:                             FALSE
+            Show total field:                           FALSE
 
 
      Time: 12 Jun 2020 04:29:12, lTemp: 23.88, x: -8.160, y: 6.573, z: 54.813, rx: -612, ry: 493, rz: 4111
