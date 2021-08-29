@@ -151,8 +151,10 @@ int main(int argc, char** argv)
     float rcTemp = 0.0;
     int rv = 0;
     FILE *outfp = stdout;
-//    int  fdPipeIn;
-//    int  fdPipeOut;
+#if (USE_PIPES)
+    int  fdPipeIn;
+    int  fdPipeOut;
+#endif
 
     currentDay = utcTime->tm_mday;
 

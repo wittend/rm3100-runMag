@@ -198,7 +198,8 @@ unsigned short getCCGainEquiv(unsigned short CCVal)
         {  CC_100,  GAIN_38},   // up to 4Hz
         {  CC_200,  GAIN_75},   // up to 8Hz
         {  CC_300, GAIN_113},   // up to 16Hz
-        {  CC_400, GAIN_150}    // up to 31Hz
+        {  CC_400, GAIN_150},   // up to 31Hz
+        {  CC_800, GAIN_300}    // up to ? Hz
     };
     // for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2) - 1; i++)
     for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2); i++)

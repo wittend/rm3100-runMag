@@ -540,10 +540,15 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->logOutput        = FALSE;
     p->Version          = version;
 
+//#if (USE_PIPES)
+//    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:YvVZ")) != -1)
+//#else
+//    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:vVZ")) != -1)
+//#endif
 #if (USE_PIPES)
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:YvVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:CD:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:YvVZ")) != -1)
 #else
-    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:vVZ")) != -1)
+    while((c = getopt(argc, argv, "?aA:b:B:c:CD:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:vVZ")) != -1)
 #endif
     {
         //int this_option_optind = optind ? optind : 1;
@@ -582,7 +587,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 break;
             case 'c':
                 p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
-                if((p->cc_x > CC_400) || (p->cc_x <= 0))
+                if((p->cc_x > CC_800) || (p->cc_x <= 0))
                 {
                     fprintf(stderr, "\n ERROR Invalid: cycle count > 400 (dec) or cycle count  <= 0.\n\n");
                     exit(1);
@@ -592,9 +597,9 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 'C':
                 p->readBackCCRegs = TRUE;
                 break;
-            case 'd':
-                p->outDelay = atoi(optarg) * 1000;
-                break;
+//            case 'd':
+//                p->outDelay = atoi(optarg) * 1000;
+//                break;
             case 'D':
                 p->CMMSampleRate = atoi(optarg);
                 break;
@@ -688,9 +693,9 @@ int getCommandLine(int argc, char** argv, pList *p)
             case 't':
                 p->TMRCRate = atoi(optarg);
                 break;
-            case 'U':
-                p->DRDYdelay = atoi(optarg) * 1000;
-                break;
+//            case 'U':
+//                p->DRDYdelay = atoi(optarg) * 1000;
+//                break;
             case 'V':
                 fprintf(stdout, "\nVersion: %s\n", p->Version);
                 exit(0);
@@ -726,7 +731,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -C                     :  Read back cycle count registers before sampling.\n");
                 fprintf(stdout, "   -c <count>             :  Set cycle counts as integer.          [ default 200 decimal]\n");
                 fprintf(stdout, "   -D <rate>              :  Set magnetometer sample rate.         [ TMRC reg 96 hex default ].\n");
-                fprintf(stdout, "   -d <delay as ms>       :  Output delay.                         [ 1000 ms default ]\n");
+//                fprintf(stdout, "   -d <delay as ms>       :  Output delay.                         [ 1000 ms default ]\n");
                 fprintf(stdout, "   -E                     :  Show cycle count/gain/sensitivity relationship.\n");
                 fprintf(stdout, "   -f <filename>          :  Read configuration from file (JSON).  [ Not implemented ]\n");
                 fprintf(stdout, "   -F <filename>          :  Write configuration to file (JSON).   [ Not implemented ]\n");
@@ -749,7 +754,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -S                     :  Site prefix string for log files.     [ 32 char max. Do not use /\'\"* etc. Try callsign! ]\n");
                 //fprintf(stdout, "   -t                     :  Set CMM Data Rate.                    [ 96 hex default ]\n");
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]\n");
-                fprintf(stdout, "   -U <delay as ms>       :  Delay in mSec before DRDY.            [ default: 0 ]\n");
+//                fprintf(stdout, "   -U <delay as ms>       :  Delay in mSec before DRDY.            [ default: 0 ]\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
 //                fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
 //                fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
