@@ -1,7 +1,7 @@
 //=========================================================================
 // cmdmgr.h
 //
-// header file for commandline / configuration management for runMag utility.
+// header file for commandline / configuration management for testMag utility.
 //
 // Author:      David Witten, KD0EAG
 // Date:        June 19, 2020
@@ -10,7 +10,7 @@
 #ifndef SWX3100CMDMGR_h
 #define SWX3100CMDMGR_h
 
-#include "runMag.h"
+#include "testMag.h"
 #include "main.h"
 
 

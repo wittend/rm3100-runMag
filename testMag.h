@@ -1,5 +1,5 @@
 //=========================================================================
-// main.h
+// testMag.h
 // 
 // An interface for the RM3100 3-axis magnetometer from PNI Sensor Corp.
 // 

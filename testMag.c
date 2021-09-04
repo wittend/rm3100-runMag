@@ -1,5 +1,5 @@
 //=========================================================================
-// runMag.c
+// testMag.c
 // 
 // An interface for the RM3100 3-axis magnetometer from PNI Sensor Corp.
 // Derived in part from several sources:
@@ -15,7 +15,7 @@
 //=========================================================================
 #include "i2c.h"
 #include "main.h"
-#include "runMag.h"
+#include "testMag.h"
 
 //------------------------------------------
 // openI2CBus()
