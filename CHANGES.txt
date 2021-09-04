@@ -1,8 +1,35 @@
 # CHANGES.txt
 ===========================================================
+# I should have started this a long time ago
 
-# Date: 2021-09-04
+# Date: 2021-08-13 git tag 0.0.17 (alpha, may become 0.1.0)
 #--------------------------------------------------------------------------
-Forked code from rm3100-testMag to create testMag.  This stripped down version
-is meant for testing the integrity of the hardware received from the board
-manufacturers.
+Added required format string to line ~168 needed to print output file name.
+Re-instated the flag that keeps the CSV header from printing in JSON code.
+
+# Date: 2021-08-12 git tag 0.0.17 (alpha, may become 0.1.0)
+#--------------------------------------------------------------------------
+Changed default Cycle Count value to CC_400.  Changed default Gain value to
+GAIN_150.
+Changed the measured vector register value to be divided by the A (NOS)
+value and saved as a decimal fraction.
+Raw values are no longer divided by the -A (NOS) value.
+Attempted to adjust formatting of output values to  read consistently in
+nano-Tesla rather than micro-Tesla.
+Bump version to 0.0.17 (alpha)
+
+# Date: 2021-05-22 git tag 0.0.16
+#--------------------------------------------------------------------------
+Updating output formatting in JSON mode. Cleaning formatting code a bit.
+Bump version to 0.0.16
+
+# Date: 2021-01-17 git tag 0.0.15
+#--------------------------------------------------------------------------
+Commit some of Dave Larsen's formatting changes. Fix or mess up averaging -
+(not sure which)
+
+# Date: 2020-09-20 git tag 0.0.9
+#--------------------------------------------------------------------------
+Added function i2c_setBitRate() to i2c.c - allow code to specify the I2C
+Bus speed at runtime.
+Attempting to fix abend due to closing log file when none is in use.

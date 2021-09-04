@@ -142,38 +142,38 @@ typedef struct tag_pList
 #define sODROIDN2PLUS_I2C_BUS1  "Odroid N2+  bus 1 "
 #define sRASPI_I2C_BUS          "Raspberry Pi 3/4  "
 
-////-------------------------------------------
-//// Device paths for different platforms
-////-------------------------------------------
-//typedef enum
-//{
-//    eKHADAS_EDGE_I2C3 = 0,
-//    eVIM3_I2C_BUS3,
-//    eVIM3_I2C_BUS4,
-//    eNV_XAVIER_I2C_BUS,
-//    eNV_NANO_I2C_BUS,
-//    eODROIDC0_I2C_BUS,
-//    eODROIDC1_I2C_BUS,
-//    eODROIDC2_I2C_BUS,
-//    eODROIDC4_I2C_BUS,
-//    eODROIDC4_I2C_BUS3,
-//    eODROIDN2_I2C_BUS,
-//    eODROIDN2_I2C_BUS3,
-//    eODROIDN2PLUS_I2C_BUS0,
-//    eODROIDN2PLUS_I2C_BUS1,
-//    eRASPI_I2C_BUS,
-//} i2cBusEnum;
-//
-////-------------------------------------------
-//// I2C Bus Path entries
-////-------------------------------------------
-//struct busDev
-//{
-//    const char *devPath;
-//    const char *SBCString;
-//    int         enumVal;
-//    int         busNumber;
-//};
+//-------------------------------------------
+// Device paths for different platforms
+//-------------------------------------------
+typedef enum
+{
+    eKHADAS_EDGE_I2C3 = 0,
+    eVIM3_I2C_BUS3,
+    eVIM3_I2C_BUS4,
+    eNV_XAVIER_I2C_BUS,
+    eNV_NANO_I2C_BUS,
+    eODROIDC0_I2C_BUS,
+    eODROIDC1_I2C_BUS,
+    eODROIDC2_I2C_BUS,
+    eODROIDC4_I2C_BUS,
+    eODROIDC4_I2C_BUS3,
+    eODROIDN2_I2C_BUS,
+    eODROIDN2_I2C_BUS3,
+    eODROIDN2PLUS_I2C_BUS0,
+    eODROIDN2PLUS_I2C_BUS1,
+    eRASPI_I2C_BUS,
+} i2cBusEnum;
+
+//-------------------------------------------
+// I2C Bus Path entries
+//-------------------------------------------
+struct busDev
+{
+    const char *devPath;
+    const char *SBCString;
+    int         enumVal;
+    int         busNumber;
+};
 
 //------------------------------------------
 // Prototypes
