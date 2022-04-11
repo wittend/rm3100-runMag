@@ -4,7 +4,7 @@ This is a program intended to assist in testing the PNI RM3100 geomagnetic senso
 OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
 /dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
 
-The current pre-release code is 0.0.17 (alpha2)
+The current pre-release code is 0.1.0
 
 Just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
@@ -49,9 +49,9 @@ Logging will continue to the new file uninterrupted.
 
 ## Example output using -h or -? option:
 
-    dave@raspi-3:~/projects/rm3100-runMag $/rm3100-runMag$ ./runMag -h
-
-    ./runMag Version = 0.0.17 (alpha2)
+    david@marmoset:~/Projects/git/rm3100-runMag$ ./runMag -h
+    
+    ./runMag Version = 0.1.0
 
     Parameters:
 
@@ -62,7 +62,6 @@ Logging will continue to the new file uninterrupted.
        -C                     :  Read back cycle count registers before sampling.
        -c <count>             :  Set cycle counts as integer.          [ default 200 decimal]
        -D <rate>              :  Set magnetometer sample rate.         [ TMRC reg 96 hex default ].
-       -d <delay as ms>       :  Output delay.                         [ 1000 ms default ]
        -E                     :  Show cycle count/gain/sensitivity relationship.
        -f <filename>          :  Read configuration from file (JSON).  [ Not implemented ]
        -F <filename>          :  Write configuration to file (JSON).   [ Not implemented ]
@@ -83,7 +82,6 @@ Logging will continue to the new file uninterrupted.
        -s                     :  Return single reading.                [ Do one measurement loop only ]
        -S                     :  Site prefix string for log files.     [ 32 char max. Do not use /'"* etc. Try callsign! ]
        -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]
-       -U <delay as ms>       :  Delay in mSec before DRDY.            [ default: 0 ]
        -V                     :  Display software version and exit.
        -Z                     :  Show total field.                     [ sqrt((x*x) + (y*y) + (z*z)) ]
        -h or -?               :  Display this help.
