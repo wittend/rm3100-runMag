@@ -33,7 +33,7 @@
 
 #define USE_PIPES   FALSE
 
-#define RUNMAG_VERSION "0.1.0"
+#define RUNMAG_VERSION "0.1.1"
 #define UTCBUFLEN 64
 #define MAXPATHBUFLEN 1025
 #define JSONBUFLEN 1025

@@ -150,6 +150,8 @@ int main(int argc, char** argv)
     float lcTemp = 0.0;
     float rcTemp = 0.0;
     int rv = 0;
+    time_t sec_count;
+    time_t new_count;
     FILE *outfp = stdout;
 #if (USE_PIPES)
     int  fdPipeIn;
@@ -246,20 +248,17 @@ int main(int argc, char** argv)
                 temp = readTemp(&p, p.remoteTempAddr);
                 rcTemp = temp * 0.0625;
             }
+            else if(p.localTempOnly)
+            {
+                temp = readTemp(&p, p.localTempAddr);
+                lcTemp = temp * 0.0625;
+            }
             else
             {
-                if(p.localTempOnly)
-                {
-                    temp = readTemp(&p, p.localTempAddr);
-                    lcTemp = temp * 0.0625;
-                }
-                else
-                {
-                    temp = readTemp(&p, p.remoteTempAddr);
-                    rcTemp = temp * 0.0625;
-                    temp = readTemp(&p, p.localTempAddr);
-                    lcTemp = temp * 0.0625;
-                }
+                temp = readTemp(&p, p.remoteTempAddr);
+                rcTemp = temp * 0.0625;
+                temp = readTemp(&p, p.localTempAddr);
+                lcTemp = temp * 0.0625;
             }
         }
         // Read Magnetometer.
@@ -304,37 +303,36 @@ int main(int argc, char** argv)
                         fprintf(outfp, ", %.2f", rcTemp);
                     }
                 }
-                else
-                    if(p.localTempOnly)
+                else if(p.localTempOnly)
+                {
+                    if(lcTemp < -100.0)
                     {
-                        if(lcTemp < -100.0)
-                        {
-                            fprintf(outfp, ", \"ERROR\"");
-                        }
-                        else
-                        {
-                            fprintf(outfp, ", %.2f", lcTemp);
-                        }
+                        fprintf(outfp, ", \"ERROR\"");
                     }
                     else
                     {
-                        if(rcTemp < -100.0)
-                        {
-                            fprintf(outfp, ", \"ERROR\"");
-                        }
-                        else
-                        {
-                            fprintf(outfp, ", %.2f", rcTemp);
-                        }
-                        if(lcTemp < -100.0)
-                        {
-                            fprintf(outfp, ", \"ERROR\"");
-                        }
-                        else
-                        {
-                            fprintf(outfp, ", %.2f", lcTemp);
-                        }
+                        fprintf(outfp, ", %.2f", lcTemp);
                     }
+                }
+                else
+                {
+                    if(rcTemp < -100.0)
+                    {
+                        fprintf(outfp, ", \"ERROR\"");
+                    }
+                    else
+                    {
+                        fprintf(outfp, ", %.2f", rcTemp);
+                    }
+                    if(lcTemp < -100.0)
+                    {
+                        fprintf(outfp, ", \"ERROR\"");
+                    }
+                    else
+                    {
+                        fprintf(outfp, ", %.2f", lcTemp);
+                    }
+                }
             }
             double x = xyz[0] * 100.0;
             double y = xyz[1] * 100.0;
@@ -386,37 +384,34 @@ int main(int argc, char** argv)
                         fprintf(outfp, ", \"rt\":%.2f",  rcTemp);
                     }
                 }
-                else
+                else if(p.localTempOnly)
                 {
-                    if(p.localTempOnly)
+                    if(lcTemp < -100.0)
                     {
-                        if(lcTemp < -100.0)
-                        {
-                            fprintf(outfp, ", \"lt\":0.0");
-                        }
-                        else
-                        {
-                            fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
-                        }
+                        fprintf(outfp, ", \"lt\":0.0");
                     }
                     else
                     {
-                        if(rcTemp < -100.0)
-                        {
-                            fprintf(outfp, ", \"rt\":0.0");
-                        }
-                        else
-                        {
-                            fprintf(outfp, ", \"rt\":%.2f",  rcTemp);
-                        }
-                        if(lcTemp <-100.0)
-                        {
-                            fprintf(outfp, ", \"lt\":0.0");
-                        }
-                        else
-                        {
-                            fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
-                        }
+                        fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
+                    }
+                }
+                else
+                {
+                    if(rcTemp < -100.0)
+                    {
+                        fprintf(outfp, ", \"rt\":0.0");
+                    }
+                    else
+                    {
+                        fprintf(outfp, ", \"rt\":%.2f",  rcTemp);
+                    }
+                    if(lcTemp <-100.0)
+                    {
+                        fprintf(outfp, ", \"lt\":0.0");
+                    }
+                    else
+                    {
+                        fprintf(outfp, ", \"lt\":%.2f",  lcTemp);
                     }
                 }
             }
@@ -446,8 +441,18 @@ int main(int argc, char** argv)
         {
             break;
         }
+        // Per Bill Englkey
+        do
+        {
+            time(&new_count);
+            usleep(100000);
+        } while (new_count==sec_count);
+        sec_count = new_count;
+
+        //printf("Seconds ctr=%ld\n",sec_count);
+
         // wait p.outDelay (1000 ms default) for next poll.
-        usleep(p.outDelay);
+        // usleep(p.outDelay);
         utcTime = getUTC();
         if(p.buildLogPath)
         {
