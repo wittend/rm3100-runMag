@@ -1,9 +1,15 @@
 # CHANGES.txt
 ===========================================================
-# I should have started this a long time ago
+# Date: 2022-07-30 git tag 0.1.1 
+#--------------------------------------------------------------------------
+Fix output loop (thanks Bill Engelke!) to make samples much closer to 1 s
+Added metadata.json file to the logs file in lieu of a better solution.
+
+# Date: 2021-09-14
+#--------------------------------------------------------------------------
+Created version 0.1.0
 
 # Date: 2021-08-13 git tag 0.0.17 (alpha, may become 0.1.0)
-#--------------------------------------------------------------------------
 Added required format string to line ~168 needed to print output file name.
 Re-instated the flag that keeps the CSV header from printing in JSON code.
 
