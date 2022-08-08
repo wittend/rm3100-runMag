@@ -55,16 +55,6 @@ long currentTimeMillis()
     return time.tv_sec * 1000 + time.tv_usec / 1000;
 }
 
-// Perhaps more correct
-//#include<sys/time.h>
-//long long timeInMilliseconds(void)
-//{
-//    struct timeval tv;
-//
-//    gettimeofday(&tv,NULL);
-//    return (((long long)tv.tv_sec)*1000)+(tv.tv_usec/1000);
-//}
-
 //------------------------------------------
 // getUTC()
 //------------------------------------------
@@ -420,7 +410,7 @@ int setOutputFilePath(pList *p, char *outPath)
     }
     return rv;
 }
-//
+
 //------------------------------------------
 // showSettings()
 //------------------------------------------
@@ -431,10 +421,12 @@ void showSettings(pList *p)
 
     fprintf(stdout, "\nVersion = %s\n", version);
     fprintf(stdout, "\nCurrent Parameters:\n\n");
+#if(0)    
     if(!p->magRevId)
     {
         getMagRev(p);
     }
+#endif    
     fprintf(stdout, "   Magnetometer revision ID detected:          %i (dec)\n",    p->magRevId);
     fprintf(stdout, "   Log output path:                            %s\n",          p->buildLogPath ? "TRUE" : "FALSE");
     fprintf(stdout, "   Log output:                                 %s\n",          p->logOutput ? "TRUE" : "FALSE");
@@ -496,16 +488,16 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->boardType        = 0;
     p->boardMode        = LOCAL;
     p->doBistMask       = FALSE;
-    p->NOSRegValue      = 10;           // 1
+    p->NOSRegValue      = 10;
     p->DRDYdelay        = 0;
     p->buildLogPath     = FALSE;
 
-    p->cc_x             = CC_400;       // CC_200;
-    p->cc_y             = CC_400;       // CC_200;
-    p->cc_z             = CC_400;       // CC_200;
-    p->x_gain           = GAIN_150;     // GAIN_75;
-    p->y_gain           = GAIN_150;     // GAIN_75;
-    p->z_gain           = GAIN_150;     // GAIN_75;
+    p->cc_x             = CC_400;
+    p->cc_y             = CC_400;
+    p->cc_z             = CC_400;
+    p->x_gain           = GAIN_150;
+    p->y_gain           = GAIN_150;
+    p->z_gain           = GAIN_150;
 
     p->samplingMode     = POLL;
     p->readBackCCRegs   = FALSE;
@@ -704,14 +696,6 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->verboseFlag = TRUE;
                 p->quietFlag = FALSE;
                 break;
-//            case 'X':
-//                p->boardType = 0;
-//                p->boardMode = LOCAL;
-//                break;
-//            case 'x':
-//                p->boardType = 1;
-//                p->boardMode = REMOTE;
-//                break;
 #if (USE_PIPES)
             case 'Y':
                 p->useOutputPipe = TRUE;
@@ -756,8 +740,6 @@ int getCommandLine(int argc, char** argv, pList *p)
                 fprintf(stdout, "   -T                     :  Raw timestamp in milliseconds.        [ default: UTC string ]\n");
 //                fprintf(stdout, "   -U <delay as ms>       :  Delay in mSec before DRDY.            [ default: 0 ]\n");
                 fprintf(stdout, "   -V                     :  Display software version and exit.\n");
-//                fprintf(stdout, "   -X                     :  Read Simple Magnetometer Board (SMSB).\n");
-//                fprintf(stdout, "   -x                     :  Read board with extender (MSBx).\n");
 #if(USE_PIPES)
                 fprintf(stdout, "   -Y                     :  Use WebSockets.                       [ default False].\n");
 #endif

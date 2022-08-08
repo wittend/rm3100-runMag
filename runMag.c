@@ -83,16 +83,13 @@ unsigned short setMagSampleRate(pList *p, unsigned short sample_rate)
         { 125,  0x04},   // up to 125Hz
         { 220,  0x03}    // up to 250Hz
     };
-//printf("before for loop. I = %i\n", sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1);
     for(i = 0; i < sizeof(supported_rates)/(sizeof(unsigned short int) * 2) - 1; i++)
     {
         if(sample_rate <= supported_rates[i][0])
         {
-//printf("bbreaking from for loop\n");
             break;
         }
     }
-//printf("after for loop\n");
     p->CMMSampleRate = supported_rates[i][0];
     // i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->CMMSampleRate);
     return p->CMMSampleRate;
@@ -184,36 +181,61 @@ int startCMM(pList *p)
     return rv;
 }
 
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// Dave,
+//
+// Here is a general equation for gain taken directly from correspondence with PNI which I use in my Python scripts.
+// Gn=(Aval*(0.3671*Cycnt+1.5)/1000)
+// (0.3671*cycle count + 1.5)  when divided into the X Y or Z result with no averaging gives the correct value in micro teslas
+// Aval/1000 times (0.3671*cycle count + 1.5) when divided into the X Y or Z result gives the correct value in nano teslas.
+// Conversely, you can multiply the X Y or Z values by  1000/(Aval*(0.3671*Cycnt+1.5))
+// As far as I know, it is an exact gain equation for the RM3100 and works for ANY cycle count .... like 375, 405, 125, etc, etc.  No error prone lookup tables.
+//
+// Jules
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
 //------------------------------------------
-// setMagSampleRate()
+// getCCGainEquiv()
+//   Gn=(Aval*(0.3671*Cycnt+1.5)/1000)
 //------------------------------------------
 unsigned short getCCGainEquiv(unsigned short CCVal)
 {
-    int i = 0;
     unsigned short gain = 0;
-    const unsigned short int cc_values[][2] = 
-    {
-        /* [Hz], register value */
-        {   CC_50,  GAIN_20},   // up to 2Hz
-        {  CC_100,  GAIN_38},   // up to 4Hz
-        {  CC_200,  GAIN_75},   // up to 8Hz
-        {  CC_300, GAIN_113},   // up to 16Hz
-        {  CC_400, GAIN_150},   // up to 31Hz
-        {  CC_800, GAIN_300}    // up to ? Hz
-    };
-    // for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2) - 1; i++)
-    for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2); i++)
-    {
-        // printf("Testing (%i <= cc_values[ %i][0])\n", CCVal, i);
-        if(CCVal <= cc_values[i][0])
-        {
-            // printf ("Got it!\n");
-            gain = cc_values[i][1];
-            break;
-        }
-    }
+    double dGain = (0.3671 * CCVal + 1.5); 
+    gain = (unsigned short) dGain;
     return gain;
 }
+
+////------------------------------------------
+//// getCCGainEquiv()
+////------------------------------------------
+//unsigned short getCCGainEquiv(unsigned short CCVal)
+//{
+//    int i = 0;
+//    unsigned short gain = 0;
+//    const unsigned short int cc_values[][2] = 
+//    {
+//        /* [Hz], register value */
+//        {   CC_50,  GAIN_20},   // up to 2Hz
+//        {  CC_100,  GAIN_38},   // up to 4Hz
+//        {  CC_200,  GAIN_75},   // up to 8Hz
+//        {  CC_300, GAIN_113},   // up to 16Hz
+//        {  CC_400, GAIN_150},   // up to 31Hz
+//        {  CC_800, GAIN_300}    // up to ? Hz
+//    };
+//    // for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2) - 1; i++)
+//    for(i = 0; i < sizeof(cc_values)/(sizeof(unsigned short int) * 2); i++)
+//    {
+//        // printf("Testing (%i <= cc_values[ %i][0])\n", CCVal, i);
+//        if(CCVal <= cc_values[i][0])
+//        {
+//            // printf ("Got it!\n");
+//            gain = cc_values[i][1];
+//            break;
+//        }
+//    }
+//    return gain;
+//}
 
 //------------------------------------------
 // setCycleCountRegs()
@@ -260,43 +282,3 @@ void readCycleCountRegs(pList *p)
     fprintf(stdout, "regCC[%i]: 0x%X\n\n",  6, (uint8_t)regCC[6]);
 }
 
-////------------------------------------------
-//// setCMMReg()
-//// Sets Continuous Measurement Mode Data Rate
-////------------------------------------------
-//int getCMMReg(pList *p)
-//{
-//    return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
-//}
-//
-////------------------------------------------
-//// setCMMReg()
-//// Sets Continuous Measurement Mode Data Rate
-////------------------------------------------
-//void setCMMReg(pList *p)
-//{
-//    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
-//}
-//
-////------------------------------------------
-//// getTMRCReg()
-//// Sets Continuous Measurement Mode Data Rate
-////------------------------------------------
-//int getTMRCReg(pList *p)
-//{
-//    //To set the TMRC register, send the register address, 0x0B, followed by the desired
-//    //TMRC register value. To read the TMRC register, send 0x8B.
-//    return i2c_read(p->i2c_fd, RM3100I2C_TMRC);
-//}
-//
-////------------------------------------------
-//// setTMRCReg()
-//// Sets Continuous Measurement Mode Data Rate
-////------------------------------------------
-//void setTMRCReg(pList *p)
-//{
-//    //To set the TMRC register, send the register address, 0x0B, followed by the desired
-//    //TMRC register value. To read the TMRC register, send 0x8B.
-//    // printf("\nIn setTMRCReg(():: Setting TMRC sample rate to value: %i\n", p->TMRCRate);
-//    i2c_write(p->i2c_fd, RM3100I2C_TMRC, p->TMRCRate);
-//}

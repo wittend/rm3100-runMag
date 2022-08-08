@@ -183,6 +183,10 @@ int main(int argc, char** argv)
         // always stdout!
         fprintf(stdout,"\nStartup UTC time: %s", asctime(utcTime));
     }
+#if(TEST)
+    showSettings(&p);
+    exit(0);
+#endif
     // Open I2C bus (only one at a time for now)
     openI2CBus(&p);
     // Setup the magnetometer.
@@ -264,7 +268,7 @@ int main(int argc, char** argv)
         // Read Magnetometer.
         if((!p.localTempOnly) || (!p.remoteTempOnly))
         {
-            if(p.samplingMode == POLL)
+            if(p.samplingMode == POLL)                      // (p->samplingMode == POLL [default])
             {
                 readMagPOLL(&p, p.magnetometerAddr, rXYZ);
             }
@@ -334,12 +338,12 @@ int main(int argc, char** argv)
                     }
                 }
             }
-            double x = xyz[0] * 100.0;
-            double y = xyz[1] * 100.0;
-            double z = xyz[2] * 100.0;
-            fprintf(outfp, ", %.5f", x);
-            fprintf(outfp, ", %.5f", y);
-            fprintf(outfp, ", %.5f", z);
+            //double x = xyz[0] * 100.0;
+            //double y = xyz[1] * 100.0;
+            //double z = xyz[2] * 100.0;
+            fprintf(outfp, ", %.5f", xyz[0]);
+            fprintf(outfp, ", %.5f", xyz[1]);
+            fprintf(outfp, ", %.5f", xyz[2]);
             if(!p.hideRaw)
             {
                 fprintf(outfp, ", %i", rXYZ[0]);
@@ -351,9 +355,12 @@ int main(int argc, char** argv)
             }
             if(p.showTotal)
             {
-                double x = xyz[0] * 100.0;
-                double y = xyz[1] * 100.0;
-                double z = xyz[2] * 100.0;
+                //////double x = xyz[0] * 100.0;
+                //////double y = xyz[1] * 100.0;
+                //////double z = xyz[2] * 100.0;
+                double x = xyz[0];
+                double y = xyz[1];
+                double z = xyz[2];
                 fprintf(outfp, ", %.7f", sqrt((x * x) + (y * y) + (z * z)));
             }
             fprintf(outfp, "\n");
@@ -415,9 +422,9 @@ int main(int argc, char** argv)
                     }
                 }
             }
-            double x = xyz[0] * 100.0;
-            double y = xyz[1] * 100.0;
-            double z = xyz[2] * 100.0;
+            //double x = xyz[0] * 100.0;
+            //double y = xyz[1] * 100.0;
+            //double z = xyz[2] * 100.0;
             fprintf(outfp, ", \"x\":%.2f", xyz[0]);
             fprintf(outfp, ", \"y\":%.2f", xyz[1]);
             fprintf(outfp, ", \"z\":%.2f", xyz[2]);
@@ -429,9 +436,9 @@ int main(int argc, char** argv)
             }
             if(p.showTotal)
             {
-                double x = xyz[0] * 100.0;
-                double y = xyz[1] * 100.0;
-                double z = xyz[2] * 100.0;
+                //double x = xyz[0] * 100.0;
+                //double y = xyz[1] * 100.0;
+                //double z = xyz[2] * 100.0;
                 fprintf(outfp, ", \"Tm\": %.5f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
             }
             fprintf(outfp, " }\n");
