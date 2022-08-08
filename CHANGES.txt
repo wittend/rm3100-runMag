@@ -1,6 +1,11 @@
 # CHANGES.txt
 ===========================================================
-# Date: 2022-07-30 git tag 0.1.1 
+# Date: 2022-08-8 git tag 0.1.2
+#--------------------------------------------------------------------------
+Make changes to allow arbitrary values for the Cycle Counts Register.
+Make changes to fix old CSV formatting.
+
+# Date: 2022-07-30 git tag 0.1.1
 #--------------------------------------------------------------------------
 Fix output loop (thanks Bill Engelke!) to make samples much closer to 1 s
 Added metadata.json file to the logs file in lieu of a better solution.

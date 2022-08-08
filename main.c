@@ -64,7 +64,6 @@ int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
 {
     int rv = 0;
     int bytes_read = 0;
-    //short cmmMode = (CMMMODE_ALL);   // 71 d
 
     i2c_setAddress(p->i2c_fd, devAddr);
     // Check if DRDY went high and wait unit high before reading results
@@ -79,15 +78,14 @@ int readMagCMM(pList *p, int devAddr, int32_t *XYZ)
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
     XYZ[0] |= mSamples[2];
-//    XYZ[0] /= p->NOSRegValue;
+
     XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
     XYZ[1] |= mSamples[4] * 256;
     XYZ[1] |= mSamples[5];
-//    XYZ[1] /= p->NOSRegValue;
+
     XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
     XYZ[2] |= mSamples[7] * 256;
     XYZ[2] |= mSamples[8];
-//    XYZ[2] /= p->NOSRegValue;
 
     return bytes_read;
 }
@@ -121,15 +119,14 @@ int readMagPOLL(pList *p, int devAddr, int32_t *XYZ)
     XYZ[0] = ((signed char)mSamples[0]) * 256 * 256;
     XYZ[0] |= mSamples[1] * 256;
     XYZ[0] |= mSamples[2];
-//    XYZ[0] /= p->NOSRegValue;
+
     XYZ[1] = ((signed char)mSamples[3]) * 256 * 256;
     XYZ[1] |= mSamples[4] * 256;
     XYZ[1] |= mSamples[5];
-//    XYZ[1] /= p->NOSRegValue;
+
     XYZ[2] = ((signed char)mSamples[6]) * 256 * 256;
     XYZ[2] |= mSamples[7] * 256;
     XYZ[2] |= mSamples[8];
-//    XYZ[2] /= p->NOSRegValue;
 
     return bytes_read;
 }
@@ -183,10 +180,6 @@ int main(int argc, char** argv)
         // always stdout!
         fprintf(stdout,"\nStartup UTC time: %s", asctime(utcTime));
     }
-#if(TEST)
-    showSettings(&p);
-    exit(0);
-#endif
     // Open I2C bus (only one at a time for now)
     openI2CBus(&p);
     // Setup the magnetometer.
@@ -220,6 +213,7 @@ int main(int argc, char** argv)
             fprintf(outfp, "\"time\", \"rtemp\", \"ltemp\", \"x\", \"y\", \"z\", \"rx\", \"ry\", \"rz\", \"total\"\n");
         }
     }
+
 #if (USE_PIPES)
 
     if(p.useOutputPipe = TRUE)
@@ -265,7 +259,7 @@ int main(int argc, char** argv)
                 lcTemp = temp * 0.0625;
             }
         }
-        // Read Magnetometer.
+        // Set magnetometer sampling mode.
         if((!p.localTempOnly) || (!p.remoteTempOnly))
         {
             if(p.samplingMode == POLL)                      // (p->samplingMode == POLL [default])
@@ -338,30 +332,21 @@ int main(int argc, char** argv)
                     }
                 }
             }
-            //double x = xyz[0] * 100.0;
-            //double y = xyz[1] * 100.0;
-            //double z = xyz[2] * 100.0;
-            fprintf(outfp, ", %.5f", xyz[0]);
-            fprintf(outfp, ", %.5f", xyz[1]);
-            fprintf(outfp, ", %.5f", xyz[2]);
+            fprintf(outfp, ", %.4f", xyz[0]/1000);
+            fprintf(outfp, ", %.4f", xyz[1]/1000);
+            fprintf(outfp, ", %.4f", xyz[2]/1000);
             if(!p.hideRaw)
             {
-                fprintf(outfp, ", %i", rXYZ[0]);
-                fprintf(outfp, ", %i", rXYZ[1]);
-                fprintf(outfp, ", %i", rXYZ[2]);
-                // fprintf(outfp, ", rx: %i", rXYZ[0]);
-                // fprintf(outfp, ", ry: %i", rXYZ[1]);
-                // fprintf(outfp, ", rz: %i", rXYZ[2]);
+                fprintf(outfp, ", %i", rXYZ[0]/1000);
+                fprintf(outfp, ", %i", rXYZ[1]/1000);
+                fprintf(outfp, ", %i", rXYZ[2]/1000);
             }
             if(p.showTotal)
             {
-                //////double x = xyz[0] * 100.0;
-                //////double y = xyz[1] * 100.0;
-                //////double z = xyz[2] * 100.0;
-                double x = xyz[0];
-                double y = xyz[1];
-                double z = xyz[2];
-                fprintf(outfp, ", %.7f", sqrt((x * x) + (y * y) + (z * z)));
+                double x = xyz[0]/1000;
+                double y = xyz[1]/1000;
+                double z = xyz[2]/1000;
+                fprintf(outfp, ", %.4f", sqrt((x * x) + (y * y) + (z * z)));
             }
             fprintf(outfp, "\n");
         }
@@ -422,24 +407,21 @@ int main(int argc, char** argv)
                     }
                 }
             }
-            //double x = xyz[0] * 100.0;
-            //double y = xyz[1] * 100.0;
-            //double z = xyz[2] * 100.0;
-            fprintf(outfp, ", \"x\":%.2f", xyz[0]);
-            fprintf(outfp, ", \"y\":%.2f", xyz[1]);
-            fprintf(outfp, ", \"z\":%.2f", xyz[2]);
+            fprintf(outfp, ", \"x\":%.4f", xyz[0]/1000);
+            fprintf(outfp, ", \"y\":%.4f", xyz[1]/1000);
+            fprintf(outfp, ", \"z\":%.4f", xyz[2]/1000);
             if(!p.hideRaw)
             {
-                fprintf(outfp, ", \"rx\":%i", rXYZ[0]);
-                fprintf(outfp, ", \"ry\":%i", rXYZ[1]);
-                fprintf(outfp, ", \"rz\":%i", rXYZ[2]);
+                fprintf(outfp, ", \"rx\":%i", rXYZ[0]/1000);
+                fprintf(outfp, ", \"ry\":%i", rXYZ[1]/1000);
+                fprintf(outfp, ", \"rz\":%i", rXYZ[2]/1000);
             }
             if(p.showTotal)
             {
-                //double x = xyz[0] * 100.0;
-                //double y = xyz[1] * 100.0;
-                //double z = xyz[2] * 100.0;
-                fprintf(outfp, ", \"Tm\": %.5f",  sqrt((xyz[0] * xyz[0]) + (xyz[1] * xyz[1]) + (xyz[2] * xyz[2])));
+                double x = xyz[0]/1000;
+                double y = xyz[1]/1000;
+                double z = xyz[2]/1000;
+                fprintf(outfp, ", \"Tm\": %.4f",  sqrt((x * x) + (y * y) + (z * z)));
             }
             fprintf(outfp, " }\n");
         }

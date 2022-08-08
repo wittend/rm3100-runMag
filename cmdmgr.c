@@ -13,8 +13,6 @@
 #include "cmdmgr.h"
 
 extern char version[];
-//extern char outputPipeName[MAXPATHBUFLEN];
-//extern char inputPipeName[MAXPATHBUFLEN];
 extern char outFilePath[MAXPATHBUFLEN];
 extern char workFilePath[MAXPATHBUFLEN];
 extern char rollOverTime[UTCBUFLEN];
@@ -138,7 +136,6 @@ int buildLogFilePath(pList *p)
     strftime(utcStr, UTCBUFLEN, "%Y%m%d-runmag.log", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"
     //strftime(utcStr, UTCBUFLEN, "%Y%m%d-%H%M-runmag.log", utcTime);        // RFC 2822: "%a, %d %b %Y %T %z"      RFC 822: "%a, %d %b %y %T %z"
     strcat(p->outputFilePath, utcStr);
-    //printf("p->outputFilePath: %s\n", p->outputFilePath);
     return rv;
 }
 
@@ -421,13 +418,6 @@ void showSettings(pList *p)
 
     fprintf(stdout, "\nVersion = %s\n", version);
     fprintf(stdout, "\nCurrent Parameters:\n\n");
-#if(0)    
-    if(!p->magRevId)
-    {
-        getMagRev(p);
-    }
-#endif    
-    fprintf(stdout, "   Magnetometer revision ID detected:          %i (dec)\n",    p->magRevId);
     fprintf(stdout, "   Log output path:                            %s\n",          p->buildLogPath ? "TRUE" : "FALSE");
     fprintf(stdout, "   Log output:                                 %s\n",          p->logOutput ? "TRUE" : "FALSE");
     //fprintf(stdout, "   Log Rollover time:                          %s\n",          p->logOutputTime);
@@ -488,7 +478,7 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->boardType        = 0;
     p->boardMode        = LOCAL;
     p->doBistMask       = FALSE;
-    p->NOSRegValue      = 10;
+    p->NOSRegValue      = 60;
     p->DRDYdelay        = 0;
     p->buildLogPath     = FALSE;
 
@@ -501,7 +491,7 @@ int getCommandLine(int argc, char** argv, pList *p)
 
     p->samplingMode     = POLL;
     p->readBackCCRegs   = FALSE;
-    p->CMMSampleRate    = 200;
+    p->CMMSampleRate    = 400;
     p->hideRaw          = FALSE;
     //p->i2cBusNumber     = 1;
     p->i2cBusNumber     = busDevs[eRASPI_I2C_BUS].busNumber;
@@ -532,11 +522,6 @@ int getCommandLine(int argc, char** argv, pList *p)
     p->logOutput        = FALSE;
     p->Version          = version;
 
-//#if (USE_PIPES)
-//    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:YvVZ")) != -1)
-//#else
-//    while((c = getopt(argc, argv, "?aA:b:B:c:Cd:D:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:U:vVZ")) != -1)
-//#endif
 #if (USE_PIPES)
     while((c = getopt(argc, argv, "?aA:b:B:c:CD:Ef:F:g:HhjklL:mM:O:PqrR:sS:Tt:YvVZ")) != -1)
 #else
@@ -581,7 +566,7 @@ int getCommandLine(int argc, char** argv, pList *p)
                 p->cc_x = p->cc_y = p->cc_z = atoi(optarg);
                 if((p->cc_x > CC_800) || (p->cc_x <= 0))
                 {
-                    fprintf(stderr, "\n ERROR Invalid: cycle count > 400 (dec) or cycle count  <= 0.\n\n");
+                    fprintf(stderr, "\n ERROR Invalid: cycle count > 800 (dec) or cycle count  <= 0.\n\n");
                     exit(1);
                 }
                 p->x_gain = p->y_gain = p->z_gain = getCCGainEquiv(p->cc_x);

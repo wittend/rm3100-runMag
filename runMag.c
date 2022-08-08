@@ -176,7 +176,6 @@ int startCMM(pList *p)
 {
     int rv = 0;
     short cmmMode = (CMMMODE_ALL);   // 71 d
-    // Start CMM on X, Y, Z 
     rv = i2c_write(p->i2c_fd, RM3100I2C_CMM, cmmMode);
     return rv;
 }

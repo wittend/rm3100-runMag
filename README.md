@@ -4,7 +4,7 @@ This is a program intended to assist in testing the PNI RM3100 geomagnetic senso
 OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
 /dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
 
-The current pre-release code is 0.1.1
+The current pre-release code is 0.1.2
 
 Just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
@@ -50,7 +50,7 @@ Logging will continue to the new file uninterrupted.
 ## Example output using -h or -? option:
 
     david@marmoset:~/Projects/git/rm3100-runMag$ ./runMag -h
-    
+
     ./runMag Version = 0.1.0
 
     Parameters:
