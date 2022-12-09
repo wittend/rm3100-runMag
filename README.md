@@ -1,8 +1,34 @@
 # rm3100-runMag
 
-This is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.  It is written in simple C. It is intended for use on boards such as the Raspberry Pi 4, Odroid, Nvidia Nano and their kin. It uses Linux
-OS resources to open, read, write, and close the device through the appropriate I2C bus.  It does not support SPI.  It assumes that the I2C kernel drivers are installed, and that device names such as /dev/i2c-1,
-/dev/i2c-2, can be listed using ls.  (The exact numbers vary depending on the device used).
+This is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.
+
+The rm3100 support boards were developed for use with the Personal Space Weather Station (PSWS) TangerineSDR and Grape Space Weather monitors.  These board pairs report both magnetic field strength as three independent vectors, from which a total field strength may be derived.  They also report the cemperature in the immeddiate environment of the remotely placed sensor and at the near end of the pair as a fraction of a degree C.  They may also be used standalone with only a Pi or Pi clone board.  Various pieces of software have been used to develop, test, and run the these boards as part of the hardware suite and as standalone low-cost monitors of the Earth's magnetic field.
+
+At one time or another, testers and developers of these boards have used utilities included in the Raspberry Pi OS I2Ctools package, ad hoc python scripts, and purpose-built programs written in C for their work.  All are possible.
+
+Currently the program code most used in this project is called **runMag**. 
+
+The utility **runMag** is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.  
+It is written in simple, portable C.
+
+* The **runMag** utility is written as a Linux command line program and takes all configuration parameters from its commandline. runMag has some built in documentation that displays the command line options when a user types 'runMag -h' at a command prompt. It has a feature that reports the options understood by the program when the user types 'runMag -P' + the options used.
+
+* As long as the Pi I2C kernel driver is activated (usually by configuring I2C I/O in the raspi-setup utility), no other library dependencies are required. 
+* **runMag** does not require any specialized software libraries that work only with boards created by the Raspberry Pi foundation.  
+* It does not support RM3100 devices configured to require an SPI interface.  
+
+* The software was written to be used on boards such as the Raspberry Pi 3/4, Odroid, Nvidia Nano and their kin. It has been tested, if not thouroughly, on many similar single board designs. runMag was written with the expectation that the host provides the defacto standard 40 pin IO bus of Raspberry Pi 3's and their clones.
+* While the code may build on desktop systems, its use makes no sense unless the I2C bus is accessable.
+ 
+* **runMag** uses Linux OS file handles to open, read, write, and close the device through the appropriate I2C bus.  
+The utility was written for maximum generality and should compile on any Linux host that supplies the standard GNU C compiler and build utilities.
+
+* **runMag** assumes that the I2C kernel drivers are installed, and that I2C bus names such as /dev/i2c-1, /dev/i2c-2, can be listed using ls. (The exact numbers vary depending on the device used).
+
+* The software allows reading almost all of the useful registers of the RM3100.  It also reads the MCP9808 (or equivalent) precision temperature sensors on both the local and remote components of the support board pair.
+
+* **runMag** concatenates each collected sample of data to a log file as an individual JSON object at 1s intervals. The software writes a log file to a specified location on the host system for collection and transfer to a data aggregation system. If no output file is configured, the output is written to the 'stdout', ordinarily the system console. runMag observes the current host's clock time and closes each day's log at 00:00:00 UTC and open's a new one for the next UTC day.
+
 
 The current pre-release code is 0.1.2
 
