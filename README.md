@@ -17,7 +17,7 @@ It is written in simple, portable C.
 * **runMag** does not require any specialized software libraries that work only with boards created by the Raspberry Pi foundation.  
 * It does not support RM3100 devices configured to require an SPI interface.  
 
-* The software was written to be used on boards such as the Raspberry Pi 3/4, Odroid, Nvidia Nano and their kin. It has been tested, if not thouroughly, on many similar single board designs. runMag was written with the expectation that the host provides the defacto standard 40 pin IO bus of Raspberry Pi 3's and their clones.
+* This software was written to be used on boards such as the Raspberry Pi 3/4, Odroid, Nvidia Nano and their kin. It has been tested, if not thouroughly, on many similar single board designs. **runMag** was written with the expectation that the host provides the defacto standard 40 pin IO bus of Raspberry Pi 3's and their clones.
 * While the code may build on desktop systems, its use makes no sense unless the I2C bus is accessable.
  
 * **runMag** uses Linux OS file handles to open, read, write, and close the device through the appropriate I2C bus.  
@@ -27,7 +27,7 @@ The utility was written for maximum generality and should compile on any Linux h
 
 * The software allows reading almost all of the useful registers of the RM3100.  It also reads the MCP9808 (or equivalent) precision temperature sensors on both the local and remote components of the support board pair.
 
-* **runMag** concatenates each collected sample of data to a log file as an individual JSON object at 1s intervals. The software writes a log file to a specified location on the host system for collection and transfer to a data aggregation system. If no output file is configured, the output is written to the 'stdout', ordinarily the system console. runMag observes the current host's clock time and closes each day's log at 00:00:00 UTC and open's a new one for the next UTC day.
+* **runMag** concatenates each collected sample of data to a log file as an individual JSON object at 1s intervals. The software writes a log file to a specified location on the host system for collection and transfer to a data aggregation system. If no output file is configured, the output is written to the 'stdout', ordinarily the system console. **runMag** observes the current host's clock time and closes each day's log at 00:00:00 UTC and open's a new one for the next UTC day.
 
 
 The current pre-release code is 0.1.2
