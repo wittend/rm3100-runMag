@@ -135,7 +135,7 @@ Logging will continue to the new file uninterrupted.
 
     dave@raspi-3:~/projects/rm3100-runMag $ ./runMag -Psl
 
-        Version = 0.1.3
+        Version = 0.1.3 
 
         Current Parameters:
 
