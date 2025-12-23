@@ -30,7 +30,7 @@ The utility was written for maximum generality and should compile on any Linux h
 * **runMag** concatenates each collected sample of data to a log file as an individual JSON object at 1s intervals. The software writes a log file to a specified location on the host system for collection and transfer to a data aggregation system. If no output file is configured, the output is written to the 'stdout', ordinarily the system console. **runMag** observes the current host's clock time and closes each day's log at 00:00:00 UTC and open's a new one for the next UTC day.
 
 
-The current pre-release code is 0.1.2
+The current pre-release code is 0.1.3
 
 Just clone this project into your home directory on the Raspberry Pi or board with similar bus using:
 
@@ -77,7 +77,7 @@ Logging will continue to the new file uninterrupted.
 
     david@marmoset:~/Projects/git/rm3100-runMag$ ./runMag -h
 
-    ./runMag Version = 0.1.0
+    ./runMag Version = 0.1.3
 
     Parameters:
 
@@ -135,7 +135,7 @@ Logging will continue to the new file uninterrupted.
 
     dave@raspi-3:~/projects/rm3100-runMag $ ./runMag -Psl
 
-        Version = 0.0.7
+        Version = 0.1.3
 
         Current Parameters:
 
