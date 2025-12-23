@@ -1,0 +1,1000 @@
+<!DOCTYPE html">
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title></title>
+        <meta name="generator" content="LibreOffice 6.0.7.3 (Linux)"/>
+        <meta name="created" content="2020-04-01T09:59:27.983935440"/>
+        <meta name="changed" content="2020-04-03T17:54:29.871864607"/>
+        <style type="text/css">
+            @page { margin: 0.79in }
+            td p { margin-bottom: 0in; line-height: 115% }
+            h1 { margin-bottom: 0.08in }
+            h1.western { font-family: "Liberation Sans", sans-serif; font-size: 18pt }
+            h1.cjk { font-family: "Noto Sans CJK SC"; font-size: 18pt }
+            h1.ctl { font-family: "Lohit Devanagari"; font-size: 18pt }
+            p { margin-bottom: 0.1in; line-height: 115% }
+            h2.western { font-family: "Liberation Sans", sans-serif; font-size: 16pt }
+            h2.cjk { font-family: "Noto Sans CJK SC"; font-size: 16pt }
+            h2.ctl { font-family: "Lohit Devanagari"; font-size: 16pt }
+            a:link { so-language: zxx }
+        </style>
+    </head>
+    <body lang="en-US" dir="ltr">
+        <table width="100%" cellpadding="4" cellspacing="0" style="page-break-before: always">
+            <col width="128*">
+            <col width="128*">
+            <tr valign="top">
+                <td width="50%" style="background: transparent" style="border: none; padding: 0in">
+                    <p align="left" style="font-variant: normal; font-style: normal; font-weight: normal; text-decoration: none">
+                    <font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Date:</font></font></font></p>
+                </td>
+                <td width="50%" style="background: transparent" style="border: none; padding: 0in">
+                    <p align="left" style="font-variant: normal; text-decoration: none">
+                    <font color="#000000"><sdfield type=DATETIME sdval="43922.5053302061" sdnum="1033;1033;DD MMMM YYYY">01 April 2020</sdfield></font></p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td width="50%" style="background: transparent" style="border: none; padding: 0in">
+                    <p align="left" style="font-variant: normal; font-style: normal; font-weight: normal; text-decoration: none">
+                    <font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Author:</font></font></font></p>
+                </td>
+                <td width="50%" style="background: transparent" style="border: none; padding: 0in">
+                    <p align="left" style="font-variant: normal; font-style: normal; font-weight: normal; text-decoration: none">
+                    <font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">David
+                    Witten</font></font></font></p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td width="50%" style="background: transparent" style="border: none; padding: 0in">
+                    <p align="left" style="font-variant: normal; font-style: normal; font-weight: normal; text-decoration: none">
+                    <font color="#000000"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Pages:</font></font></font></p>
+                </td>
+                <td width="50%" style="background: transparent" style="border: none; padding: 0in">
+                    <p align="left" style="font-variant: normal; text-decoration: none">
+                    <font color="#000000"><sdfield type=DOCSTAT subtype=PAGE format=PAGE>9</sdfield></font></p>
+                </td>
+            </tr>
+        </table>
+        <h1 class="western">
+            Setting up the Single Board Computers (SBCs) running Linux for testing the Magnetometer Support Boards (MSBs)
+        </h1>
+        <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+        </p>
+        <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+        </p>
+        <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124">
+                <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                    <font size="3" style="font-size: 12pt">
+                        Setting I2C up on Single Board Computers(SBCs) is usually fairly simple. Here
+                        are some examples. Most boards running Linux kernels with recent
+                        distributions of Ubuntu, Debian, or related distributions will be
+                        similar.
+                    </font>
+                </font>
+            </font>
+        </p>
+        <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+        </p>
+        <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124">
+                <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                    <font size="3" style="font-size: 12pt">
+                        These instructions assume the use of a single board computer with an
+                        equivalent to the 40 pin GPIO bus used by Raspberry Pi’s. It is
+                        possible to use either of the Magnetometer Support Board variants
+                        with Arduino or other microcontrollers that support a 3.3v I2C bus,
+                        but that is not covered here.
+                    </font>
+                </font>
+            </font>
+        </p>
+        <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+        </p>
+        <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124">
+                <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                    <font size="3" style="font-size: 12pt">
+                        The Magnetometer Support Boards are NOT 5.5v tolerant on the I2C bus.
+                        Only the extender version uses 5v, and it only uses it on the
+                        ‘External 5v’ connector.
+                    </font>
+                </font>
+            </font>
+        </p>
+        <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+        </p>
+        <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124">
+                <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                    <font size="3" style="font-size: 12pt">
+                        <font color="#ce181e">
+                            <font size="2" style="font-size: 10pt">
+                                <i>
+                                    <b>
+                                        <span style="background: transparent">
+                                            Warning: Applying 5v (or higher) to any other pins will damage the magnetometer.
+                                        </span>
+                                    </b>
+                                </i>
+                            </font>
+                        </font>
+                    </font>
+                </font>
+            </font>
+        </p>
+        <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+        </p>
+        <p style="margin-bottom: 0in; line-height: 100%">
+            <font face="Liberation Sans, sans-serif">
+                <span style="font-variant: normal">
+                    <font color="#202124">
+                        <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                            <font size="3" style="font-size: 12pt">
+                                <span style="letter-spacing: normal">
+                                    <span style="font-style: normal">
+                                        <span style="font-weight: normal">
+                                            I
+                                        </span>
+                                    </span>
+                                </span>
+                            </font>
+                        </font>
+                    </font>
+                </span>
+                <span style="font-variant: normal">
+                    <font color="#202124">
+                        <span style="letter-spacing: normal">
+                        </span>
+                    </font>
+                </span>
+                <span style="font-variant: normal">
+                    <font color="#202124">
+                        <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                            <font size="3" style="font-size: 12pt">
+                                <span style="letter-spacing: normal">
+                                    <span style="font-style: normal">
+                                        <span style="font-weight: normal">
+                                            also assume that you have the following incidental items:
+                                        </span>
+                                    </span>
+                                </span>
+                            </font>
+                        </font>
+                    </font>
+                </span>
+            </font>
+        </p>
+        <p style="margin-bottom: 0in; line-height: 100%">
+            <br/>
+        </p>
+        <ul>
+            <li/>
+                <p style="margin-bottom: 0in; line-height: 100%">
+                    <font face="Liberation Sans, sans-serif">
+                        SparkFun Qwiic pHAT v2.0 for Raspberry Pi
+                        <a href="https://www.sparkfun.com/products/15945">https://www.sparkfun.com/products/15945</a>
+                    </font>
+                </p>
+                <li/>
+                <p style="margin-bottom: 0in; line-height: 100%">
+                    <font face="Liberation Sans, sans-serif">
+                        Qwiic Cable – 100mm (or longer) <a href="https://www.sparkfun.com/products/14427">https://www.sparkfun.com/products/14427</a>
+                    </font>
+                </p>
+                </ul>
+                <p style="margin-bottom: 0in; line-height: 100%">
+                    <br/>
+                </p>
+                <p style="margin-bottom: 0in; line-height: 100%">
+                    <font face="Liberation Sans, sans-serif">
+                        For MSB with Extender function:
+                    </font>
+                </p>
+                <p style="margin-bottom: 0in; line-height: 100%">
+                    <br/>
+                </p>
+                <ul>
+                    <li/>
+                        <p style="margin-bottom: 0in; line-height: 100%">
+                            <font face="Liberation Sans, sans-serif">
+                                1 pair Jumper Wires 6&quot; M/F (like
+                                <a href="https://www.sparkfun.com/products/9140">https://www.sparkfun.com/products/9140</a>)
+                            </font>
+                        </p>
+                    <li/>
+                    <p style="margin-bottom: 0in; line-height: 100%">
+                        <font face="Liberation Sans, sans-serif">
+                            For bench testing - Five foot sheilded twisted pair CAT-6a cable:
+                        </font>
+                    </p>
+                    <p style="margin-bottom: 0in; line-height: 100%">
+                        <a href="https://www.amazon.com/dp/B00HEM5MZU/ref=psdc_9938478011_t3_B00HEM653S">https://www.amazon.com/dp/B00HEM5MZU/ref=psdc_9938478011_t3_B00HEM653S</a>
+                    </p>
+                </ul>
+                <p style="margin-bottom: 0in; line-height: 100%">
+                    <font face="Liberation Sans, sans-serif">
+                        And/Or:
+                    </font>
+                </p>
+                <ul>
+            <li/>
+                <p style="margin-bottom: 0in; line-height: 100%">
+                    <font face="Liberation Sans, sans-serif">
+                        <font size="3" style="font-size: 12pt">
+                            For remote use
+                        </font>
+                    </font>
+                    <font face="Liberation Sans, sans-serif">
+                        <font size="3" style="font-size: 12pt">-100
+                        </font>
+                    </font>
+                    <font face="Liberation Sans, sans-serif">
+                        <font size="3" style="font-size: 12pt">
+                            foot sheilded twisted pair CAT-6a cable:
+                        </font>
+                    </font>
+                    <a href="https://www.amazon.com/gp/product/B00HEM653S/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&amp;psc=1">
+                        <font face="Liberation Sans, sans-serif">
+                            <font size="2" style="font-size: 9pt">https://www.amazon.com/gp/product/B00HEM653S/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&amp;psc=1
+                            </font>
+                        </font>
+                    </a>
+                </p>
+            </ul>
+            <p style="margin-bottom: 0in; line-height: 100%">
+                <br/>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%">
+                <br/>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%">
+                <br/>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%">
+                <img src="Setting%20up%20the%20Single%20Board%20Computers%20(SBCs)%20running%20Linux%20for%20testing%20the%20Magnetometer%20Support%20Boards%20(MSBs)_html_c3fdc8c2d8996b2b.gif" name="Image1" align="left" width="589" height="578">
+                    <!-- br clear="right"/ -->
+                </img>
+                <br/>
+            </p>
+            <h2 class="western" style="page-break-before: always">
+                Notes for setting I2C up to work on Odroid N2
+            </h2>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#222222">
+                    <font face="Arial, Helvetica, sans-serif">
+                        <font size="3" style="font-size: 12pt">
+                            <b>
+                                Setting the I2c bitrate on the Odroid-N2
+                            </b>
+                        </font>
+                    </font>
+                </font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#222222">
+                    <font face="Arial, Helvetica, sans-serif">
+                        <font size="3" style="font-size: 12pt">
+                            The Personal Space Weather Station project specifies an I2C bit rate of
+                            100k. The default on many buses (like the Odroid N2 bus 1) is 400k or
+                            higher. This needs to be adjusted as the extender function may not
+                            work reliably at higher rates.
+                        </font>
+                    </font>
+                </font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+            </p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <span style="font-variant: normal">
+                    <font color="#222222">
+                        <font face="Arial, Helvetica, sans-serif">
+                            <font size="3" style="font-size: 12pt">
+                                <span style="letter-spacing: normal">
+                                    <span style="font-style: normal">
+                                        <span style="font-weight: normal">
+                                            How to detect current I2C bus speed:
+                                            <br/>
+                                            <br/>
+                                        </span>
+                                    </span>
+                                </span>
+                            </font>
+                        </font>
+                    </font>
+                </span>
+                <span style="font-variant: normal">
+                    <font color="#222222">
+                        <font face="Arial, Helvetica, sans-serif">
+                            <font size="2" style="font-size: 10pt">
+                                <span style="letter-spacing: normal">
+                                    <span style="font-style: normal">
+                                        <span style="font-weight: normal">
+                                            dave@n2:~$ sudo cat /sys/bus/i2c/devices/i2c-2/
+                                        </span>
+                                    </span>
+                                </span>
+                            </font>
+                        </font>
+                    </font>
+                </span>
+                <span style="font-variant: normal">
+                    <font color="#222222">
+                        <font face="Arial, Helvetica, sans-serif">
+                            <font size="3" style="font-size: 12pt">
+                                <span style="letter-spacing: normal">
+                                    <span style="font-style: normal">
+                                        <span style="font-weight: normal">
+                                            <br/>
+                                            <br/>
+                                            It will probably return 400000, indicating that the default bit rate is
+                                            set to 400k - to fast for our project!
+                                            <br/>
+                                            <br/>
+                                            How to change I2c bus speed until next reboot:
+                                            <br/>
+                                            <br/>
+                                        </span>
+                                    </span>
+                                </span>
+                            </font>
+                        </font>
+                    </font>
+                </span>
+                <span style="font-variant: normal">
+                    <font color="#222222">
+                        <font face="Arial, Helvetica, sans-serif">
+                            <font size="2" style="font-size: 10pt">
+                                <span style="letter-spacing: normal">
+                                    <span style="font-style: normal">
+                                        <span style="font-weight: normal">
+                                            dave@n2:~$ sudo su
+                                            <br/>
+                                            root@n2:~# sudo echo 100000 &gt;
+                                            /sys/bus/i2c/devices/i2c-2/
+                                            <br/>
+                                            root@n2:~# exit
+                                        </span>
+                                    </span>
+                                </span>
+                            </font>
+                        </font>
+                    </font>
+                </span>
+            </p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            <br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><b>How
+            to change the I2C bus speed so that the new speed will work across
+            reboots:<br/>
+            </b></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">dave@n2:~$
+            sudo apt update<br/>
+            dave@n2:~$ sudo apt install
+            device-tree-compiler<br/>
+            dave@n2:~# sudo cp
+            /media/boot/meson64_odroidn2.<br/>
+            dave@n2:~# sudo dtc -I dtb -O dts
+            /media/boot/meson64_odroidn2.dtb &gt;
+            /media/boot/meson64_odroidn2_disasm.dts<br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            (ignore
+            all the warnings)<br/>
+            <br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><b>then
+            edit :</b></span></span></font></font></font></span></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">root@n2:~#
+            nano /media/boot/meson64_odroidn2_disasm.dts</span></span></span></font></font></font></span></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">F</span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><b>ind
+            and change:</b></span></span></font></font></font></span></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p align="left" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt">i2c@1d000
+            {</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%">compatible =
+            &quot;amlogic,meson-g12b-i2c&quot;;<br/>
+            status = &quot;okay&quot;;<br/>
+            reg
+            = &lt;0x0 0x1d000 0x0 0x20&gt;;<br/>
+            interrupts = &lt;0x0 0xd7 0x1
+            0x0 0x5e 0x1&gt;;<br/>
+            #address-cells = &lt;0x1&gt;;<br/>
+            #size-cells
+            = &lt;0x0&gt;;<br/>
+            clocks = &lt;0x2 0x2a&gt;;<br/>
+            clock-names =
+            &quot;clk_i2c&quot;;<br/>
+            pinctrl-names = &quot;default&quot;,
+            &quot;gpio_periphs&quot;;<br/>
+            pinctrl-0 = &lt;0x26&gt;;<br/>
+            pinctrl-1
+            = &lt;0x27&gt;;<br/>
+            clock-frequency = &lt;0x61a80&gt;;<br/>
+            phandle
+            = &lt;0xaf&gt;;<br/>
+            };</p>
+            <p align="left" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><br/>
+            <font size="3" style="font-size: 12pt"><b>To:</b></font></font></font></font></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p align="left" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt">i2c@1d000
+            {</font></font></font></p>
+            <p align="left" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><font size="2" style="font-size: 10pt">compatible
+            = &quot;amlogic,meson-g12b-i2c&quot;;<br/>
+            status = &quot;okay&quot;;<br/>
+            reg
+            = &lt;0x0 0x1d000 0x0 0x20&gt;;<br/>
+            interrupts = &lt;0x0 0xd7 0x1
+            0x0 0x5e 0x1&gt;;<br/>
+            #address-cells = &lt;0x1&gt;;<br/>
+            #size-cells
+            = &lt;0x0&gt;;<br/>
+            clocks = &lt;0x2 0x2a&gt;;<br/>
+            clock-names =
+            &quot;clk_i2c&quot;;<br/>
+            pinctrl-names = &quot;default&quot;,
+            &quot;gpio_periphs&quot;;<br/>
+            pinctrl-0 = &lt;0x26&gt;;<br/>
+            pinctrl-1
+            = &lt;0x27&gt;;<br/>
+            clock-frequency = &lt;0x186a0&gt;;<br/>
+            phandle
+            = &lt;0xaf&gt;;<br/>
+            };<br/>
+            </font><br/>
+            <b>NOTICE:</b> changed part
+            is: clock-frequency = &lt;0x61a80&gt;; changed to: clock-frequency =
+            &lt;0x186a0&gt;;</font></font></font></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            Then
+            save to a new file name - I used:
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">'/media/boot/meson64_odroidn2_mod-i2c-2@1000k.dts'</span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            <br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><b>Next,
+            compile the new file</b></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">:</span></span></span></font></font></font></span></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">root@n2:~#
+            sudodtc -I dts -O dtb
+            '/media/boot/meson64_odroidn2_mod-i2c-2@1000k.dts' &gt;
+            /media/boot/meson64_odroidn2.dtb </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">(ignore
+            all the warnings)<br/>
+            <br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><b>Then
+            reboot.</b></span></span></font></font></font></span></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p align="left" style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt">If
+            this has worked, you can do this again to check the new default
+            speed:</font></font></font></p>
+            <p align="left" style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            </span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="2" style="font-size: 10pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">dave@n2:~$
+            sudo cat /sys/bus/i2c/devices/i2c-2/</span></span></span></font></font></font></span><span style="font-variant: normal"><font color="#222222"><font face="Arial, Helvetica, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><br/>
+            <br/>
+            It
+            should return: 100000</span></span></span></font></font></font></span></p>
+            <h2 class="western"><br/>
+            <br/>
+            
+            </h2>
+            <h2 class="western" style="page-break-before: always">Notes for
+            setting I2C up to work on RAS-Pi 3 &amp; 4</h2>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">I
+            will assume that you will use the current default full Raspbian OS.
+            It uses the same image for all versions:</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">I
+            suggest:</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Raspbian
+            Buster with desktop</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Image
+            with desktop based on Debian Buster</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Version:February
+            2020</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Release
+            date:2020-02-13</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Kernel
+            version:4.19</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Size:1136
+            MB</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">https://downloads.raspberrypi.org/raspbian_latest</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">When
+            you have this zip file, you need to uncompress it with a zip64
+            compatible unzip tool:</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">My
+            favorite for Windows is 7-Zip. for Mac, apparently The Unarchiver is
+            equivalent. for Linux Unzip works.</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124">
+                    <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                        <font size="3" style="font-size: 12pt">
+                            The instructions from the official Raspberry Pi site say:
+                        </font>
+                    </font>
+                </font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124">
+                “
+                <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                    <font size="2" style="font-size: 10pt">
+                        <i>
+                            <span style="font-weight: normal">
+                                balenaEtcher is a graphical SD card writing tool that works on Mac OS, Linux and
+                                Windows, and is the easiest option for most users. balenaEtcher also
+                                supports writing images directly from the zip file, without any
+                                unzipping required. To write your image with balenaEtcher:
+                            </span>
+                        </i>
+                    </font>
+                </font>
+            </font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124">
+                    <font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif">
+                        <font size="2" style="font-size: 10pt">
+                            <i>
+                                Download the latest version of balenaEtcher and install it.
+                            </i>
+                        </font>
+                    </font>
+                </font>
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Connect
+            an SD card reader with the SD card inside.</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Open
+            balenaEtcher and select from your hard drive the Raspberry Pi .img or
+            .zip file you wish to write to the SD card.</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Select
+            the SD card you wish to write your image to.</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Review
+            your selections and click 'Flash!' to begin writing data to the SD
+            card.</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Note:
+            for Linux users, zenity might need to be installed on your machine
+            for balenaEtcher to be able to write the image on your SD card.</i></font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>For
+            more advanced control of this process, see our system-specific
+            guides:</i></font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Linux</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Mac
+            OS</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Windows</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>Chrome
+            OS</i></font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="2" style="font-size: 10pt"><i>There
+            are other ways to do ths as well, but this should be safe.”</i></font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Now
+            you need to plug in monitor, keyboard, and mouse. I prefer a wireless
+            keyboard/mouse combo. If possible, connect a wired network connection
+            at first, but a reliable WiFi environment should work.</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Then
+            power up the Pi and let it guide you through the setup. Then let it
+            restart,</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">In
+            recent versions, you can select Menu &gt; Preferences &gt; Raspberry
+            Pi Configuration and then you get an applet thing. It you select the
+            tab &quot;Interfaces&quot; you can turn I2C and I also Select SSH.
+            You might also consider Serial Port and VNC.</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Alternatively,
+            from a terminal window/command prompt, you can type sudo raspi-config
+            and make these changes.</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Again,
+            you should reboot the Pi.</font></font></font></p>
+            <h2 class="western"><br/>
+            <br/>
+            
+            </h2>
+            <h2 class="western" style="page-break-before: always">Procedure for
+            all SBCs</h2>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Assuming
+            that you have completed the appropriate configuration above, the next
+            step is to make sure the appropriate devices are now available.</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Open
+            a terminal window and type ls /dev/i2c*. You should see it respond
+            with entries like &quot;/dev/i2c-1&quot;. This indicates that the
+            system driver is loaded for I2C bus 1. It will be different on
+            different types of SBC. I have one that lists 0 – 8.</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">The
+            Raspberry Pi boards should show: &quot;/dev/i2c-1&quot;.</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">The
+            Odroid N2 will show: &quot;/dev/i2c-2&quot;.</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">There
+            may be others, but these are the ones we care about.</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><b>For
+            Raspberry Pi:</b></font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Now
+            you want to type the command &quot;i2cdetect -y 1&quot;</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><b>For
+            Odroid N2:</b></font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Now
+            you want to type the command &quot;i2cdetect -y 2&quot;</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">You
+            should see something like this:</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">0
+            1 2 3 4 5 6 7 8 9 a b c d e f</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">00:
+            -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">10:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">20:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">30:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">40:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">50:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">60:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">70:
+            -- -- -- -- -- -- -- -- </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">The
+            dashes are unoccupied addresses (hexadecimal) on I2C bus 1</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">The
+            numbers or dashes indicate the presence (or absence) of devices at
+            those addresses, for example at 0x37 (in C syntax) </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Now
+            connect the SBC to the MSB module. Plug in the Qwiic cable and the
+            Magnetometer unit (use either connector).</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">With
+            the Simple MSB attached you should see:</font></font></font></p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+                
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">0
+                1 2 3 4 5 6 7 8 9 a b c d e f</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                    <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">00:
+                    -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                    <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">10:
+                    -- -- -- -- -- -- -- -- 18 -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                    <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">20:
+                    20 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                    <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">30:
+                    -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                    <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">40:
+                    -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                    <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">50:
+                    -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                    <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">60:
+                    -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">70:
+                    -- -- -- -- -- -- -- -- </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+                
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">On
+                    the <b>Simple MSB</b> there two devices. The one at 0x18 is the
+                    MCP9808 precision temperature sensor. The one at 0x20 is the
+                    magnetometer module. </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+                
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><b>MSB
+                    with I2C Extender</b> </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Initially
+                    you may see only one device. It is on the local board. The device
+                    should be at 0x19 and is the MCP9808 precision temperature sensor on
+                    the local module. </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+                
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">0
+                1 2 3 4 5 6 7 8 9 a b c d e f</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">00:
+                -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">10:
+                -- -- -- -- -- -- -- -- -- 19 -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">20:
+                -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">30:
+                -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">40:
+                -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">50:
+                -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">60:
+                -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+                <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">70:
+                -- -- -- -- -- -- -- -- </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+                
+            </p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+                <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">When
+                the shielded twisted pair Cat 6a cable is attached and 5v is applied
+                to the local module the sensors on the remote board should appear as
+                well. The one at address 0x18 is the remote MCP9808 precision
+                temperature sensor. The one at address 0x20 is the magnetometer
+                module. </font></font></font>
+            </p>
+            <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+                <br/>
+                
+            </p>
+        <code>
+            1 2 3 4 5 6 7 8 9 a b c d e f
+            -- -- -- -- -- -- -- -- -- -- -- -- --
+            -- -- -- -- -- -- -- -- 18 19 -- -- -- -- -- --
+            20 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+            -- -- -- -- -- -- -- -- 
+        </code>
+        <!-- p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">0
+            1 2 3 4 5 6 7 8 9 a b c d e f</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">00:
+            -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">10:
+            -- -- -- -- -- -- -- -- 18 19 -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">20:
+            20 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">30:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">40:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">50:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">60:
+            -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</font></font></font></p>
+            <p style="margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">70:
+            -- -- -- -- -- -- -- -- </font></font></font>
+        </p -->
+        <p style="margin-bottom: 0in; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            
+        </p>
+        <p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <font color="#202124"><font face="Google Sans, Roboto, RobotoDraft, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">It
+            is the job of the software to request register values from these
+            addresses and to format them into something we can read. </font></font></font>
+        </p>
+        <p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2">
+            <br/>
+            <br/>
+        </p>
+        <p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 2; widows: 2; page-break-before: always">
+            <img src="../../../Projects/SWx/Docs/SWxMagExt-0.0.10/images/MSBx%20SBC%20Hookup-2.svg" name="Image2" align="left" width="629" height="829">
+              <br clear="left"/>
+            </img>
+            <br/>
+            <br/>
+        </p>
+    </body>
+</html>

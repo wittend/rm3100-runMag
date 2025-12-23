@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="SMSB SBC Hookup.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="208.44745"
+     inkscape:cy="559.93593"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-others="false"
+     inkscape:snap-grids="false"
+     inkscape:snap-to-guides="false"
+     inkscape:snap-page="false"
+     inkscape:object-nodes="false"
+     inkscape:snap-nodes="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1045"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       id="rect10"
+       width="129.64583"
+       height="88.446426"
+       x="37.041668"
+       y="15.785713"
+       style="stroke-width:0.26458332;fill:#ad8484;fill-opacity:1" />
+    <rect
+       id="rect12-3"
+       width="56.69643"
+       height="45.735119"
+       x="66.712799"
+       y="121.80804"
+       style="fill:#800080;stroke-width:0.20535649" />
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke:#c6b3b3;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4568-7"
+       width="18.641924"
+       height="17.817865"
+       x="135.8219"
+       y="16.326189" />
+    <path
+       style="fill:none;stroke:#685555;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 43.089286,100.83035 c -13.243661,-1.812556 -7.568801,36.69576 -24.568453,33.63989 -22.7750966,-13.05323 0.632034,-34.837735 16.630952,-13.98512 3.484295,11.82117 6.976032,25.94112 33.261905,24.19048"
+       id="path4600"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.76111107px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79231071;-inkscape-font-specification:'sans-serif, Normal';font-stretch:normal;font-variant:normal;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;"
+       x="74.134399"
+       y="41.798843"
+       id="text4624"
+       transform="scale(0.76662596,1.3044171)"><tspan
+         sodipodi:role="line"
+         id="tspan4622"
+         x="74.134399"
+         y="41.798843"
+         style="stroke-width:0.79231071;-inkscape-font-specification:'sans-serif, Normal';font-family:sans-serif;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:7.76111107px;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;">Single Board Computer (SBC)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.35px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.60593373;"
+       x="62.294636"
+       y="140.59766"
+       id="text4628"
+       transform="scale(0.79405085,1.2593652)"><tspan
+         sodipodi:role="line"
+         id="tspan4809">Simple Magnetometer Support Board</tspan></text>
+    <rect
+       style="fill:#efb6b6;fill-opacity:1;stroke:#c68686;stroke-width:1.13656592;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4682"
+       width="118.30654"
+       height="36.590927"
+       x="42.333332"
+       y="74.822762" />
+    <rect
+       style="fill:#180f0f;fill-opacity:1;stroke:#c68686;stroke-width:1.06500006;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4684"
+       width="9.0714283"
+       height="11.339286"
+       x="149.67856"
+       y="89.113098" />
+    <rect
+       style="fill:#180f0f;fill-opacity:1;stroke:#c68686;stroke-width:1.06500006;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4691"
+       width="7.1815462"
+       height="10.205359"
+       x="43.089283"
+       y="80.870384" />
+    <rect
+       style="fill:#180f0f;fill-opacity:1;stroke:#c68686;stroke-width:1.06500006;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4693"
+       width="6.8035688"
+       height="9.4494019"
+       x="43.467262"
+       y="96.29464" />
+    <rect
+       style="fill:#180f0f;fill-opacity:1;stroke:#c68686;stroke-width:1.06500006;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4701"
+       width="9.8273811"
+       height="7.5595236"
+       x="140.13989"
+       y="-74.083328"
+       transform="rotate(90)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.35px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       x="98.273811"
+       y="92.89286"
+       id="text4705"><tspan
+         sodipodi:role="line"
+         id="tspan4711">SparkFun </tspan><tspan
+         sodipodi:role="line"
+         id="tspan4713">pHat v2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.35px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       x="28.726191"
+       y="144.29762"
+       id="text4717"><tspan
+         sodipodi:role="line"
+         id="tspan4727"
+         x="28.726191"
+         y="144.29762">Qwiic</tspan><tspan
+         sodipodi:role="line"
+         id="tspan4729"
+         x="28.726191"
+         y="153.99901">Connection</tspan></text>
+    <rect
+       style="fill:#565050;fill-opacity:1;stroke:#c68686;stroke-width:1.1528964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4750"
+       width="34.992325"
+       height="30.994047"
+       x="77.12191"
+       y="129.93452" />
+    <rect
+       style="fill:#0e0808;fill-opacity:1;stroke:#c68686;stroke-width:1.1528964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4752"
+       width="3.9864676"
+       height="11.717261"
+       x="83.323074"
+       y="139.38394" />
+    <rect
+       style="fill:#0e0808;fill-opacity:1;stroke:#c68686;stroke-width:1.1528964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4752-2"
+       width="3.4017856"
+       height="13.731166"
+       x="152.04614"
+       y="-103.03395"
+       transform="rotate(90)" />
+    <rect
+       style="fill:#0e0808;fill-opacity:1;stroke:#c68686;stroke-width:1.1528964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4769"
+       width="10.18764"
+       height="6.8035712"
+       x="93.510742"
+       y="142.40775" />
+    <rect
+       style="fill:#0e0808;fill-opacity:1;stroke:#c68686;stroke-width:1.1528964;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4771"
+       width="7.9729352"
+       height="5.6696429"
+       x="99.268936"
+       y="134.09225" />
+    <rect
+       style="fill:#180f0f;fill-opacity:1;stroke:#c68686;stroke-width:1.06500006;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4701-4"
+       width="9.8273811"
+       height="7.5595236"
+       x="140.51785"
+       y="-122.84225"
+       transform="rotate(90)" />
+  </g>
+</svg>
