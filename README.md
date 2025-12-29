@@ -18,7 +18,7 @@ It is written in simple, portable C.
 * It does not support RM3100 devices configured to require an SPI interface.  
 
 * This software was written to be used on boards such as the Raspberry Pi 3/4, Odroid, Nvidia Nano and their kin. It has been tested, if not thoroughly, on many similar single board designs. **runMag** was written with the expectation that the host provides the defacto standard 40 pin IO bus of Raspberry Pi 3's and their clones.
-* While the code may build on desktop systems, its use makes no sense unless the I2C bus is accessible.
+* While the code may build on desktop systems, its use makes no sense unless the I2C bus is accessible. For PC use, see the project https://github.com/wittend/mag-usb.  This uses a specific external I2C interface that connects to USB-2.
  
 * **runMag** uses Linux OS file handles to open, read, write, and close the device through the appropriate I2C bus.  
 The utility was written for maximum generality and should compile on any Linux host that supplies the standard GNU C compiler and build utilities.
@@ -47,8 +47,12 @@ and if all goes well type:
     $ sudo ./runMag
     (most flavors of Linux will require sudo)
 
-
 and now you should see some results!
+
+Currently (2026-12-29) good settings to use with a Raspberry Pi 3/4 for PSWS projects are similar to:
+(this is for boards pruchased from TAPR that will send data to the UAT PSWS repository)
+
+    ./runMag -b 1 -j -R 1f -r -H -M 23 -c 400 S <callsign or node id>
 
 ## Example on Raspberry Pi 3/4, using logging:
 
