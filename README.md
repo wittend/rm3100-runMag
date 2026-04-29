@@ -1,5 +1,8 @@
 # rm3100-runMag
 
+# [ Notice: Using the setup in this repository is STRONGLY deprecated! ]
+### [ It may still work, but the environment used here is strongly preferred and supported: https://github.com/wittend/mag-usb -dave ]
+
 This is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.
 
 The rm3100 support boards were developed for use with the Personal Space Weather Station (PSWS) TangerineSDR and Grape Space Weather monitors.  These board pairs report magnetic field strength as three independent vectors, from which a total field strength may be derived.  They also report the temperature in the immediate environment of the remotely placed sensor and at the near end of the pair as a fraction of a degree C.  They may also be used standalone with only a Pi or Pi clone board.  Various pieces of software have been used to develop, test, and run these boards as part of the hardware suite or as standalone low-cost monitors of the Earth's magnetic field.
