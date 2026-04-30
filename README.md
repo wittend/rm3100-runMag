@@ -1,7 +1,7 @@
 # rm3100-runMag
 
-# [ Notice: Using the setup in this repository is STRONGLY deprecated! ]
-### [ It may still work, but the environment used here is strongly preferred and supported: https://github.com/wittend/mag-usb -dave ]
+# [ Notice: The documentation of this project is being substantially updated ]
+### [ The newer vesion of code for working with TAPR the sourced magnetometers PSWS DASI project can be found at: https://github.com/wittend/mag-usb -dave ]
 
 This is a program intended to assist in testing the PNI RM3100 geomagnetic sensor.
 
