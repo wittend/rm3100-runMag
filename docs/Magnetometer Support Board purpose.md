@@ -32,8 +32,6 @@ Use Cases
 Includes I2c connector footprints for:
 
 - SparkFun Qwiic/Adafruit Stemma-QT, 
-- Seeed Grove or JST-PH
-- Digilent PMOD (new I2C 12 pin.).
 
 CAD and Schematics
 
